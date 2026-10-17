@@ -1,0 +1,57 @@
+# EpiCompass
+
+EpiCompass is a self-paced, mastery-based epidemiology course delivered as a web app. It is keyed to Rothman, Huybrechts & Murray, *Epidemiology: An Introduction*, 3rd edition. All teaching content is original; no text from the book is reproduced, and the book is cited as reading only. All data in the app are synthetic.
+
+Learners work through short cards (hook, explore, formalise, practise, check). Each check updates a Bayesian knowledge-tracing estimate per concept, and progress gates what comes next.
+
+## Status
+
+Version 0.1 contains Chapters 1 to 5 (27 cards, 81 check items, 8 exercise templates and 12 interactives). Chapters 6 to 15 appear on the course map as placeholders. The tutor is a rule-based stub, not a language model.
+
+## Repository layout
+
+- `apps/web`: React 18 + Vite app (`src/content`, `src/interactives`, `src/exercises`, `src/store`, `src/ai`, `src/pages`, `src/components`).
+- `packages/epi-core`: TypeScript maths library (occurrence, association, stratified analysis, simulation, mastery, diagnostic measures) with vitest tests.
+- `packages/epi-core-py`: Python port of the same library, standard library only, with pytest tests.
+- `tests/vectors/epi-core.json`: test vectors shared by both implementations.
+
+## Running
+
+```
+npm install
+npm run dev        # start the web app
+npm test           # epi-core tests (vitest)
+npm run test:py    # Python port tests (pytest; pip install pytest first)
+npm run build      # type-check and build both packages
+```
+
+## Architecture in v0.1
+
+The app runs entirely in the browser.
+
+- Content lives in TypeScript modules (`apps/web/src/content`), typed by `content/types.ts`.
+- Progress is stored in `localStorage` (`store/progress.ts`). Its shape mirrors the planned database tables.
+- Exercises come from a deterministic engine (`exercises/engine.ts`): a seeded generator draws parameters, a solver built on `epi-core` computes the key, and the narrative is slot-filled.
+- The tutor is a rule-based stub (`ai/tutor.ts`) that implements the `TutorClient` interface and the guardrails the real tutor must keep.
+
+## Next increments
+
+- A FastAPI gateway to Claude for the Socratic tutor and narrative generation. API keys stay on the server.
+- Supabase for authentication and progress sync.
+- Chapters 6 to 15.
+
+## Numbers are computed, never generated
+
+Every numerical value shown to a learner, whether in an exercise key, a worked solution or a tutor reply, is computed by `epi-core`. A language model may write narrative around a scenario or ask guiding questions, but it never supplies a number. The tutor must also refuse to reveal the answer to an open exercise.
+
+## Extending the content
+
+- **Card**: add a `Card` object to the `cards` array of the relevant chapter in `apps/web/src/content/chapters/chNN.ts`. Concepts it teaches must exist in `content/concepts.ts`.
+- **Interactive**: write a component that accepts `InteractiveProps` in `apps/web/src/interactives/unitA` (or `unitB`), add an `InteractiveMeta` entry to that folder's `index.ts`, and reference its `id` from a card's `explore.interactive`. Call `onReached(true)` when the learner reaches the target state.
+- **Exercise template**: add an `ExerciseTemplate` (parameter ranges, constraints, narrative, solver, answer fields, hints, solution) to `apps/web/src/content/templates/index.ts`, and reference its `id` from a card's `practise.template`. The solver must use `epi-core`.
+
+## Shared test vectors
+
+`tests/vectors/epi-core.json` holds input and expected-output cases whose expected values were computed independently with scipy. Both test suites read this file and compare to a relative tolerance of 1e-6. When you add or change a function, add a vector so the two implementations stay in agreement. The Python tests also pin the first five outputs of the Mulberry32 generator for seed 42, so simulations are reproducible across languages.
+
+The implementations differ in one respect: the TypeScript normal CDF uses the Abramowitz and Stegun approximation (error below 7.5e-8), whereas the Python port uses `math.erfc` and is exact to double precision. Confidence intervals use the same fixed z table in both.

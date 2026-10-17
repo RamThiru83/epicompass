@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "epi-core"
+version = "0.1.0"
+description = "Python port of the EpiCompass epidemiology maths library"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[tool.setuptools]
+packages = ["epi_core"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,12 @@
+{
+  "name": "epicompass",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": ["packages/epi-core", "apps/web"],
+  "scripts": {
+    "dev": "npm --workspace apps/web run dev",
+    "build": "npm --workspace packages/epi-core run build && npm --workspace apps/web run build",
+    "test": "npm --workspace packages/epi-core run test",
+    "test:py": "cd packages/epi-core-py && python -m pytest -q"
+  }
+}

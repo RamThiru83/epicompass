@@ -7,7 +7,7 @@ export const ch02: Chapter = {
   title: 'Pioneers in epidemiology and public health',
   unit: 'A',
   reading: 'Rothman, Huybrechts & Murray, 3rd ed., Chapter 2',
-  summary: md`The methods in the field of epidemiology were invented by some brilliant people trying to answer urgent practical questions. Follow three threads through that history: turning counts into rates, finding naturally occuring comparisons, and building deliberate comparison groups, which became the cohort and case-control designs. Each thread is still part of everyday practice.`,
+  summary: md`The methods in this course were not handed down complete; they were invented by people trying to answer urgent practical questions. Follow three threads through that history: turning counts into rates, finding comparisons that nature or circumstance has set up for us, and building deliberate comparison groups, which became the cohort and case-control designs. Each thread is still part of everyday practice.`,
   cards: [
     // ------------------------------------------------------------------
     {
@@ -66,7 +66,7 @@ The lesson for us: before comparing any two groups, ask what the denominators ar
       hook: md`South London, 1854. Cholera is back. John Snow, an anaesthetist, believes the disease spreads through water fouled with sewage, not through bad air as most of his colleagues think. He learns that two private companies pipe water to the same districts: one draws from the Thames downstream of the city's sewage outflows, the other has recently moved its intake upstream. Their mains run side by side down the same streets, and a household's supplier was often chosen by a landlord years earlier. Snow walks door to door asking one question: which company supplies this house?`,
       explore: {
         interactive: 'snow-rates',
-        prompt: md`Compare the raw death counts for Company S and Company L with the rates per 10,000 houses, and note how the number of houses supplied changes the picture. Edit any cell, for example by giving Company L the same number of houses as Company S, and watch the rates, the rate ratio and the rate difference respond; use 'Reset to cited figures' to return. Finally, ask yourself what else might differ between houses served by the two companies, such as poverty or district.`,
+        prompt: md`Compare the raw death counts for Company S and Company L with the rates per 10,000 houses, and note how the number of houses supplied changes the picture. Edit any cell, for example by giving Company L the same number of houses as Company S, and watch the death rates respond, along with the two comparison tiles: how many times higher Company S's rate is, and how many extra deaths per 10,000 houses it carries; use 'Reset to cited figures' to return. Finally, ask yourself what else might differ between houses served by the two companies, such as poverty or district.`,
       },
       formalise: md`Snow could not assign water supplies, but circumstance had done it for him. A **natural experiment** is a situation in which exposure is allocated by events that are unrelated to the other causes of the outcome, so the comparison resembles a randomised trial.
 
@@ -78,7 +78,9 @@ What made the water-company comparison persuasive:
 
 With deaths $D$ and houses $H$ for each supplier:
 
-$$\text{rate}_j = \frac{D_j}{H_j} \times 10{,}000 \qquad \text{rate ratio} = \frac{\text{rate}_{\text{polluted}}}{\text{rate}_{\text{clean}}}$$
+$$\text{rate}_j = \frac{D_j}{H_j} \times 10{,}000 \qquad \text{times higher} = \frac{\text{rate}_{\text{polluted}}}{\text{rate}_{\text{clean}}}$$
+
+Chapter 4 gives this second quantity its proper name, the [[rate ratio]].
 
 A ratio well above 1 in a comparison where other differences are small points to the water as a cause. Snow's estimate was imprecise in places (houses are not people, and some households were misclassified) but the size and consistency of the contrast made chance and confounding implausible explanations.
 

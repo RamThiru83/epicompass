@@ -35,3 +35,11 @@ export function YAxis({ ticks, y, x, x1, label, fmt = String }: { ticks: number[
     {label && <text transform={`translate(12,${(y(ticks[0]) + y(ticks[ticks.length - 1])) / 2}) rotate(-90)`} textAnchor="middle" fontSize="12" fill="var(--fg)">{label}</text>}
   </g>;
 }
+
+import { GLOSSARY } from '../content/glossary';
+/** Inline preview of a term formally taught in a later chapter (dotted underline + tooltip). */
+export function Preview({ term, children }: { term: string; children?: ReactNode }) {
+  const g = GLOSSARY[term];
+  const tip = g ? `${g.plain} Formally introduced in Chapter ${g.chapter}.` : '';
+  return <span className="preview" tabIndex={0} data-tip={tip}>{children ?? term}</span>;
+}

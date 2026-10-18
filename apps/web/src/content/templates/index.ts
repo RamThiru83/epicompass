@@ -229,8 +229,7 @@ When prevalence is low, $P \approx I \times \bar{D}$. The relation reminds us th
       if (p.n1 - p.a < 5 || p.n0 - p.b < 5) return false;
       if (p.a / p.n1 > 0.35) return false;
       if (p.a / p.n1 < 1.2 * (p.b / p.n0)) return false;
-      const rd = riskDifference({ a: p.a, b: p.b, c: p.n1 - p.a, d: p.n0 - p.b });
-      return Math.abs(rd.ci.lower) > 0.01;
+      return true;
     },
     narrative: (p, pick) => {
       const s = pick([
@@ -241,40 +240,29 @@ When prevalence is low, $P \approx I \times \bar{D}$. The relation reminds us th
       ]);
       return `In a cohort of ${s.setting}, ${p.n1} ${s.exp} and ${p.n0} ${s.unexp}. ` +
         `Over follow-up, ${p.a} of the exposed and ${p.b} of the unexposed had ${s.out}. Everyone was followed to the end of the risk period. ` +
-        `Estimate the risk ratio and the risk difference, each with a 95% confidence interval.`;
+        `Calculate the risk in each group, the risk ratio and the risk difference.`;
     },
     solve: p => {
       const t = { a: p.a, b: p.b, c: p.n1 - p.a, d: p.n0 - p.b };
-      const rr = riskRatio(t), rd = riskDifference(t);
-      return {
-        r1: p.a / p.n1, r0: p.b / p.n0,
-        rr: rr.estimate, rrLo: rr.ci.lower, rrHi: rr.ci.upper,
-        rd: rd.estimate, rdLo: rd.ci.lower, rdHi: rd.ci.upper,
-      };
+      return { r1: p.a / p.n1, r0: p.b / p.n0, rr: riskRatio(t).estimate, rd: riskDifference(t).estimate };
     },
     answerFields: [
+      { key: 'r1', label: 'Risk in exposed (%)', tolerance: 0.02, format: 'pct' },
+      { key: 'r0', label: 'Risk in unexposed (%)', tolerance: 0.02, format: 'pct' },
       { key: 'rr', label: 'Risk ratio', tolerance: 0.02, format: 'dec2' },
-      { key: 'rrLo', label: 'RR lower 95% limit', tolerance: 0.03, format: 'dec2' },
-      { key: 'rrHi', label: 'RR upper 95% limit', tolerance: 0.03, format: 'dec2' },
-      { key: 'rd', label: 'Risk difference (%)', tolerance: 0.02, format: 'pct' },
-      { key: 'rdLo', label: 'RD lower 95% limit (%)', tolerance: 0.03, format: 'pct' },
-      { key: 'rdHi', label: 'RD upper 95% limit (%)', tolerance: 0.03, format: 'pct' },
+      { key: 'rd', label: 'Risk difference (percentage points)', tolerance: 0.02, format: 'pct' },
     ],
     hints: [
       'Compute R1 = a/N1 and R0 = b/N0 first. RR = R1/R0; RD = R1 − R0.',
-      'For the RR, build the interval on the log scale: SE = √(1/a − 1/N1 + 1/b − 1/N0). For the RD, SE = √(R1(1−R1)/N1 + R0(1−R0)/N0).',
+      'The ratio says how many times higher the risk is; the difference says how many extra cases per 100 people.',
     ],
     solution: md`$R_1 = {a}/{n1} = {r1}$, $\;R_0 = {b}/{n0} = {r0}$.
 
-**Risk ratio:** $\mathrm{RR} = R_1/R_0 = {rr}$, with
-$$\mathrm{SE}(\ln \mathrm{RR}) = \sqrt{1/a - 1/N_1 + 1/b - 1/N_0}, \qquad \mathrm{RR}\, e^{\pm 1.96\,\mathrm{SE}}$$
-giving 95% CI {rrLo} to {rrHi}.
+**Risk ratio:** $\mathrm{RR} = R_1/R_0 = {rr}$: the exposed had {rr} times the risk of the unexposed.
 
-**Risk difference:** $\mathrm{RD} = R_1 - R_0 = {rd}$, with
-$$\mathrm{SE} = \sqrt{\tfrac{R_1(1-R_1)}{N_1} + \tfrac{R_0(1-R_0)}{N_0}}, \qquad \mathrm{RD} \pm 1.96\,\mathrm{SE}$$
-giving 95% CI {rdLo} to {rdHi} (multiply by 100 for percentage points).
+**Risk difference:** $\mathrm{RD} = R_1 - R_0 = {rd}$: the extra cases per 100 exposed people.
 
-Read the interval as the range of effect sizes reasonably compatible with the data: its width tells you how precise the estimate is.`,
+How precisely these are estimated (confidence intervals) is the subject of Chapters 7 and 8.`,
   },
 
   // ---------------------------------------------------------------- ch04 attributable fraction
@@ -340,20 +328,18 @@ Interpretation: among exposed cases, this fraction would not have occurred had t
       ]);
       return `A case-control study enrolled ${p.a + p.b} ${s.cases} and ${p.c + p.d} ${s.controls}. ` +
         `Among cases, ${p.a} reported ${s.exp}; among controls, ${p.c} did. ` +
-        `Estimate the odds ratio with its 95% confidence interval.`;
+        `Lay out the 2 × 2 table and calculate the odds ratio.`;
     },
     solve: p => {
       const o = oddsRatio({ a: p.a, b: p.b, c: p.c, d: p.d });
-      return { or: o.estimate, orLo: o.ci.lower, orHi: o.ci.upper };
+      return { or: o.estimate };
     },
     answerFields: [
       { key: 'or', label: 'Odds ratio', tolerance: 0.02, format: 'dec2' },
-      { key: 'orLo', label: 'OR lower 95% limit', tolerance: 0.03, format: 'dec2' },
-      { key: 'orHi', label: 'OR upper 95% limit', tolerance: 0.03, format: 'dec2' },
     ],
     hints: [
       'Lay out the table: exposed cases (a), unexposed cases (b), exposed controls (c), unexposed controls (d). Remember to subtract to get b and d.',
-      'OR = ad/bc. For the interval, SE(ln OR) = √(1/a + 1/b + 1/c + 1/d); take OR × exp(±1.96 SE).',
+      'OR = ad/bc: the odds of exposure among cases divided by the odds of exposure among controls.',
     ],
     solution: md`|  | Exposed | Unexposed |
 |---|---|---|
@@ -361,10 +347,6 @@ Interpretation: among exposed cases, this fraction would not have occurred had t
 | Controls | {c} | {d} |
 
 $$\mathrm{OR} = \frac{a \cdot d}{b \cdot c} = \frac{{a} \times {d}}{{b} \times {c}} = {or}$$
-
-$$\mathrm{SE}(\ln \mathrm{OR}) = \sqrt{1/a + 1/b + 1/c + 1/d}$$
-
-95% CI: {orLo} to {orHi}.
 
 The OR here is the ratio of exposure odds in cases to exposure odds in controls. What it estimates in the source population (a risk ratio, a rate ratio or a risk odds ratio) depends on how controls were sampled.`,
   },

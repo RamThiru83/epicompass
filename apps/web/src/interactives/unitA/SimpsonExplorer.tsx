@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import { risk, riskRatio } from '@epicompass/epi-core';
 import type { InteractiveProps } from '../types';
-import { Stat, Row, f2, pct, logScale, frame } from '../ui';
+import { Stat, Row, f2, linear, frame, Preview } from '../ui';
 import { useReached } from './useReached';
 
 const N = 100000; // nominal population size (synthetic)
@@ -18,6 +18,7 @@ interface SimpsonConfig {
   strata?: [string, string];        // [low-risk stratum, high-risk stratum] of the confounder
   confounder?: string;              // e.g. 'age', 'birth weight'
   outcome?: string;                 // e.g. 'mortality'
+  unit?: string;                    // y-axis / tile unit, e.g. 'Deaths per 100 births'
   shareHigh?: [number, number];     // % of each group in the high-risk stratum
   risks?: [number, number, number, number]; // % risk: [A low, A high, B low, B high]
 }
@@ -28,6 +29,7 @@ export function SimpsonExplorer({ onReached, config }: InteractiveProps) {
   const strata = cfg.strata ?? ['Younger', 'Older'];
   const confounder = cfg.confounder ?? 'age';
   const outcome = cfg.outcome ?? 'Mortality';
+  const unit = cfg.unit ?? 'Risk per 100';
   const [oldA, setOldA] = useState(cfg.shareHigh?.[0] ?? 30);
   const [oldB, setOldB] = useState(cfg.shareHigh?.[1] ?? 30);
   // stratum-specific risks in %: [low A, high A, low B, high B]
@@ -47,18 +49,22 @@ export function SimpsonExplorer({ onReached, config }: InteractiveProps) {
   const paradox = isFinite(crudeRR) && isFinite(rrY) && isFinite(rrO) && (
     (rrY > 1 && rrO > 1 && crudeRR < 1) || (rrY < 1 && rrO < 1 && crudeRR > 1) ||
     (eq1(rrY) && eq1(rrO) && Math.abs(crudeRR - 1) > 0.2));
-  const reached = useReached(paradox, onReached, 'crude RR contradicts the stratum-specific RRs');
+  const reached = useReached(paradox, onReached, 'overall comparison contradicts the within-group comparisons');
 
-  const fr = frame(520, 230);
-  const y = logScale(0.1, 10, fr.t + fr.ih, fr.t);
-  const clamp = (v: number) => Math.max(0.1, Math.min(10, v));
-  const bars = [
-    { k: 'Crude', v: crudeRR, fill: 'var(--accent)' },
-    { k: strata[0], v: rrY, fill: 'var(--unexp)' },
-    { k: strata[1], v: rrO, fill: 'var(--unexp)' },
+  // Grouped bars: risk per 100 in each hospital/group, overall and within each stratum (linear scale, no ratios).
+  const fr = frame(520, 240);
+  const rows = [
+    { k: 'All births', a: crudeA * 100, b: crudeB * 100, ratio: crudeRR },
+    { k: strata[0], a: yA * 100, b: yB * 100, ratio: rrY },
+    { k: strata[1], a: oA * 100, b: oB * 100, ratio: rrO },
   ];
-  const bw = fr.iw / bars.length;
-  const ticks = [0.1, 0.2, 0.5, 1, 2, 5, 10];
+  const vmax = Math.max(1, ...rows.flatMap(r => [r.a, r.b])) * 1.15;
+  const y = linear(0, vmax, fr.t + fr.ih, fr.t);
+  const step = vmax > 40 ? 10 : vmax > 20 ? 5 : vmax > 8 ? 2 : 1;
+  const ticks = Array.from({ length: Math.floor(vmax / step) + 1 }, (_, i) => i * step);
+  const gw = fr.iw / rows.length;
+  const times = (x: number) => !isFinite(x) ? '–' : Math.abs(x - 1) < 0.005 ? 'the same' : `${f2(x)} times ${x > 1 ? '(higher)' : '(lower)'}`;
+  const p2 = (x: number) => x.toFixed(2);
 
   return <div className="ix">
     <div className="ix-panel">
@@ -84,35 +90,33 @@ export function SimpsonExplorer({ onReached, config }: InteractiveProps) {
     </div>
     <div>
       <div className="stats">
-        <Stat k={`Crude risk, ${groups[0]}`} v={pct(crudeA, 2)} tone="exp" />
-        <Stat k={`Crude risk, ${groups[1]}`} v={pct(crudeB, 2)} tone="unexp" />
-        <Stat k={`Crude RR (${groups[0]} vs ${groups[1]})`} v={f2(crudeRR)} tone={paradox ? 'warn' : undefined} />
-        <Stat k={`RR, ${strata[0].toLowerCase()}`} v={f2(rrY)} />
-        <Stat k={`RR, ${strata[1].toLowerCase()}`} v={f2(rrO)} />
+        {rows.map((r, i) => <Stat key={r.k} k={i === 0 ? 'All births' : `Only ${r.k.charAt(0).toLowerCase()}${r.k.slice(1)}`} v={`${p2(r.a)} vs ${p2(r.b)}`}
+          s={`${groups[0]}: ${times(r.ratio)}`} tone={i === 0 ? (paradox ? 'warn' : undefined) : 'unexp'} />)}
       </div>
       <div className="fig">
-        <svg viewBox={`0 0 ${fr.W} ${fr.H}`} role="img" aria-label="Crude and stratum-specific risk ratios on a log scale">
+        <svg viewBox={`0 0 ${fr.W} ${fr.H}`} role="img" aria-label={`${unit} in each group, overall and within each ${confounder} group`}>
           {ticks.map(t => <g key={t}>
-            <line x1={fr.l} x2={fr.l + fr.iw} y1={y(t)} y2={y(t)} stroke="var(--line)" strokeWidth={t === 1 ? 1.5 : 1} />
+            <line x1={fr.l} x2={fr.l + fr.iw} y1={y(t)} y2={y(t)} stroke="var(--line)" />
             <text x={fr.l - 6} y={y(t) + 4} textAnchor="end" fontSize="11" fill="var(--muted)" fontFamily="var(--mono)">{t}</text>
           </g>)}
-          <text transform={`translate(12,${fr.t + fr.ih / 2}) rotate(-90)`} textAnchor="middle" fontSize="12" fill="var(--fg)">Risk ratio (log)</text>
-          {bars.map((b, i) => {
-            const x = fr.l + i * bw + bw * 0.25, w = bw * 0.5;
-            const ok = isFinite(b.v) && b.v > 0;
-            const yv = ok ? y(clamp(b.v)) : y(1);
-            return <g key={b.k}>
-              <rect x={x} width={w} y={Math.min(yv, y(1))} height={Math.max(1, Math.abs(yv - y(1)))} fill={b.fill} />
-              <text x={x + w / 2} y={yv < y(1) ? yv - 5 : yv + 14} textAnchor="middle" fontSize="11" fill="var(--fg)" fontFamily="var(--mono)">{f2(b.v)}</text>
-              <text x={x + w / 2} y={fr.t + fr.ih + 18} textAnchor="middle" fontSize="12" fill="var(--fg)">{b.k}</text>
+          <text transform={`translate(12,${fr.t + fr.ih / 2}) rotate(-90)`} textAnchor="middle" fontSize="12" fill="var(--fg)">{unit}</text>
+          {rows.map((r, i) => {
+            const x0 = fr.l + i * gw + gw * 0.18, w = gw * 0.3;
+            return <g key={r.k}>
+              {[{ v: r.a, f: 'var(--exp)' }, { v: r.b, f: 'var(--unexp)' }].map((b, j) => <g key={j}>
+                <rect x={x0 + j * (w + 4)} width={w} y={y(b.v)} height={Math.max(1, y(0) - y(b.v))} fill={b.f} />
+                <text x={x0 + j * (w + 4) + w / 2} y={y(b.v) - 5} textAnchor="middle" fontSize="11" fill="var(--fg)" fontFamily="var(--mono)">{p2(b.v)}</text>
+              </g>)}
+              <text x={x0 + w + 2} y={fr.t + fr.ih + 18} textAnchor="middle" fontSize="12" fill="var(--fg)" fontWeight={i === 0 ? 600 : 400}>{r.k}</text>
             </g>;
           })}
         </svg>
       </div>
+      <div className="legend"><span><i style={{ background: 'var(--exp)' }} />{groups[0]}</span><span><i style={{ background: 'var(--unexp)' }} />{groups[1]}</span></div>
       <div className="note">
-        {groups[0]} is {oldA}% {strata[1].toLowerCase()} and {groups[1]} is {oldB}%: the crude risk is a weighted average of the stratum-specific risks, so changing the {confounder} mix alone moves the crude RR while the stratum-specific RRs stay put.
+        {groups[0]} has {oldA}% of its births {strata[1].toLowerCase()}; {groups[1]} has {oldB}%. The "all births" figure is a blend of the two {confounder} groups, so changing the mix alone moves it, while the comparison within each {confounder} group stays put. ("{groups[0]}: {f2(crudeRR)} times" is a comparison Chapter 4 will name the <Preview term="risk ratio" />.)
       </div>
-      {reached && <div className="reached">The crude comparison now misrepresents the stratum-specific comparisons: {confounder} is confounding.</div>}
+      {reached && <div className="reached">The overall comparison now points the opposite way to the comparison within every {confounder} group: {confounder} is confounding.</div>}
     </div>
   </div>;
 }

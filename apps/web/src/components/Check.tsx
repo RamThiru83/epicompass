@@ -19,10 +19,10 @@ export function Check({ cardId, items, onAllAnswered }: { cardId: string; items:
               return <button key={i} className={`opt ${sel ? (o.correct ? 'right' : 'wrong') : ''}`} onClick={() => {
                 if (!first[it.id]) { recordAttempt(cardId, it.id, it.concept, o.correct); setFirst(f => ({ ...f, [it.id]: true })); }
                 setPicked(p => ({ ...p, [it.id]: i }));
-              }}>{o.text}</button>;
+              }}><Markdown inline className="">{o.text}</Markdown></button>;
             })}
           </div>
-          {picked[it.id] !== undefined && <div className="fb">{it.options[picked[it.id]].feedback}</div>}
+          {picked[it.id] !== undefined && <div className="fb"><Markdown inline className="">{it.options[picked[it.id]].feedback}</Markdown></div>}
         </div>
       ))}
     </div>

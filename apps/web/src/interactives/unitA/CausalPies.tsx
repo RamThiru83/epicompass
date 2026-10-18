@@ -73,7 +73,7 @@ export function CausalPies({ onReached }: InteractiveProps) {
         <Stat k="Cases" v={`${cases} / ${N}`} />
         <Stat k="Risk with A" v={pct(n1 ? a / n1 : NaN, 0)} s={`${a} / ${n1}`} tone="exp" />
         <Stat k="Risk without A" v={pct(n0 ? b / n0 : NaN, 0)} s={`${b} / ${n0}`} tone="unexp" />
-        <Stat k="Strength of A (RR)" v={rrText} />
+        <Stat k="Strength of A (risk with A ÷ risk without A)" v={rrText} />
       </div>
       <div className="fig">
         <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Sufficient causes: ${pies.map((p, i) => `pie ${i + 1} ${p.join(', ') || 'empty'}`).join('; ')}`}>

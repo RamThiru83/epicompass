@@ -6,6 +6,7 @@ import { describe, it, expect } from 'vitest';
 import { CHAPTERS, concepts, templates } from './index';
 import { INTERACTIVE_IDS } from '../interactives/ids';
 import { generate } from '../exercises/engine';
+import { GLOSSARY, stripPreviews, previewKeys, glossaryHas } from './glossary';
 
 const conceptIds = new Set(concepts.map(c => c.id));
 const cards = CHAPTERS.flatMap(ch => ch.cards.map(card => ({ ch, card })));
@@ -74,4 +75,24 @@ describe('interactive id list', () => {
     const { INTERACTIVES } = await import('../interactives/registry');
     expect(Object.keys(INTERACTIVES).sort()).toEqual([...INTERACTIVE_IDS].sort());
   });
+});
+
+describe('vocabulary order', () => {
+  // A term formally taught in chapter N may appear before chapter N only inside a [[preview]] marker.
+  const textsOf = (card: typeof cards[number]['card']) => [
+    card.title, card.hook, card.formalise, card.explore?.prompt ?? '',
+    ...card.checks.flatMap(c => [c.prompt, ...c.options.flatMap(o => [o.text, o.feedback])]),
+  ];
+  for (const ch of CHAPTERS) {
+    it(`chapter ${ch.number} uses later-chapter terms only as previews`, () => {
+      const blocks = [ch.summary, ...ch.cards.flatMap(textsOf)];
+      for (const b of blocks) for (const k of previewKeys(b)) expect(glossaryHas(k), `unknown preview term [[${k}]]`).toBe(true);
+      const plain = blocks.map(stripPreviews).join('\n');
+      for (const [term, g] of Object.entries(GLOSSARY)) {
+        if (ch.number >= g.chapter) continue;
+        const m = plain.match(g.pattern);
+        expect(m, `chapter ${ch.number} uses "${m?.[0]}" (taught in chapter ${g.chapter}) without a [[${term}]] marker`).toBeNull();
+      }
+    });
+  }
 });

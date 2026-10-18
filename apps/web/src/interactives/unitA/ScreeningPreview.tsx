@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { predictiveValues, iconArrayCounts } from '@epicompass/epi-core';
 import type { InteractiveProps } from '../types';
-import { Stat, Row, f2, pct } from '../ui';
+import { Stat, Row, pct } from '../ui';
 import { useReached } from './useReached';
 
 const PREV_STEPS = [0.1, 0.2, 0.5, 1, 1.5, 2, 3, 5, 7.5, 10, 15, 20, 30, 40, 50]; // %
@@ -43,7 +43,6 @@ export function ScreeningPreview({ onReached }: InteractiveProps) {
       <div className="stats">
         <Stat k="PPV" v={pct(pv.ppv)} s={`${n.tp} / ${n.tp + n.fp} test +`} tone={pv.ppv < 0.5 ? 'warn' : 'ok'} />
         <Stat k="NPV" v={pct(pv.npv)} s={`${n.tn} / ${n.tn + n.fn} test −`} />
-        <Stat k="LR+" v={isFinite(pv.lrPos) ? f2(pv.lrPos) : '∞'} />
       </div>
       <div className="fig">
         <svg viewBox={`0 0 ${W} ${H}`} role="img"

@@ -17,8 +17,8 @@ export const ch05: Chapter = {
       hook: md`A district in Assam wants to know whether tea-garden workers who receive weekly iron-folic acid tablets at work have fewer episodes of severe anaemia than those who do not. One team proposes to randomise garden divisions to the programme; another proposes to follow workers in gardens that already run it and compare them with workers in gardens that do not. Both teams would enrol workers, record exposure, and count new cases over two years. Are these two different study designs?`,
       explore: {
         interactive: 'two-by-two',
-        props: { dataType: 'rate' },
-        prompt: md`With 'Cohort: person-time data' selected, enter 30 exposed cases in 2,000 person-years and 60 unexposed cases in 2,200 person-years. Read the rate ratio and rate difference with their intervals. Then halve both person-time cells while keeping the cases fixed, and watch what changes and what stays the same. Try the 90%, 95% and 99% confidence levels as well.`,
+        props: { dataType: 'rate', basic: true },
+        prompt: md`With 'Cohort: person-time data' selected, enter 30 exposed cases in 2,000 person-years and 60 unexposed cases in 2,200 person-years. Read the rates, the rate ratio and the rate difference. Then halve both person-time cells while keeping the cases fixed, and watch what changes and what stays the same.`,
       },
       formalise: md`In a **cohort study**, people are classified by exposure and followed over time to see who develops the outcome. Occurrence (risk or rate) is measured in each exposure group and compared.
 
@@ -128,8 +128,8 @@ Retrospective cohorts are fast and cheap when good records exist; their weakness
       hook: md`A cancer hospital in Guwahati sees many patients with oesophageal cancer from surrounding districts. An investigator wants to test whether drinking very hot tea is a cause. A cohort study would need tens of thousands of people followed for decades. Instead, she plans to interview the cases and a comparison group. A colleague suggests using hospital visitors as controls because "they are convenient and healthy". Another asks a sharper question: "Who would have come to this hospital if they had developed this cancer?"`,
       explore: {
         interactive: 'two-by-two',
-        props: { dataType: 'cc' },
-        prompt: md`With 'Case-control data' selected, enter 120 exposed and 80 unexposed cases, and 150 exposed and 250 unexposed controls. Note the odds ratio and its interval. Double both control cells and see what happens to the estimate and the interval width, then change only the exposed-controls cell and see how strongly the odds ratio depends on the controls. Try the 90%, 95% and 99% confidence levels too.`,
+        props: { dataType: 'cc', basic: true },
+        prompt: md`With 'Case-control data' selected, enter 120 exposed and 80 unexposed cases, and 150 exposed and 250 unexposed controls. Note the odds ratio. Double both control cells and see that the estimate does not change, then change only the exposed-controls cell and see how strongly the odds ratio depends on the controls.`,
       },
       formalise: md`A **case-control study** is an efficient way to study the experience of a population without following all of it. Think of it as a cohort study with sampling:
 

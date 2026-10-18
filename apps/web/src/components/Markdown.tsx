@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { marked } from 'marked';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
+import { renderPreviews } from '../content/glossary';
 
 /** Render trusted instructor markdown with $inline$ and $$display$$ maths. Content is authored in-repo, so no sanitiser. */
 function renderMath(src: string): string {
@@ -14,9 +15,12 @@ function renderMath(src: string): string {
   return s;
 }
 
-export function Markdown({ children, className = 'prose' }: { children: string; className?: string }) {
-  const html = useMemo(() => marked.parse(renderMath(children), { async: false }) as string, [children]);
-  return <div className={className} dangerouslySetInnerHTML={{ __html: html }} />;
+export function Markdown({ children, className = 'prose', inline = false }: { children: string; className?: string; inline?: boolean }) {
+  const html = useMemo(() => {
+    const src = renderPreviews(renderMath(children));
+    return (inline ? marked.parseInline(src, { async: false }) : marked.parse(src, { async: false })) as string;
+  }, [children, inline]);
+  return inline ? <span className={className} dangerouslySetInnerHTML={{ __html: html }} /> : <div className={className} dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
 /** Fill {key} placeholders from a record, formatting numbers to 3 significant decimals where needed. */

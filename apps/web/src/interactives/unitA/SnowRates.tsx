@@ -59,8 +59,8 @@ export function SnowRates({ onReached }: InteractiveProps) {
       <div className="stats">
         <Stat k="Deaths / 10,000 houses, S" v={f1(rateS)} tone="exp" />
         <Stat k="Deaths / 10,000 houses, L" v={f1(rateL)} tone="unexp" />
-        <Stat k="Rate ratio (S vs L)" v={rr ? f2(rr.estimate) : '–'} s={rr && isFinite(rr.ci.lower) ? `95% CI ${f2(rr.ci.lower)}–${f2(rr.ci.upper)}` : undefined} />
-        <Stat k="Rate difference / 10,000" v={rd ? f2(rd.estimate * PER) : '–'} s={rd ? `95% CI ${f2(rd.ci.lower * PER)} to ${f2(rd.ci.upper * PER)}` : undefined} />
+        <Stat k="Company S ÷ Company L" v={rr ? `${f2(rr.estimate)} times` : '–'} s="how many times higher S's death rate is" />
+        <Stat k="Company S − Company L" v={rd ? f2(rd.estimate * PER) : '–'} s="extra deaths per 10,000 houses" />
       </div>
       {!valid && <div className="note">Each company needs at least one house, and deaths cannot exceed houses.</div>}
       <div className="fig">

@@ -7,7 +7,7 @@ export const ch01: Chapter = {
   title: 'Introduction to epidemiologic thinking',
   unit: 'A',
   reading: 'Rothman, Huybrechts & Murray, 3rd ed., Chapter 1',
-  summary: md`Epidemiology is the study of how often disease occurs in populations and why. Before we get into the subject, let's see some case studies where epidemiology applies. Each of these scenarios and concepts will be dealt in detail in the upcoming chapters. For now, treat these as a trailer and enjoy! Before learning any formula, you need three habits of mind: suspect that a comparison may be mixed up with a third factor (confounding), ask who could actually have developed the outcome (the population at risk), and remember that every diagnosis is made by an imperfect test.`,
+  summary: md`Epidemiology is the study of how often disease occurs in populations and why. Before learning any formula, you need three habits of mind: suspect that a comparison may be mixed up with a third factor (confounding), ask who could actually have developed the outcome (the population at risk), and remember that every diagnosis is made by an imperfect test.`,
   cards: [
     // ------------------------------------------------------------------
     {
@@ -17,8 +17,8 @@ export const ch01: Chapter = {
       hook: md`A state health department publishes neonatal mortality for two hospitals. The medical college hospital, which runs a level III neonatal unit, reports 7.4 deaths per 100 births; the nearby district hospital reports 4.3. A newspaper headline asks why the "better" hospital loses more babies. You pull the records and notice that the medical college receives most of the very low birth weight babies referred from across the region, while the district hospital refers its sickest newborns out. Is the medical college really doing worse, or is something else being compared?`,
       explore: {
         interactive: 'simpson-explorer',
-        props: { groups: ['Medical college', 'District hospital'], strata: ['1,500 g or more', 'Below 1,500 g'], confounder: 'birth weight', outcome: 'Neonatal mortality', shareHigh: [5, 5], risks: [2.0, 20, 2.9, 30] },
-        prompt: md`The tool holds the two hospitals from the story, with the birth-weight-specific death risks from the table below (medical college 2.0% and 20%; district hospital 2.9% and 30%). It starts with both hospitals having only 5% of births below 1,500 g, so the crude risk ratio sits close to the two stratum-specific ratios, both below 1. Now drag the medical college's share of very low birth weight births up to 30% and watch the crude ratio climb past 1 while the two stratum-specific ratios do not move. That is the newspaper's headline being manufactured by referral patterns alone.`,
+        props: { groups: ['Medical college', 'District hospital'], strata: ['1,500 g or more', 'Below 1,500 g'], confounder: 'birth weight', outcome: 'Neonatal mortality', unit: 'Deaths per 100 births', shareHigh: [5, 5], risks: [2.0, 20, 2.9, 30] },
+        prompt: md`The tool holds the two hospitals from the story, with the death risks from the table below: in babies of 1,500 g or more, 2.0 per 100 at the medical college and 2.9 at the district hospital; in babies below 1,500 g, 20 and 30 per 100. It starts with both hospitals having only 5% of their births below 1,500 g, so on every bar the medical college does better. Now drag the medical college's share of very low birth weight births up to 30%. Watch the 'All births' bars swap places while the bars within each birth-weight group do not move: the newspaper's headline is being manufactured by referral patterns alone.`,
       },
       formalise: md`**Confounding** is a mixing of effects: the apparent effect of the exposure (here, which hospital) is distorted because it is tangled up with the effect of another factor (birth weight).
 
@@ -78,7 +78,7 @@ The simplest remedy is **stratification**: compare like with like within levels 
       id: 'ch01-population-at-risk', chapter: 1, order: 2,
       title: 'Who could have become a case? The population at risk',
       concepts: ['population_at_risk'], minutes: 9,
-      hook: md`A district cancer registry in Tamil Nadu reports that cervical cancer incidence is 9 per 100,000 population per year in one taluk and 14 per 100,000 in another. A resident points out that the denominator is the total population, men included, and that one taluk has a large migrant male workforce. Another notes that a hospital outreach programme performed many hysterectomies in the first taluk. Which comparison, if any, can you trust?`,
+      hook: md`A district cancer registry in Tamil Nadu reports that cervical cancer [[incidence]] is 9 per 100,000 population per year in one taluk and 14 per 100,000 in another. A resident points out that the denominator is the total population, men included, and that one taluk has a large migrant male workforce. Another notes that a hospital outreach programme performed many hysterectomies in the first taluk. Which comparison, if any, can you trust?`,
       explore: {
         interactive: 'population-at-risk',
         prompt: md`Think of the 200 dots as a taluk's residents and the outcome as cervical cancer. Under 'Why ineligible' pick 'are men', set the number who cannot develop the outcome to 20 or more, and keep the new cases at a non-zero value. Compare 'Cases ÷ everyone' with the figure that appears when you press 'Show the correct risk'. Then switch the reason to 'have had a hysterectomy' and raise the slider further: the two figures drift apart, which is exactly the argument the two residents were making about their taluks.`
@@ -92,19 +92,19 @@ People are not at risk when they:
 - are immune (for example, after measles infection or effective vaccination).
 
 Writing the measure as
-$$\text{incidence} = \frac{\text{new cases}}{\text{people (or person-time) at risk}}$$
+$$\text{risk} = \frac{\text{new cases}}{\text{people at risk}}$$
 makes the requirement explicit. Including people who cannot become cases inflates the denominator and **dilutes** the measure. The dilution is harmless only if it is the same in every group compared; when the proportion of non-susceptible people differs (more migrant men in one taluk, more hysterectomies in another), comparisons become distorted.
 
-The population at risk also changes over time: once someone develops the disease or becomes immune, they stop contributing. Chapter 4 handles this with person-time.
+The population at risk also changes over time: once someone develops the disease or becomes immune, they stop contributing. Chapter 4 handles this with [[person-time]].
 
 **Common mistake:** using the whole population as a default denominator without asking who was actually able to experience the outcome.`,
       checks: [
         {
           id: 'ch01-population-at-risk-q1', concept: 'population_at_risk',
-          prompt: md`You are measuring the incidence of **first** myocardial infarction among adults in a cohort. Who should be excluded from the population at risk at baseline?`,
+          prompt: md`You are measuring the [[incidence]] of **first** myocardial infarction among adults in a cohort. Who should be excluded from the population at risk at baseline?`,
           options: [
             { text: 'Adults who have already had a myocardial infarction.', correct: true, feedback: 'Yes. They cannot experience a first infarction, so they do not belong in the denominator for this outcome.' },
-            { text: 'Adults with diabetes, because they are at high risk.', correct: false, feedback: 'High-risk people are very much at risk; excluding them would underestimate incidence.' },
+            { text: 'Adults with diabetes, because they are at high risk.', correct: false, feedback: 'High-risk people are very much at risk; excluding them would make the disease look rarer than it is.' },
             { text: 'Adults who smoke, because smoking confounds the result.', correct: false, feedback: 'Confounding concerns comparisons between groups, not who belongs in the denominator.' },
             { text: 'Nobody; the denominator should always be the whole cohort.', correct: false, feedback: 'Including prevalent cases dilutes the measure because they cannot become new cases of first infarction.' },
           ],
@@ -114,8 +114,8 @@ The population at risk also changes over time: once someone develops the disease
           prompt: md`Taluk A has a much larger proportion of men than Taluk B. Both report cervical cancer per 100,000 total population. What happens to the comparison?`,
           options: [
             { text: 'Nothing; the men cancel out because they are in both taluks.', correct: false, feedback: 'They cancel only if the proportion of men is the same in both. Here it is not.' },
-            { text: "Taluk A's incidence is diluted more, so it looks lower than it would with a correct denominator.", correct: true, feedback: 'Right. A larger share of non-susceptible people in the denominator pulls the measure down more in Taluk A.' },
-            { text: "Taluk A's incidence is inflated because men add to the numerator.", correct: false, feedback: 'Men cannot add cervical cancer cases; they only add to the denominator.' },
+            { text: "Taluk A's figure is diluted more, so it looks lower than it would with a correct denominator.", correct: true, feedback: 'Right. A larger share of non-susceptible people in the denominator pulls the measure down more in Taluk A.' },
+            { text: "Taluk A's figure is inflated because men add to the numerator.", correct: false, feedback: 'Men cannot add cervical cancer cases; they only add to the denominator.' },
           ],
         },
         {

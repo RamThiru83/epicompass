@@ -34,6 +34,8 @@ function analyse(type: DataType, [a, b, c, d]: number[], level: number) {
 
 export function TwoByTwo({ onReached, config }: InteractiveProps) {
   const preset = config?.dataType;
+  /** basic: estimates only (for chapters before confidence intervals and P-values are taught). */
+  const basic = config?.basic === true;
   const initType: DataType = preset === 'rate' || preset === 'cc' || preset === 'risk' ? preset : preset === 'case-control' ? 'cc' : 'risk';
   const [type, setType] = useState<DataType>(initType);
   const [cells, setCells] = useState<number[]>(DEFAULTS[initType]);
@@ -70,7 +72,7 @@ export function TwoByTwo({ onReached, config }: InteractiveProps) {
     </svg>;
   }
 
-  const setCell = (i: number, v: number) => setCells(cs => cs.map((c, j) => (j === i ? v : c)));
+  const setCell = (i: number, v: number) => { setCells(cs => cs.map((c, j) => (j === i ? v : c))); if (basic) reach('cell edited'); };
   const cell = (i: number, id: string, name: string) =>
     <input id={id} aria-label={name} type="number" min={0} value={cells[i]} onChange={e => setCell(i, +e.target.value)} />;
 
@@ -92,26 +94,33 @@ export function TwoByTwo({ onReached, config }: InteractiveProps) {
             <tr><th>{lab.r2}</th><td>{cell(2, 'tbt-c', `Exposed ${lab.r2.toLowerCase()}`)}</td><td>{cell(3, 'tbt-d', `Unexposed ${lab.r2.toLowerCase()}`)}</td></tr>
           </tbody>
         </table>
-        <Row label="Confidence level">
+        {!basic && <Row label="Confidence level">
           <select id="tbt-level" value={level} onChange={e => { setLevel(+e.target.value); reach('confidence level changed'); }}>
             <option value={90}>90%</option><option value={95}>95%</option><option value={99}>99%</option>
           </select>
-        </Row>
-        <p className="hint mono">
+        </Row>}
+        {basic ? <p className="hint mono">
+          {type === 'risk' && 'Risk ratio = (a/N₁) ÷ (b/N₀); risk difference = a/N₁ − b/N₀'}
+          {type === 'rate' && 'Rate ratio = (a/PT₁) ÷ (b/PT₀); rate difference = a/PT₁ − b/PT₀'}
+          {type === 'cc' && 'Odds ratio = (a × d) ÷ (b × c)'}
+        </p> : <p className="hint mono">
           {type === 'risk' && 'RR = (a/N₁)/(b/N₀); SE[ln RR] = √(1/a − 1/N₁ + 1/b − 1/N₀)'}
           {type === 'rate' && 'IR = (a/PT₁)/(b/PT₀); SE[ln IR] = √(1/a + 1/b)'}
           {type === 'cc' && 'OR = ad/bc; SE[ln OR] = √(1/a + 1/b + 1/c + 1/d)'}
-        </p>
+        </p>}
       </div>
       <div>
         {r ? <div className="stats">
           <Stat k={lab.occ[0]} v={fmtOcc(r.occ[0])} tone="exp" />
           <Stat k={lab.occ[1]} v={fmtOcc(r.occ[1])} tone="unexp" />
-          <Stat k={lab.ratio} v={f2(r.ratio.estimate)} s={`${level}% CI ${f2(r.ratio.ci.lower)} – ${f2(r.ratio.ci.upper)}`} />
+          <Stat k={lab.ratio} v={f2(r.ratio.estimate)} s={basic ? undefined : `${level}% CI ${f2(r.ratio.ci.lower)} – ${f2(r.ratio.ci.upper)}`} />
           {r.diff && <Stat k={type === 'rate' ? 'Rate difference (per 1,000 PT)' : 'Risk difference'} v={fmtDiff(r.diff.estimate)}
-            s={`${level}% CI ${fmtDiff(r.diff.ci.lower)} – ${fmtDiff(r.diff.ci.upper)}`} />}
-          <Stat k="P-value (null = 1)" v={fP(r.p)} s="two-sided, large-sample" tone="ok" />
+            s={basic ? undefined : `${level}% CI ${fmtDiff(r.diff.ci.lower)} – ${fmtDiff(r.diff.ci.upper)}`} />}
+          {!basic && <Stat k="P-value (null = 1)" v={fP(r.p)} s="two-sided, large-sample" tone="ok" />}
         </div> : <p className="note">Every cell must be a positive number for the large-sample formulas.</p>}
+        {basic ? <div className="note">
+          Estimates only. How precisely these numbers are known (confidence intervals) comes in Chapters 7 and 8. Example numbers are hypothetical.
+        </div> : <>
         <div className="fig">{chart}</div>
         <div className="legend">
           <span><i style={{ background: 'var(--accent)' }} />P-value function</span>
@@ -123,6 +132,7 @@ export function TwoByTwo({ onReached, config }: InteractiveProps) {
           It peaks at the point estimate; cutting it at P = 1 − level gives the confidence interval, and its height at 1 is the
           usual P-value. A wide curve means imprecise data, whatever the P-value. Example numbers are hypothetical.
         </div>
+        </>}
       </div>
     </div>
   );

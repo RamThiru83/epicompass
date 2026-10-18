@@ -59,7 +59,7 @@ The names are historical; both are proportions over the duration of the outbreak
           id: 'ch04-risk-q3', concept: 'risk',
           prompt: md`A trial reports a "risk of stroke of 4%" without further detail. What is missing?`,
           options: [
-            { text: 'The confidence interval only.', correct: false, feedback: 'An interval is helpful, but even a precise 4% is uninterpretable without knowing over how long.' },
+            { text: 'The number of people in the trial.', correct: false, feedback: 'Sample size affects how precise the figure is, but even a precise 4% is uninterpretable without knowing over how long.' },
             { text: 'The time period to which the risk applies.', correct: true, feedback: 'Correct. A 4% risk over one year and over ten years are very different statements.' },
             { text: 'The units, such as per person-year.', correct: false, feedback: 'Risk has no units; person-years belong to rates.' },
           ],
@@ -280,7 +280,7 @@ For the Faridabad cohort: $R_1 = 40/400 = 0.10$ and $R_0 = 25/500 = 0.050$.
 
 **Absolute measures** (differences) describe the public-health impact: how many cases are added or avoided. The same RR of 2 implies an RD of 0.05 when $R_0 = 0.05$ but only 0.0005 when $R_0 = 0.0005$.
 
-Always report the **estimate with a confidence interval**. The point estimate tells you the size of the effect; the interval tells you how precisely it is estimated. A wide interval spanning both small and large effects is a call for more data, not a verdict of "no effect". For these data, the 95% CI for the RR is about 1.2 to 3.2.
+Every estimate from a study also carries uncertainty. Chapters 7 and 8 show how to express it with a [[confidence interval]]; for now, concentrate on choosing and computing the right measure.
 
 Report two or three significant digits (RR 2.0, not 2.000).
 
@@ -307,11 +307,11 @@ Report two or three significant digits (RR 2.0, not 2.000).
         },
         {
           id: 'ch04-ratios-differences-q3', concept: 'risk_ratio',
-          prompt: md`A small study reports RR = 1.8 with a 95% CI from 0.9 to 3.6. How should it be described?`,
+          prompt: md`Two drugs each halve the five-year risk of stroke (RR = 0.5). Drug A is used in people whose risk without it is 20%; drug B in people whose risk without it is 0.4%. Which statement is correct?`,
           options: [
-            { text: 'No effect, because the interval includes 1.', correct: false, feedback: 'The interval also includes large harmful effects. "No effect" is not what the data show.' },
-            { text: 'An 80% increase in risk was estimated, but the data are imprecise and compatible with anything from a small decrease to a more than threefold increase.', correct: true, feedback: 'Correct. Describe the estimate and its precision rather than dichotomising.' },
-            { text: 'A proven 80% increase, because the point estimate is well above 1.', correct: false, feedback: 'The point estimate alone ignores the substantial imprecision.' },
+            { text: 'Both drugs prevent the same number of strokes, because their risk ratios are equal.', correct: false, feedback: 'Equal ratios can hide very different absolute effects. Work out the risk difference in each group.' },
+            { text: 'Drug A prevents 10 strokes per 100 people treated; drug B prevents 0.2 per 100, so the same relative effect gives a 50-fold difference in impact.', correct: true, feedback: 'Correct. 20% − 10% = 10 per 100; 0.4% − 0.2% = 0.2 per 100. The risk difference carries the public-health impact.' },
+            { text: 'Drug B is more effective because it works in lower-risk people.', correct: false, feedback: 'Both have the same relative effect; drug B simply has much less risk to remove.' },
           ],
         },
       ],
@@ -324,8 +324,8 @@ Report two or three significant digits (RR 2.0, not 2.000).
       hook: md`A surgical audit at a Jaipur hospital reports that obese patients undergoing open abdominal surgery had "2.7 times the odds" of wound infection compared with non-obese patients. The infection risk was 40% in obese patients and 20% in others. A resident tells the ward round that obese patients are "2.7 times as likely" to get infected. The infection-control nurse frowns: the risks she sees do not look 2.7-fold apart.`,
       explore: {
         interactive: 'two-by-two',
-        props: { dataType: 'risk' },
-        prompt: md`With 'Cohort: risk data' selected, enter 40 exposed cases and 960 exposed non-cases, and 20 unexposed cases and 980 unexposed non-cases, and note the risk ratio. Switch 'Data type' to 'Case-control data' (the cells reset), re-enter the same four numbers and read the odds ratio; then repeat both steps with 4 and 996, and 2 and 998. Watch the odds ratio converge on the risk ratio as the outcome becomes rare, and try the 90%, 95% and 99% confidence levels to see how the interval widens.`,
+        props: { dataType: 'risk', basic: true },
+        prompt: md`With 'Cohort: risk data' selected, enter 40 exposed cases and 960 exposed non-cases, and 20 unexposed cases and 980 unexposed non-cases, and note the risk ratio. Switch 'Data type' to 'Case-control data' (the cells reset), re-enter the same four numbers and read the odds ratio; then repeat both steps with 4 and 996, and 2 and 998. Watch the odds ratio converge on the risk ratio as the outcome becomes rare.`,
       },
       formalise: md`The **odds** of an outcome are the probability it happens divided by the probability it does not:
 

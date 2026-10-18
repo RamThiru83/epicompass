@@ -17,7 +17,7 @@ export const ch03: Chapter = {
       hook: md`In a slum resettlement colony in Delhi, a TB programme officer notices that almost every adult has been exposed to *Mycobacterium tuberculosis* at some point, yet only a small fraction ever develop active disease. Those who do are more often undernourished, living with HIV, or have poorly controlled diabetes; a few have none of these. A student asks: "So what is the cause of TB here: the bacillus, malnutrition, HIV or diabetes?" The officer replies that the question has more than one right answer.`,
       explore: {
         interactive: 'causal-pies',
-        prompt: md`Select a pie and toggle components A to E and U to build at least two different pies that each complete a case, treating A as the cause of interest and the rest as its partners. Move the 'Prevalence of B' slider to 0% and see which pies can no longer be completed, then raise it again. Watch the case count, the risks with and without A, and the strength of A (RR).`,
+        prompt: md`Select a pie and toggle components A to E and U to build at least two different pies that each complete a case, treating A as the cause of interest and the rest as its partners. Move the 'Prevalence of B' slider to 0% and see which pies can no longer be completed, then raise it again. Watch the case count, the risks with and without A, and the strength of A (the risk with A divided by the risk without A).`,
       },
       formalise: md`A **sufficient cause** is a complete set of minimal conditions that, together, inevitably produce the disease. Draw it as a pie; each slice is a **component cause**.
 
@@ -74,7 +74,7 @@ This leads to a counterintuitive but important result: it makes no sense to say 
 - removing the genetic factor would prevent 100% of cases,
 - removing the dietary factor would also prevent 100% of cases.
 
-The fractions of disease **attributable** to each component therefore add up to more than 100%. There is no fixed pool of causation to share out. (Chapter 4 makes this precise with the attributable fraction.)
+The fractions of disease **attributable** to each component therefore add up to more than 100%. There is no fixed pool of causation to share out. (Chapter 4 makes this precise with the [[attributable fraction]].)
 
 Two practical consequences:
 
@@ -122,9 +122,9 @@ Statistical "heritability" estimates answer a different question: how much of th
       hook: md`G6PD deficiency is common in several communities of central India. For years, a village health worker saw no special problem among G6PD-deficient men. Then a malaria elimination drive started giving primaquine to everyone with vivax malaria, and within weeks several deficient men were admitted with acute haemolysis. A district officer asks whether G6PD deficiency is a "strong" or a "weak" cause of haemolysis. The health worker answers, "It depends on the year you ask me."`,
       explore: {
         interactive: 'causal-pies',
-        prompt: md`Select Pie 1 and make it A, B and U, treating A as the susceptibility, B as its partner and U as an unknown component. Move the 'Prevalence of B' slider from low to high, and watch the risk with A, the risk without A and the strength of A (RR). Use 'New random sample' to check the pattern is not chance. Notice that the pie itself never changes; only how common the partner component is.`,
+        prompt: md`Select Pie 1 and make it A, B and U, treating A as the susceptibility, B as its partner and U as an unknown component. Move the 'Prevalence of B' slider from low to high, and watch the risk with A, the risk without A and the strength of A (the risk with A divided by the risk without A). Use 'New random sample' to check the pattern is not chance. Notice that the pie itself never changes; only how common the partner component is.`,
       },
-      formalise: md`**Strength** is how much a factor raises risk, usually summarised as a risk ratio. In the pie model, a component looks strong when its **complementary components** (the other slices of its pies) are common, and weak when they are rare.
+      formalise: md`**Strength** is how much a factor raises risk: the risk among people with the factor divided by the risk among people without it, a comparison Chapter 4 calls the [[risk ratio]]. In the pie model, a component looks strong when its **complementary components** (the other slices of its pies) are common, and weak when they are rare.
 
 In the village, the pie {G6PD deficiency, primaquine, U} is identical before and after the campaign. Before, almost nobody took primaquine, so G6PD deficiency rarely completed a pie and seemed a weak cause. During the campaign, the complement became common and G6PD deficiency suddenly seemed strong. Strength is therefore a property of the **population**, not a biological constant of the factor.
 
@@ -139,7 +139,7 @@ The joint risk is far above what the two separate effects would suggest. Chapter
 
 **Strength is not importance**: a weak cause that is very common can account for more cases than a strong cause that is rare.
 
-**Common mistake:** quoting a risk ratio from one population as if it were a fixed biological property of the exposure.`,
+**Common mistake:** quoting a [[risk ratio]] from one population as if it were a fixed biological property of the exposure.`,
       checks: [
         {
           id: 'ch03-strength-interaction-q1', concept: 'strength_of_cause',
@@ -157,16 +157,16 @@ The joint risk is far above what the two separate effects would suggest. Chapter
             { text: 'When both are associated with the exposure of interest.', correct: false, feedback: 'That describes potential confounders, not interaction.' },
             { text: 'When they appear together in the same sufficient cause.', correct: true, feedback: 'Yes. Each needs the other to complete that pie, so their joint effect differs from what their separate effects predict.' },
             { text: 'When one causes the other.', correct: false, feedback: 'That makes one an intermediate on the path of the other, which is a different relation.' },
-            { text: 'When both have large risk ratios.', correct: false, feedback: 'Strength alone says nothing about whether they share pies.' },
+            { text: 'When both are strong causes on their own.', correct: false, feedback: 'Strength alone says nothing about whether they share pies.' },
           ],
         },
         {
           id: 'ch03-strength-interaction-q3', concept: 'strength_of_cause',
-          prompt: md`Factor X has a risk ratio of 1.3 and affects 60% of the population. Factor Y has a risk ratio of 8 and affects 0.1%. Which statement is best?`,
+          prompt: md`Factor X multiplies risk by 1.3 (a [[risk ratio]] of 1.3) and affects 60% of the population. Factor Y multiplies risk by 8 and affects 0.1%. Which statement is best?`,
           options: [
             { text: 'Y is the more important cause because its effect is stronger.', correct: false, feedback: 'Strength per exposed person is not the same as public-health importance; Y is very rare.' },
             { text: 'X may account for more cases, because a weak but common cause can matter more than a strong but rare one.', correct: true, feedback: 'Correct. The burden of disease depends on both strength and how common the exposure is.' },
-            { text: 'X is not a real cause because its risk ratio is close to 1.', correct: false, feedback: 'A small risk ratio can reflect a genuine cause whose complements are uncommon.' },
+            { text: 'X is not a real cause because it raises risk only slightly.', correct: false, feedback: 'A cause that raises risk only slightly can still be genuine; its complementary causes may simply be uncommon.' },
           ],
         },
       ],

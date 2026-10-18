@@ -200,7 +200,7 @@ The book also notes a trade-off, which Chapter 12 explains: adjusting a test to 
       id: 'ch01-predictive-value', chapter: 1, order: 4,
       title: 'What does a positive result mean?',
       concepts: ['predictive_value', 'sensitivity_specificity'], minutes: 11,
-      hook: md`A rapid syphilis test with sensitivity 95% and specificity 95% works well in the sexually transmitted infection clinic of a Mumbai teaching hospital, where about one in five attendees is infected: most positives are confirmed. The same test is rolled out for universal antenatal screening in a rural block where about one woman in a hundred is infected. Within a month, the confirmatory laboratory complains that most positive samples it receives are negative. Has the test become worse?`,
+      hook: md`A rapid syphilis test with sensitivity 95% and specificity 95% works well in the sexually transmitted infection clinic of a Mumbai teaching hospital, where about one in five attendees is infected: most positives are confirmed. The same test is rolled out for universal antenatal screening in a rural block where about one woman in a hundred is infected. Within a month, many patients complain that they were wrongly flagged as having the disease, only to be found negative by the confirmatory laboratory. The confirmatory laboratory also complained that most positive samples it receives are negative. Has the test become worse?`,
       explore: {
         interactive: 'screening-preview',
         props: { target: 'prevalence', sens: 95, spec: 95, prev: 20 },

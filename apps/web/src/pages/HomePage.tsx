@@ -14,8 +14,8 @@ export function HomePage() {
   return (
     <div>
       <div className="crumbs">Epidemiology 101 · MSc Clinical Research</div>
-      <h2>Self-paced epidemiology, keyed to Rothman, Huybrechts &amp; Murray</h2>
-      <p className="reading">Read the chapter first, then work the cards: each has a hook, an exploration, a short formal explanation, generated practice and a check. Mastery, not time, moves you on.</p>
+      <h2>My progress</h2>
+      <p className="reading">Mastery, not time, moves you on. Read the chapter first, then work the cards; revisits appear here when a concept is due.</p>
 
       <div className="stats">
         <div className="stat"><div className="k">Cards completed</div><div className="v">{doneCards} / {totalCards}</div></div>

@@ -3,13 +3,17 @@ import { useProgress } from '../store/progress';
 import { unitUnlocked, chapterCompletion } from '../store/gates';
 import { go } from '../App';
 
-export function Sidebar({ units, chapters, active }: { units: Unit[]; chapters: Chapter[]; active?: number }) {
+export function Sidebar({ units, chapters, active, route }: { units: Unit[]; chapters: Chapter[]; active?: number; route?: string }) {
   const p = useProgress();
   return (
     <aside className="sidebar">
       <button className="brand" onClick={() => go('#/')} style={{ background: 'none', border: 0, padding: 0, color: 'inherit' }}>
         <h1>EpiCompass</h1><small>v0.1</small>
       </button>
+      <div className="unit">
+        <button className={`chap ${route === 'home' ? 'active' : ''}`} onClick={() => go('#/')}><span className="n">·</span><span className="t">Welcome: a note before you begin</span></button>
+        <button className={`chap ${route === 'progress' ? 'active' : ''}`} onClick={() => go('#/progress')}><span className="n">·</span><span className="t">My progress and settings</span></button>
+      </div>
       {units.map(u => {
         const unlocked = unitUnlocked(p, u, chapters);
         return (

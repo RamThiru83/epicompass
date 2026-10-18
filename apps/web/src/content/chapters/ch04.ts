@@ -455,7 +455,7 @@ Interpreting relative measures follows from this. An RR of 3 for a causal exposu
 
 **What a simple version has to leave out.** Picking names from a hat makes groups alike only on average and only when there are enough people; with a handful of runners, chance alone can make the groups differ.
 
-**Your turn.** In two or three sentences, explain to a prospective trial participant why the trial needs a comparison group and why a computer, not the doctor, decides who gets the new treatment. The video's catchphrase may help: *ask what would happen without it.*`,
+The video's catchphrase sums it up: *ask what would happen without it.*`,
       checks: [],
     },
     // ------------------------------------------------------------------

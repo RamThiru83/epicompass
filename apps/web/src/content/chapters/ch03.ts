@@ -298,7 +298,7 @@ If the answer is no, the result can reasonably be applied; if yes, the specific 
 
 **What a simple version has to leave out.** The flower has one pie; most diseases can arise through several different pies, so removing a component prevents only the cases that need it.
 
-**Your turn.** In two or three sentences, explain to a patient's family why their relative developed a disease even though "lots of people smoke and never get it". The video's catchphrase may help: *lots of pieces make it happen.*`,
+The video's catchphrase sums it up: *lots of pieces make it happen.*`,
       checks: [],
     },
   ],

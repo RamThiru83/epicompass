@@ -154,7 +154,7 @@ Later, Wade Hampton Frost in the United States would champion Snow's reasoning a
 
 **What a simple version has to leave out.** The outbreak was already fading when the pump handle was removed. Acting on the evidence was right, but the falling case count alone could not prove that removing the handle stopped it. Notice where simplifying would tip into overclaiming.
 
-**Your turn.** In two or three sentences, explain to a village health committee why comparing two groups of households told Snow more than counting cases alone. The video's catchphrase may help: *follow the clues to find the cause.*`,
+The video's catchphrase sums it up: *follow the clues to find the cause.*`,
       checks: [],
     },
     // ------------------------------------------------------------------

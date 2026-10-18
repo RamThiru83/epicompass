@@ -7,7 +7,7 @@ export const ch01: Chapter = {
   title: 'Introduction to epidemiologic thinking',
   unit: 'A',
   reading: 'Rothman, Huybrechts & Murray, 3rd ed., Chapter 1',
-  summary: md`Epidemiology is the study of how often disease occurs in populations and why. Before learning any formula, you need three habits of mind: suspect that a comparison may be mixed up with a third factor (confounding), ask who could actually have developed the outcome (the population at risk), and remember that every diagnosis is made by an imperfect test.`,
+  summary: md`Epidemiology is the study of how often disease occurs in populations and why. Before we get into the subject, let's see some case studies where epidemiology applies. Each of these scenarios and concepts will be dealt in detail in the upcoming chapters. For now, treat these as a trailer and enjoy! Before learning any formula, you need three habits of mind: suspect that a comparison may be mixed up with a third factor (confounding), ask who could actually have developed the outcome (the population at risk), and remember that every diagnosis is made by an imperfect test.`,
   cards: [
     // ------------------------------------------------------------------
     {

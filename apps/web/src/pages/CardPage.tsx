@@ -50,7 +50,7 @@ export function CardPage({ card, chapter }: { card: Card; chapter: Chapter }) {
           <p className="hint">{b.channel}: {b.videoTitle}. <a href={`https://youtu.be/${b.youtubeId}`} target="_blank" rel="noreferrer">Watch on YouTube</a></p>
           <Markdown>{card.formalise}</Markdown>
           <div className="actions">
-            <button className="btn" onClick={() => { completeCard(card.id); go(nextCard ? `#/card/${nextCard.id}` : `#/ch/${chapter.number}`); }}>{nextCard ? 'Done, on to the next chapter' : 'Done'}</button>
+            <button className="btn" onClick={() => { completeCard(card.id); go(nextCard ? `#/card/${nextCard.id}` : `#/ch/${chapter.number}`); }}>{!nextCard ? 'Done' : nextCard.chapter === chapter.number ? 'Done, continue' : 'Done, on to the next chapter'}</button>
             <span className="hint">Optional: this card does not count towards your progress.</span>
           </div>
         </div>

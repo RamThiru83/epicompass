@@ -438,7 +438,25 @@ Interpreting relative measures follows from this. An RR of 3 for a causal exposu
     },
     // ------------------------------------------------------------------
     {
-      id: 'ch04-attributable-fraction', chapter: 4, order: 8,
+      id: 'ch04-bonus-kids', chapter: 4, order: 8,
+      title: 'Bonus: the lucky socks and the counterfactual',
+      concepts: [], minutes: 6,
+      bonus: { youtubeId: 'bmoZPf17dCE', channel: 'Little Scientists Club', videoTitle: 'How do we know what made something happen? (Ep 19)' },
+      hook: md`You have just met the counterfactual ideal: the effect of an exposure is the difference between what happened and what would have happened to the same people without it. Here is the same idea for five-year-olds. In this episode of my children's science channel, Curie wins a race in new spotty socks and is sure the socks did it. Were they really lucky?`,
+      formalise: md`**Spot the epidemiology while you watch.**
+
+- "Did the socks make me win?" is a causal question about **one** person: Curie.
+- The perfect answer would need the **same** Curie, in the **same** race, at the **same** time, once in spotty socks and once in plain ones. One of those two races can never be seen. That unseen race is the **counterfactual**.
+- Because we cannot rerun the race, scientists use a **substitute**: another group that is as alike as possible in every way except the socks.
+- Picking names out of a hat, with many runners, makes the two groups alike. That is **randomisation**, and it is how doctors test new medicines.
+- The paper-plane activity is a tiny experiment: same plane, same throw, only the sticker changes.
+
+The video's catchphrase is the whole of card 4.7 in six words: *ask what would happen without it.*`,
+      checks: [],
+    },
+    // ------------------------------------------------------------------
+    {
+      id: 'ch04-attributable-fraction', chapter: 4, order: 9,
       title: 'Attributable fraction: how much could be prevented?',
       concepts: ['attributable_fraction'], minutes: 13,
       hook: md`A hill district in Uttarakhand plans to expand a clean-cooking-gas scheme. A study suggests that children in homes using wood or dung for cooking have 2.5 times the risk of pneumonia of children in homes using gas, and half of all childhood pneumonia cases in the district occur in homes using solid fuel. The district collector asks a simple question: if every home switched to gas, what share of childhood pneumonia would disappear?`,

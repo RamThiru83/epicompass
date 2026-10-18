@@ -4,3 +4,7 @@ export const REPO_BRANCH = 'main';
 /** GitHub web-editor link for a content file (path relative to repo root). */
 export const editUrl = (path: string) => `${REPO_URL}/edit/${REPO_BRANCH}/${path}`;
 export const chapterFile = (n: number) => `apps/web/src/content/chapters/ch${String(n).padStart(2, '0')}.ts`;
+
+/** Supabase project (Mumbai region). Leave the key empty to run the app in browser-only mode. */
+export const SUPABASE_URL = 'https://odsrftvuceizketmcesy.supabase.co';
+export const SUPABASE_ANON_KEY = 'sb_publishable_x3BnqzNP3On0O1C-axPtSw_UbeFLnnw';

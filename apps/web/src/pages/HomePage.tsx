@@ -3,10 +3,13 @@ import { CHAPTERS, UNITS, conceptById } from '../content';
 import { useProgress, dueConcepts, setSettings, resetProgress } from '../store/progress';
 import { chapterCompletion } from '../store/gates';
 import { go } from '../App';
+import { useAccount } from '../store/account';
+import { cloudEnabled } from '../lib/supabase';
 
 export function HomePage() {
   const p = useProgress();
   const [confirmReset, setConfirmReset] = useState(false);
+  const acc = useAccount();
   const due = dueConcepts(p);
   const totalCards = CHAPTERS.reduce((s, c) => s + c.cards.length, 0);
   const doneCards = CHAPTERS.reduce((s, c) => s + c.cards.filter(k => p.cards[k.id]?.completedAt).length, 0);
@@ -56,7 +59,7 @@ export function HomePage() {
         </label>
         <div className="actions">
           <button className="btn ghost" onClick={() => { if (confirmReset) { resetProgress(); setConfirmReset(false); } else { setConfirmReset(true); setTimeout(() => setConfirmReset(false), 4000); } }}>{confirmReset ? 'Click again to confirm reset' : 'Reset my progress'}</button>
-          <span className="hint">Progress is stored in this browser only (v0.1).</span>
+          <span className="hint">{acc.session ? 'Progress is saved to your account and on this device.' : cloudEnabled ? <>Progress is stored in this browser only. <a href="#/account">Sign in or join</a> to save it across devices.</> : 'Progress is stored in this browser only.'}</span>
         </div>
       </div>
     </div>

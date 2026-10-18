@@ -55,3 +55,13 @@ Every numerical value shown to a learner, whether in an exercise key, a worked s
 `tests/vectors/epi-core.json` holds input and expected-output cases whose expected values were computed independently with scipy. Both test suites read this file and compare to a relative tolerance of 1e-6. When you add or change a function, add a vector so the two implementations stay in agreement. The Python tests also pin the first five outputs of the Mulberry32 generator for seed 42, so simulations are reproducible across languages.
 
 The implementations differ in one respect: the TypeScript normal CDF uses the Abramowitz and Stegun approximation (error below 7.5e-8), whereas the Python port uses `math.erfc` and is exact to double precision. Confidence intervals use the same fixed z table in both.
+
+## Student accounts and the class dashboard
+
+Students can use the app without an account (progress stays in their browser), or create one at **Sign in or join** with the cohort join code, their name, email and a password. Signed-in progress is saved to Supabase and follows them across devices; anything they did as a guest on that device is merged in when they first sign in.
+
+- Backend: Supabase project `odsrftvuceizketmcesy` (Mumbai). Schema, row-level security and the join-code trigger are in `supabase/schema.sql`.
+- The publishable key in `apps/web/src/config.ts` is public by design; row-level security means students see only their own rows and only the instructor sees everyone's.
+- The instructor's account is promoted once in the SQL editor: `update public.profiles set role = 'instructor' where email = '…';`
+- The **Class dashboard** (instructor only) shows the roster, a concept-mastery grid, the questions most often missed at the first attempt, CSV export, temporary-password resets and cohort join codes.
+- Student data is for teaching only. Using it for research needs ethics approval and separate consent.

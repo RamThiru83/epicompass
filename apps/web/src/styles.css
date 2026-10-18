@@ -165,3 +165,18 @@ input[type=range] { accent-color: var(--accent); }
 .welcome-logo { max-width: 560px; padding: 10px 14px; margin-bottom: 18px; border: 1px solid var(--line); }
 .brand { align-items: center !important; }
 .brand .mark { width: 28px; height: 28px; flex: none; align-self: center; }
+
+/* Account */
+.account-form { display: grid; gap: 6px; }
+.account-form label:not(.row) { font-size: 13px; color: var(--muted); margin-top: 6px; }
+.account-form input[type=text], .account-form input[type=email], .account-form input[type=password] { width: 100%; font-family: var(--body); padding: 8px 10px; }
+.sync { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); flex: none; }
+.sync.saving { background: var(--gold); } .sync.error { background: var(--warn); } .sync.idle { background: var(--line); }
+
+/* Instructor dashboard */
+.roster td, .roster th { white-space: nowrap; }
+.heat { border-collapse: separate; border-spacing: 2px; font-size: 12px; }
+.heat th { font-weight: 500; color: var(--muted); text-align: right; padding-right: 8px; white-space: nowrap; }
+.heat thead th { height: 150px; vertical-align: bottom; padding: 0; }
+.heat thead th span { display: inline-block; writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; max-height: 150px; overflow: hidden; text-overflow: ellipsis; }
+.heat td { width: 18px; height: 18px; min-width: 18px; border-radius: 3px; border: 1px solid var(--line); }

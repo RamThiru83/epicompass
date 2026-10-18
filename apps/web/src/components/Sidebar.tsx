@@ -2,11 +2,14 @@ import type { Chapter, Unit } from '../content/types';
 import { useProgress } from '../store/progress';
 import { unitUnlocked, chapterCompletion } from '../store/gates';
 import { go } from '../App';
+import { useAccount } from '../store/account';
+import { cloudEnabled } from '../lib/supabase';
 import logoUrl from '../assets/bric-thsti-logo.png';
 import markUrl from '../assets/epicompass-mark.svg';
 
 export function Sidebar({ units, chapters, active, route }: { units: Unit[]; chapters: Chapter[]; active?: number; route?: string }) {
   const p = useProgress();
+  const acc = useAccount();
   return (
     <aside className="sidebar">
       <a className="inst-logo" href="https://thsti.res.in" target="_blank" rel="noreferrer" title="BRIC-Translational Health Science and Technology Institute">
@@ -18,6 +21,11 @@ export function Sidebar({ units, chapters, active, route }: { units: Unit[]; cha
       <div className="unit">
         <button className={`chap ${route === 'home' ? 'active' : ''}`} onClick={() => go('#/')}><span className="n">·</span><span className="t">Welcome: a note before you begin</span></button>
         <button className={`chap ${route === 'progress' ? 'active' : ''}`} onClick={() => go('#/progress')}><span className="n">·</span><span className="t">My progress and settings</span></button>
+        {cloudEnabled && <button className={`chap ${route === 'account' ? 'active' : ''}`} onClick={() => go('#/account')}>
+          <span className="n">·</span><span className="t">{acc.session ? (acc.profile?.full_name ?? 'My account') : 'Sign in or join'}</span>
+          {acc.session && <span className={`sync ${acc.sync}`} title={acc.sync === 'error' ? 'Last save failed' : acc.sync === 'saving' ? 'Saving…' : 'Saved to your account'} />}
+        </button>}
+        {acc.profile?.role === 'instructor' && <button className={`chap ${route === 'instructor' ? 'active' : ''}`} onClick={() => go('#/instructor')}><span className="n">·</span><span className="t">Class dashboard</span></button>}
       </div>
       {units.map(u => {
         const unlocked = unitUnlocked(p, u, chapters);

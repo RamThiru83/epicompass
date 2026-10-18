@@ -54,10 +54,10 @@ export function HomePage() {
           <input type="checkbox" checked={p.settings.hardGates} onChange={e => setSettings({ hardGates: e.target.checked })} />
           Lock later units until the previous unit's concepts are mastered
         </label>
-        <label className="row" style={{ justifyContent: 'flex-start' }}>
+        {acc.profile?.role === 'instructor' && <label className="row" style={{ justifyContent: 'flex-start' }}>
           <input type="checkbox" checked={p.settings.editor} onChange={e => setSettings({ editor: e.target.checked })} />
-          Instructor mode: show "Edit this card" links that open the content file on GitHub
-        </label>
+          Instructor mode: show "Edit this card" links that open the content file on GitHub (visible only to your instructor account)
+        </label>}
         <div className="actions">
           <button className="btn ghost" onClick={() => { if (confirmReset) { resetProgress(); setConfirmReset(false); } else { setConfirmReset(true); setTimeout(() => setConfirmReset(false), 4000); } }}>{confirmReset ? 'Click again to confirm reset' : 'Reset my progress'}</button>
           <span className="hint">{acc.session ? 'Progress is saved to your account and on this device.' : cloudEnabled ? <>Progress is stored in this browser only. <a href="#/account">Sign in or join</a> to save it across devices.</> : 'Progress is stored in this browser only.'}</span>

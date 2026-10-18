@@ -6,6 +6,7 @@ import { Check } from '../components/Check';
 import { Exercise } from '../components/Exercise';
 import { INTERACTIVES } from '../interactives/registry';
 import { useProgress, markStep, completeCard } from '../store/progress';
+import { useEditorMode } from '../store/account';
 import { go } from '../App';
 import { CHAPTERS } from '../content';
 import { editUrl, chapterFile } from '../config';
@@ -16,6 +17,7 @@ const LABEL: Record<Step, string> = { hook: 'Hook', explore: 'Explore', formalis
 
 export function CardPage({ card, chapter }: { card: Card; chapter: Chapter }) {
   const p = useProgress();
+  const editor = useEditorMode();
   const prog = p.cards[card.id];
   const steps = STEPS.filter(s => (s === 'explore' ? !!card.explore : s === 'practise' ? !!card.practise : true));
   const firstOpen = steps.find(s => !prog?.steps[s]) ?? steps[steps.length - 1];
@@ -41,7 +43,7 @@ export function CardPage({ card, chapter }: { card: Card; chapter: Chapter }) {
       <div>
         <div className="crumbs">Unit {chapter.unit} · Chapter {chapter.number} · Card {chapter.number}.{pos + 1} · optional</div>
         <h2>{card.title}</h2>
-        {p.settings.editor && <div className="hint" style={{ marginTop: 4 }}>Instructor: <a href={editUrl(chapterFile(chapter.number))} target="_blank" rel="noreferrer">edit this card on GitHub</a> (search for <code>id: '{card.id}'</code>).</div>}
+        {editor && <div className="hint" style={{ marginTop: 4 }}>Instructor: <a href={editUrl(chapterFile(chapter.number))} target="_blank" rel="noreferrer">edit this card on GitHub</a> (search for <code>id: '{card.id}'</code>).</div>}
         <div className="section"><Markdown>{card.hook}</Markdown>
           <div className="video">
             <iframe src={`https://www.youtube-nocookie.com/embed/${b.youtubeId}?rel=0`} title={b.videoTitle} loading="lazy"
@@ -62,7 +64,7 @@ export function CardPage({ card, chapter }: { card: Card; chapter: Chapter }) {
     <div>
       <div className="crumbs">Unit {chapter.unit} · Chapter {chapter.number} · Card {chapter.number}.{pos + 1} · concepts: {card.concepts.join(', ')}</div>
       <h2>{card.title}</h2>
-      {p.settings.editor && <div className="hint" style={{ marginTop: 4 }}>Instructor: <a href={editUrl(chapterFile(chapter.number))} target="_blank" rel="noreferrer">edit this card on GitHub</a> (search the file for <code>id: '{card.id}'</code>; the site redeploys about two minutes after you commit).</div>}
+      {editor && <div className="hint" style={{ marginTop: 4 }}>Instructor: <a href={editUrl(chapterFile(chapter.number))} target="_blank" rel="noreferrer">edit this card on GitHub</a> (search the file for <code>id: '{card.id}'</code>; the site redeploys about two minutes after you commit).</div>}
       <div className="steps">
         {steps.map(s => <button key={s} className={`step ${done(s) ? 'done' : ''} ${now === s ? 'now' : ''}`} onClick={() => setNow(s)} style={{ cursor: 'pointer' }}>{LABEL[s]}</button>)}
       </div>

@@ -9,6 +9,7 @@ import { supabase } from '../lib/supabase';
 import {
   getProgress, guestProgress, clearGuestProgress, mergeProgress, normalise, onProgressChange,
   replaceProgress, switchSlot, type Progress,
+  useProgress,
 } from './progress';
 
 export interface Profile { id: string; full_name: string; email: string; cohort_id: string | null; role: 'student' | 'instructor' }
@@ -115,3 +116,10 @@ export async function signOut() {
   if (timer) { clearTimeout(timer); timer = undefined; await push(getProgress()); }
   await supabase.auth.signOut();
 }
+
+/** Instructor mode (edit-on-GitHub links): only for the signed-in instructor who has switched it on. */
+export const useEditorMode = () => {
+  const a = useAccount();
+  const p = useProgress();
+  return a.profile?.role === 'instructor' && !!p.settings.editor;
+};

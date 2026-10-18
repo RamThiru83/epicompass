@@ -6,7 +6,7 @@ Learners work through short cards (hook, explore, formalise, practise, check). E
 
 ## Status
 
-Version 0.1 contains Chapters 1 to 5 (27 cards, 81 check items, 8 exercise templates and 12 interactives). Chapters 6 to 15 appear on the course map as placeholders. The tutor is a rule-based stub, not a language model.
+Version 0.1 contains Chapters 1 to 5 (27 core cards, 81 check items, 8 exercise templates and 12 interactives, plus 4 optional video cards that do not count towards progress). Chapters 6 to 15 appear on the course map as placeholders. Student questions go to the instructor on WhatsApp; there is no AI tutor yet.
 
 ## Repository layout
 
@@ -27,17 +27,16 @@ npm run build      # type-check and build both packages
 
 ## Architecture in v0.1
 
-The app runs entirely in the browser.
+The app is a static site (GitHub Pages) with Supabase for accounts and progress sync.
 
 - Content lives in TypeScript modules (`apps/web/src/content`), typed by `content/types.ts`.
-- Progress is stored in `localStorage` (`store/progress.ts`). Its shape mirrors the planned database tables.
+- Progress is cached in `localStorage` (`store/progress.ts`) and, for signed-in students, synced to Supabase (`store/account.ts`).
 - Exercises come from a deterministic engine (`exercises/engine.ts`): a seeded generator draws parameters, a solver built on `epi-core` computes the key, and the narrative is slot-filled.
-- The tutor is a rule-based stub (`ai/tutor.ts`) that implements the `TutorClient` interface and the guardrails the real tutor must keep.
+- *Ask your instructor* (`components/TutorPanel.tsx`) hands the question to the instructor on WhatsApp. A rule-based tutor stub (`ai/tutor.ts`) remains in the code for a future AI tutor but is not shown to students.
 
 ## Next increments
 
 - A FastAPI gateway to Claude for the Socratic tutor and narrative generation. API keys stay on the server.
-- Supabase for authentication and progress sync.
 - Chapters 6 to 15.
 
 ## Numbers are computed, never generated

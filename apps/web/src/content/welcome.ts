@@ -5,7 +5,7 @@ export const WELCOME = {
   title: 'A note before you begin',
   intro: md`Dear student,
 
-Welcome to EpiCompass. I built this companion for the epidemiology module of our MSc Clinical Research programme because I wanted you to have something between a textbook and a classroom: a place where you can read an idea, then immediately turn the dials and see it move. Before you open Chapter 1, I would like to tell you what epidemiology is, why I think it matters so much for the work you are preparing to do, and how to get the most out of this site.`,
+Welcome to EpiCompass. I built this companion for the epidemiology module of our MSc Clinical Research programme because I wanted you to have something between a textbook and a classroom: a place where you can read an idea, then immediately play with and experience the concept. Before you open Chapter 1, I would like to tell you what epidemiology is, why I think it matters so much for the work you are preparing to do, and how to get the most out of this learning companion.`,
 
   whatIsEpi: md`## What epidemiology is
 
@@ -15,7 +15,7 @@ What makes epidemiology a discipline rather than a collection of formulas is the
 
   whyItMatters: md`## Why it matters for a clinical researcher and a trialist
 
-I have spent my working life between the wards and the data, and I have come to believe that the single biggest difference between a researcher who grows and one who stalls is whether they have internalised these principles. Let me give you three reasons.
+I have spent my working life between the wards and the data, and I have come to believe that the single biggest difference between a researcher who grows and one who does not is whether they have internalised the fundamental epidemiological principles. Let me give you three reasons.
 
 First, a randomised trial is an epidemiologic study. Randomisation is a device for dealing with confounding, nothing more and nothing less. If you do not understand confounding, you cannot appreciate what randomisation buys you, when it fails (losses to follow-up, non-adherence, unblinded outcome assessment), or how to read the observational studies that will always outnumber the trials in your field. The trialist who understands bias designs better trials; the one who does not merely follows the template.
 
@@ -23,7 +23,7 @@ Second, measurement is everything. Risk, rate, prevalence, risk ratio, risk diff
 
 Third, estimation over significance. Much of what passes for analysis in clinical research is a ritual around the number 0·05. The authors of our textbook have argued for decades, and I agree with them, that the job of a study is to estimate an effect and to say how precisely it has been estimated. A confidence interval tells you what the data are compatible with; a P-value tells you much less. Learning to think this way will change how you read every paper, and how you write your own.`,
 
-  theBook: md`## The book, and why we call it Baby Rothman
+  theBook: md`## The book, our beloved "Baby Rothman!"
 
 The content of this site follows, chapter by chapter, *Epidemiology: An Introduction* by Kenneth J. Rothman, Krista F. Huybrechts and Eleanor J. Murray (third edition, Oxford University Press). Among those of us who teach epidemiology it is known affectionately as "Baby Rothman", to distinguish it from its formidable elder sibling *Modern Epidemiology*. Baby Rothman is short, opinionated and unusually clear, and it has shaped how I think more than any other book in my field. It starts with confounding on page one, builds causation before measurement, and treats error and statistics as servants of inference rather than its masters. If you read only one epidemiology book in your career, read this one, and read it more than once.
 
@@ -31,7 +31,7 @@ Please do read it. This site does not reproduce the book; it is my own commentar
 
   howToUse: md`## How to use this site
 
-The course is organised into six units of rising demand, following the book's chapter order. Each chapter is broken into short cards, and every card follows the same five steps.
+The course is organised into six units of increasing complexity, following the book's chapter order. Each chapter is broken into short cards, and every card follows the same five steps.
 
 **Hook.** A short clinical or historical story that contains the problem. Read it and form a view before you go on.
 
@@ -47,12 +47,14 @@ Progress is mastery-based, not time-based. The site tracks, per concept, how con
 
 Chapters 1 to 5 are open now. The remaining chapters will appear over the coming weeks, and I will keep revising the earlier ones as you tell me what confused you. Please do tell me; that feedback is how this site improves.
 
-I hope you enjoy it. Epidemiology changed the way I see medicine, and I would like it to do the same for you.
+I hope you enjoy it. Epidemiology changed the way I see medicine, research and science, and I would like it to do the same for you.
+
+Happy Learning!
 
 Thank you,
 
 Ram
 
-*Dr Ramachandran Thiruvengadam, MD, DCH, PhD*
+*Dr Ramachandran Thiruvengadam, MBBS, MD, DCH, PhD*
 *Associate Professor, Maternal and Child Health, BRIC-THSTI*`,
 };

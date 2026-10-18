@@ -29,6 +29,7 @@ export function InstructorPage() {
   const [loading, setLoading] = useState(true);
   const [reset, setReset] = useState<{ id: string; pw: string; msg?: string } | null>(null);
   const [newCohort, setNewCohort] = useState({ name: '', code: '' });
+  const [wa, setWa] = useState(''); const [waMsg, setWaMsg] = useState<string | null>(null);
 
   const load = async () => {
     if (!supabase) return;
@@ -43,6 +44,8 @@ export function InstructorPage() {
     const byId = new Map((prog ?? []).map(p => [p.user_id as string, p]));
     setRows((profs ?? []).filter(p => p.role === 'student').map(p => ({ ...(p as Row), progress: normalise(byId.get(p.id)?.data), updated_at: byId.get(p.id)?.updated_at })));
     setCohorts((cs ?? []) as Cohort[]);
+    const { data: w } = await supabase.from('app_settings').select('value').eq('key', 'whatsapp').maybeSingle();
+    setWa((w?.value as string) ?? '');
     setLoading(false);
   };
   useEffect(() => { if (a.profile?.role === 'instructor') load(); }, [a.profile?.role]);
@@ -148,6 +151,26 @@ export function InstructorPage() {
         <table className="t2"><thead><tr><th style={{ textAlign: 'left' }}>Question</th><th>Card</th><th>Wrong first time</th></tr></thead>
           <tbody>{hardest.map(h => <tr key={h.id}><td style={{ textAlign: 'left' }}>{questionText(h.id, h.cardId)}</td><td>{cardById(h.cardId)?.title ?? h.cardId}</td><td>{h.wrong} of {h.n} ({Math.round(100 * h.rate)}%)</td></tr>)}</tbody></table>
       </div>}
+
+      <div className="section">
+        <h3>WhatsApp for student questions</h3>
+        <p className="hint">The "Ask your instructor" button opens WhatsApp to this number with the student's name, card and question filled in. Only signed-in students see it; it is not in the public code. Include the country code, e.g. +91 98xxx xxxxx. Leave empty to switch the button off.</p>
+        <form className="actions" onSubmit={async e => {
+          e.preventDefault(); setWaMsg(null);
+          const digits = wa.replace(/\D/g, '');
+          if (digits && (digits.length < 10 || digits.length > 15)) { setWaMsg('Enter the full number with country code.'); return; }
+          const { error } = digits
+            ? await supabase!.from('app_settings').upsert({ key: 'whatsapp', value: '+' + digits, updated_at: new Date().toISOString() })
+            : await supabase!.from('app_settings').delete().eq('key', 'whatsapp');
+          setWaMsg(error ? error.message : digits ? 'Saved. Students will see the button on their next visit.' : 'Removed.');
+          if (!error && digits) setWa('+' + digits);
+        }}>
+          <input id="ins-wa" type="tel" aria-label="WhatsApp number" placeholder="+91 …" value={wa} onChange={e => setWa(e.target.value)} style={{ width: 200 }} />
+          <button className="btn ghost">Save</button>
+          {wa.replace(/\D/g, '').length >= 10 && <a className="btn ghost" href={`https://wa.me/${wa.replace(/\D/g, '')}`} target="_blank" rel="noopener">Test link</a>}
+        </form>
+        {waMsg && <p className="hint">{waMsg}</p>}
+      </div>
 
       <div className="section">
         <h3>Cohorts and join codes</h3>

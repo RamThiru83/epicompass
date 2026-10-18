@@ -63,5 +63,6 @@ Students can use the app without an account (progress stays in their browser), o
 - Backend: Supabase project `odsrftvuceizketmcesy` (Mumbai). Schema, row-level security and the join-code trigger are in `supabase/schema.sql`.
 - The publishable key in `apps/web/src/config.ts` is public by design; row-level security means students see only their own rows and only the instructor sees everyone's.
 - The instructor's account is promoted once in the SQL editor: `update public.profiles set role = 'instructor' where email = '…';`
+- **Ask your instructor** (bottom right) opens WhatsApp to the instructor with the student's name, card link and question pre-filled. The number is set on the Class dashboard, stored in `app_settings` (`supabase/tutor_contact.sql`) and returned only to signed-in cohort members.
 - The **Class dashboard** (instructor only) shows the roster, a concept-mastery grid, the questions most often missed at the first attempt, CSV export, temporary-password resets and cohort join codes.
 - Student data is for teaching only. Using it for research needs ethics approval and separate consent.

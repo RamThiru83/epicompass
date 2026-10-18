@@ -1,4 +1,6 @@
-/** Ch. 1 — Confounding by age: crude vs age-specific risk ratios for two synthetic populations. */
+/** Ch. 1 — Confounding: crude vs stratum-specific risk ratios for two synthetic groups.
+ *  Labels and defaults come from `config` so the interactive can match the card's scenario
+ *  (e.g. two hospitals confounded by birth weight) instead of generic populations. */
 import { useState } from 'react';
 import { risk, riskRatio } from '@epicompass/epi-core';
 import type { InteractiveProps } from '../types';
@@ -11,11 +13,25 @@ const NS = 1000;  // nominal stratum size for stratum-specific RRs
 const rrOf = (r1: number, r0: number) =>
   riskRatio({ a: r1 * NS, b: r0 * NS, c: NS - r1 * NS, d: NS - r0 * NS }).estimate;
 
-export function SimpsonExplorer({ onReached }: InteractiveProps) {
-  const [oldA, setOldA] = useState(30);
-  const [oldB, setOldB] = useState(30);
-  // stratum-specific risks in %: [younger A, older A, younger B, older B]
-  const [r, setR] = useState<[number, number, number, number]>([0.5, 4, 0.5, 4]);
+interface SimpsonConfig {
+  groups?: [string, string];        // the two compared groups (exposure levels)
+  strata?: [string, string];        // [low-risk stratum, high-risk stratum] of the confounder
+  confounder?: string;              // e.g. 'age', 'birth weight'
+  outcome?: string;                 // e.g. 'mortality'
+  shareHigh?: [number, number];     // % of each group in the high-risk stratum
+  risks?: [number, number, number, number]; // % risk: [A low, A high, B low, B high]
+}
+
+export function SimpsonExplorer({ onReached, config }: InteractiveProps) {
+  const cfg = (config ?? {}) as SimpsonConfig;
+  const groups = cfg.groups ?? ['Population A', 'Population B'];
+  const strata = cfg.strata ?? ['Younger', 'Older'];
+  const confounder = cfg.confounder ?? 'age';
+  const outcome = cfg.outcome ?? 'Mortality';
+  const [oldA, setOldA] = useState(cfg.shareHigh?.[0] ?? 30);
+  const [oldB, setOldB] = useState(cfg.shareHigh?.[1] ?? 30);
+  // stratum-specific risks in %: [low A, high A, low B, high B]
+  const [r, setR] = useState<[number, number, number, number]>(cfg.risks ?? [0.5, 4, 0.5, 4]);
   const setRi = (i: number, v: number) => setR(prev => { const n = [...prev] as typeof prev; n[i] = Math.max(0, Math.min(100, v || 0)); return n; });
 
   const [yA, oA, yB, oB] = r.map(x => x / 100);
@@ -31,51 +47,51 @@ export function SimpsonExplorer({ onReached }: InteractiveProps) {
   const paradox = isFinite(crudeRR) && isFinite(rrY) && isFinite(rrO) && (
     (rrY > 1 && rrO > 1 && crudeRR < 1) || (rrY < 1 && rrO < 1 && crudeRR > 1) ||
     (eq1(rrY) && eq1(rrO) && Math.abs(crudeRR - 1) > 0.2));
-  const reached = useReached(paradox, onReached, 'crude RR contradicts the age-specific RRs');
+  const reached = useReached(paradox, onReached, 'crude RR contradicts the stratum-specific RRs');
 
   const fr = frame(520, 230);
   const y = logScale(0.1, 10, fr.t + fr.ih, fr.t);
   const clamp = (v: number) => Math.max(0.1, Math.min(10, v));
   const bars = [
     { k: 'Crude', v: crudeRR, fill: 'var(--accent)' },
-    { k: 'Younger', v: rrY, fill: 'var(--unexp)' },
-    { k: 'Older', v: rrO, fill: 'var(--unexp)' },
+    { k: strata[0], v: rrY, fill: 'var(--unexp)' },
+    { k: strata[1], v: rrO, fill: 'var(--unexp)' },
   ];
   const bw = fr.iw / bars.length;
   const ticks = [0.1, 0.2, 0.5, 1, 2, 5, 10];
 
   return <div className="ix">
     <div className="ix-panel">
-      <h4>Age mix</h4>
-      <Row label={`Population A: ${oldA}% older`}>
+      <h4>{confounder} mix</h4>
+      <Row label={`${groups[0]}: ${oldA}% ${strata[1].toLowerCase()}`}>
         <input id="simp-oldA" type="range" min={0} max={100} step={1} value={oldA} onChange={e => setOldA(+e.target.value)} />
       </Row>
-      <Row label={`Population B: ${oldB}% older`}>
+      <Row label={`${groups[1]}: ${oldB}% ${strata[1].toLowerCase()}`}>
         <input id="simp-oldB" type="range" min={0} max={100} step={1} value={oldB} onChange={e => setOldB(+e.target.value)} />
       </Row>
-      <h4 style={{ marginTop: 12 }}>Mortality risk by age (%)</h4>
+      <h4 style={{ marginTop: 12 }}>{outcome} risk by {confounder} (%)</h4>
       <table className="t2">
-        <thead><tr><th></th><th>Younger</th><th>Older</th></tr></thead>
+        <thead><tr><th></th><th>{strata[0]}</th><th>{strata[1]}</th></tr></thead>
         <tbody>
-          {(['A', 'B'] as const).map((p, pi) => <tr key={p}>
-            <th>Pop. {p}</th>
-            {[0, 1].map(s => { const i = pi * 2 + s; const lab = `Population ${p}, ${s ? 'older' : 'younger'} risk (%)`;
+          {groups.map((p, pi) => <tr key={p}>
+            <th>{p}</th>
+            {[0, 1].map(s => { const i = pi * 2 + s; const lab = `${p}, ${strata[s]} risk (%)`;
               return <td key={s}><input id={`simp-r${i}`} aria-label={lab} type="number" min={0} max={100} step={0.1} value={r[i]} onChange={e => setRi(i, +e.target.value)} /></td>; })}
           </tr>)}
         </tbody>
       </table>
-      <p className="note">Synthetic populations. Defaults: younger 0.5%, older 4% in both.</p>
+      <p className="note">Synthetic data. Defaults: {strata[0].toLowerCase()} {cfg.risks?.[0] ?? 0.5}% and {strata[1].toLowerCase()} {cfg.risks?.[1] ?? 4}% in {groups[0]}; {cfg.risks?.[2] ?? 0.5}% and {cfg.risks?.[3] ?? 4}% in {groups[1]}.</p>
     </div>
     <div>
       <div className="stats">
-        <Stat k="Crude risk, A" v={pct(crudeA, 2)} tone="exp" />
-        <Stat k="Crude risk, B" v={pct(crudeB, 2)} tone="unexp" />
-        <Stat k="Crude RR (A vs B)" v={f2(crudeRR)} tone={paradox ? 'warn' : undefined} />
-        <Stat k="RR, younger" v={f2(rrY)} />
-        <Stat k="RR, older" v={f2(rrO)} />
+        <Stat k={`Crude risk, ${groups[0]}`} v={pct(crudeA, 2)} tone="exp" />
+        <Stat k={`Crude risk, ${groups[1]}`} v={pct(crudeB, 2)} tone="unexp" />
+        <Stat k={`Crude RR (${groups[0]} vs ${groups[1]})`} v={f2(crudeRR)} tone={paradox ? 'warn' : undefined} />
+        <Stat k={`RR, ${strata[0].toLowerCase()}`} v={f2(rrY)} />
+        <Stat k={`RR, ${strata[1].toLowerCase()}`} v={f2(rrO)} />
       </div>
       <div className="fig">
-        <svg viewBox={`0 0 ${fr.W} ${fr.H}`} role="img" aria-label="Crude and age-specific risk ratios on a log scale">
+        <svg viewBox={`0 0 ${fr.W} ${fr.H}`} role="img" aria-label="Crude and stratum-specific risk ratios on a log scale">
           {ticks.map(t => <g key={t}>
             <line x1={fr.l} x2={fr.l + fr.iw} y1={y(t)} y2={y(t)} stroke="var(--line)" strokeWidth={t === 1 ? 1.5 : 1} />
             <text x={fr.l - 6} y={y(t) + 4} textAnchor="end" fontSize="11" fill="var(--muted)" fontFamily="var(--mono)">{t}</text>
@@ -94,9 +110,9 @@ export function SimpsonExplorer({ onReached }: InteractiveProps) {
         </svg>
       </div>
       <div className="note">
-        A is {oldA}% older and B is {oldB}% older: the crude risk is a weighted average of the age-specific risks, so changing the age mix alone moves the crude RR while the age-specific RRs stay put.
+        {groups[0]} is {oldA}% {strata[1].toLowerCase()} and {groups[1]} is {oldB}%: the crude risk is a weighted average of the stratum-specific risks, so changing the {confounder} mix alone moves the crude RR while the stratum-specific RRs stay put.
       </div>
-      {reached && <div className="reached">The crude comparison now misrepresents the age-specific comparisons: age is confounding.</div>}
+      {reached && <div className="reached">The crude comparison now misrepresents the stratum-specific comparisons: {confounder} is confounding.</div>}
     </div>
   </div>;
 }

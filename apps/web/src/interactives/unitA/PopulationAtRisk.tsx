@@ -7,15 +7,15 @@ import { useReached } from './useReached';
 
 const TOTAL = 200, COLS = 20, ROWS = 10;
 const REASONS: Record<string, string> = {
+  sex: 'are men (cervical cancer: not at risk)',
+  organ: 'have had a hysterectomy (no cervix)',
   disease: 'already have the disease',
-  organ: 'have had the organ removed',
-  sex: 'are of the other sex',
 };
 
 export function PopulationAtRisk({ onReached }: InteractiveProps) {
   const [inelig, setInelig] = useState(0);
   const [cases, setCases] = useState(10);
-  const [reason, setReason] = useState('organ');
+  const [reason, setReason] = useState('sex');
   const [shown, setShown] = useState(false);
 
   const atRisk = TOTAL - inelig;

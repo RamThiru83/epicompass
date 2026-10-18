@@ -47,7 +47,12 @@ export interface Card {
   formalise: string;       // markdown: the explanation with formulas
   practise?: { template: string; count: number }; // exercise template id and how many instances to pass
   checks: CheckItem[];
+  /** Optional light-hearted wrap-up: a video with no steps, checks or concepts; excluded from progress counts. */
+  bonus?: { youtubeId: string; channel: string; videoTitle: string };
 }
+
+/** Cards that count towards progress and mastery (bonus cards are optional extras). */
+export const coreCards = (ch: { cards: Card[] }) => ch.cards.filter(c => !c.bonus);
 
 export interface Chapter {
   number: number;

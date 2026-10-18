@@ -20,7 +20,7 @@ export function ChapterPage({ chapter }: { chapter: Chapter }) {
           return (
             <button key={c.id} className="cardrow" onClick={() => go(`#/card/${c.id}`)}>
               <span className="idx">{chapter.number}.{i + 1}</span>
-              <span><div className="title">{c.title}</div><div className="meta">{c.minutes} min · {c.concepts.length} concept{c.concepts.length > 1 ? 's' : ''}{c.explore ? ' · interactive' : ''}{c.practise ? ' · practice' : ''}</div></span>
+              <span><div className="title">{c.title}</div><div className="meta">{c.bonus ? <>{c.minutes} min · video · optional</> : <>{c.minutes} min · {c.concepts.length} concept{c.concepts.length > 1 ? 's' : ''}{c.explore ? ' · interactive' : ''}{c.practise ? ' · practice' : ''}</>}</div></span>
               <span className={`pill ${done ? 'ok' : started ? '' : ''}`}>{done ? 'complete' : started ? 'in progress' : 'start'}</span>
             </button>
           );

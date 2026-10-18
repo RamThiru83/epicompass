@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { CHAPTERS, UNITS, conceptById } from '../content';
+import { coreCards } from '../content/types';
 import { useProgress, dueConcepts, setSettings, resetProgress } from '../store/progress';
 import { chapterCompletion } from '../store/gates';
 import { go } from '../App';
@@ -11,8 +12,8 @@ export function HomePage() {
   const [confirmReset, setConfirmReset] = useState(false);
   const acc = useAccount();
   const due = dueConcepts(p);
-  const totalCards = CHAPTERS.reduce((s, c) => s + c.cards.length, 0);
-  const doneCards = CHAPTERS.reduce((s, c) => s + c.cards.filter(k => p.cards[k.id]?.completedAt).length, 0);
+  const totalCards = CHAPTERS.reduce((s, c) => s + coreCards(c).length, 0);
+  const doneCards = CHAPTERS.reduce((s, c) => s + coreCards(c).filter(k => p.cards[k.id]?.completedAt).length, 0);
   const next = CHAPTERS.find(c => c.cards.length && chapterCompletion(p, c) < 1);
   return (
     <div>

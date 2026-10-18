@@ -35,6 +35,29 @@ export function CardPage({ card, chapter }: { card: Card; chapter: Chapter }) {
   const template = card.practise ? templates[card.practise.template] : undefined;
   const allChecksDone = useMemo(() => done('check'), [prog]);
 
+  if (card.bonus) {
+    const b = card.bonus;
+    return (
+      <div>
+        <div className="crumbs">Unit {chapter.unit} · Chapter {chapter.number} · Card {chapter.number}.{pos + 1} · optional</div>
+        <h2>{card.title}</h2>
+        {p.settings.editor && <div className="hint" style={{ marginTop: 4 }}>Instructor: <a href={editUrl(chapterFile(chapter.number))} target="_blank" rel="noreferrer">edit this card on GitHub</a> (search for <code>id: '{card.id}'</code>).</div>}
+        <div className="section"><Markdown>{card.hook}</Markdown>
+          <div className="video">
+            <iframe src={`https://www.youtube-nocookie.com/embed/${b.youtubeId}?rel=0`} title={b.videoTitle} loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen />
+          </div>
+          <p className="hint">{b.channel}: {b.videoTitle}. <a href={`https://youtu.be/${b.youtubeId}`} target="_blank" rel="noreferrer">Watch on YouTube</a></p>
+          <Markdown>{card.formalise}</Markdown>
+          <div className="actions">
+            <button className="btn" onClick={() => { completeCard(card.id); go(nextCard ? `#/card/${nextCard.id}` : `#/ch/${chapter.number}`); }}>{nextCard ? 'Done, on to the next chapter' : 'Done'}</button>
+            <span className="hint">Optional: this card does not count towards your progress.</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="crumbs">Unit {chapter.unit} · Chapter {chapter.number} · Card {chapter.number}.{pos + 1} · concepts: {card.concepts.join(', ')}</div>

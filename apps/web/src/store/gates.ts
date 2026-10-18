@@ -1,10 +1,11 @@
-import type { Chapter, Unit } from '../content/types';
+import { coreCards, type Chapter, type Unit } from '../content/types';
 import { UNITS } from '../content/units';
 import { isMastered, type Progress } from './progress';
 
 export function chapterCompletion(p: Progress, ch: Chapter): number {
-  if (!ch.cards.length) return 0;
-  return ch.cards.filter(c => p.cards[c.id]?.completedAt).length / ch.cards.length;
+  const cards = coreCards(ch);
+  if (!cards.length) return 0;
+  return cards.filter(c => p.cards[c.id]?.completedAt).length / cards.length;
 }
 
 /** A unit is unlocked when every concept taught in the previous unit's cards is mastered (or the previous unit has no content yet). */

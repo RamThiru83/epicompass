@@ -279,5 +279,23 @@ If the answer is no, the result can reasonably be applied; if yes, the specific 
         },
       ],
     },
+    // ------------------------------------------------------------------
+    {
+      id: 'ch03-bonus-kids', chapter: 3, order: 6,
+      title: 'Bonus: causes, explained for five-year-olds',
+      concepts: [], minutes: 6,
+      bonus: { youtubeId: 'xREaUbLIwcA', channel: 'Little Scientists Club', videoTitle: 'What makes things happen? Causes (Ep 6)' },
+      hook: md`You have spent this chapter on sufficient causes, component causes, induction time and the limits of causal inference. Time to see whether you can explain it to a five-year-old. In this episode of my children's science channel, Curie grows a flower and finds out what it really takes to make something happen.`,
+      formalise: md`**Spot the epidemiology while you watch.**
+
+- The flower's **cause pie**: soil, seed, water, sunlight and time. Each is a **component cause**; together they form one **sufficient cause**.
+- Taking away the water or the sunlight stops the flower: every component is necessary *for that pie*.
+- Taking away the teddy bear changes nothing: being present is not the same as being a cause.
+- Stopping something needs only one piece removed. That is why handwashing works, and it is the logic behind most prevention.
+- "Time" is a piece too: a gentle nod to **induction time**.
+
+If you can explain the video's last line to a child, you have understood the core of this chapter.`,
+      checks: [],
+    },
   ],
 };

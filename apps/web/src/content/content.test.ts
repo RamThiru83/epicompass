@@ -35,6 +35,15 @@ describe('cards', () => {
         expect(card.formalise.trim().length).toBeGreaterThan(80);
         expect(card.minutes).toBeGreaterThan(0);
       });
+      if (card.bonus) {
+        it('bonus card has a video and no assessed content', () => {
+          expect(card.bonus!.youtubeId).toMatch(/^[\w-]{11}$/);
+          expect(card.checks.length).toBe(0);
+          expect(card.concepts.length).toBe(0);
+          expect(card.practise).toBeUndefined();
+        });
+        return;
+      }
       it('teaches known concepts', () => {
         expect(card.concepts.length).toBeGreaterThan(0);
         for (const c of card.concepts) expect(conceptIds.has(c), `unknown concept ${c}`).toBe(true);

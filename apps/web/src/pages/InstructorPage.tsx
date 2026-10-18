@@ -7,12 +7,13 @@ import { supabase } from '../lib/supabase';
 import { useAccount } from '../store/account';
 import { normalise, dueConcepts, type Progress } from '../store/progress';
 import { CHAPTERS, concepts, cardById } from '../content';
+import { coreCards } from '../content/types';
 import { MASTERY_THRESHOLD } from '@epicompass/epi-core';
 
 interface Row { id: string; full_name: string; email: string; cohort_id: string | null; role: string; created_at: string; progress: Progress; updated_at?: string }
 interface Cohort { id: string; name: string; join_code: string; active: boolean }
 
-const ALL_CARDS = CHAPTERS.flatMap(c => c.cards);
+const ALL_CARDS = CHAPTERS.flatMap(c => coreCards(c));
 const TAUGHT = concepts.filter(c => ALL_CARDS.some(k => k.concepts.includes(c.id)));
 const ago = (iso?: string) => {
   if (!iso) return 'never';

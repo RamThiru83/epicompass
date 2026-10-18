@@ -8,6 +8,7 @@ import { INTERACTIVES } from '../interactives/registry';
 import { useProgress, markStep, completeCard } from '../store/progress';
 import { go } from '../App';
 import { CHAPTERS } from '../content';
+import { editUrl, chapterFile } from '../config';
 
 const STEPS = ['hook', 'explore', 'formalise', 'practise', 'check'] as const;
 type Step = typeof STEPS[number];
@@ -38,6 +39,7 @@ export function CardPage({ card, chapter }: { card: Card; chapter: Chapter }) {
     <div>
       <div className="crumbs">Unit {chapter.unit} · Chapter {chapter.number} · Card {chapter.number}.{pos + 1} · concepts: {card.concepts.join(', ')}</div>
       <h2>{card.title}</h2>
+      {p.settings.editor && <div className="hint" style={{ marginTop: 4 }}>Instructor: <a href={editUrl(chapterFile(chapter.number))} target="_blank" rel="noreferrer">edit this card on GitHub</a> (search the file for <code>id: '{card.id}'</code>; the site redeploys about two minutes after you commit).</div>}
       <div className="steps">
         {steps.map(s => <button key={s} className={`step ${done(s) ? 'done' : ''} ${now === s ? 'now' : ''}`} onClick={() => setNow(s)} style={{ cursor: 'pointer' }}>{LABEL[s]}</button>)}
       </div>

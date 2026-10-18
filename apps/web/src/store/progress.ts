@@ -14,17 +14,17 @@ export interface Progress {
   mastery: Record<string, MasteryState>;
   cards: Record<string, CardProgress>;
   attempts: Attempt[];
-  settings: { hardGates: boolean; learnerName: string };
+  settings: { hardGates: boolean; learnerName: string; editor: boolean };
 }
 
 const KEY = 'epicompass.progress.v1';
-const empty = (): Progress => ({ version: 1, mastery: {}, cards: {}, attempts: [], settings: { hardGates: false, learnerName: '' } });
+const empty = (): Progress => ({ version: 1, mastery: {}, cards: {}, attempts: [], settings: { hardGates: false, learnerName: '', editor: false } });
 
 let state: Progress = load();
 const listeners = new Set<() => void>();
 
 function load(): Progress {
-  try { const raw = localStorage.getItem(KEY); if (raw) return { ...empty(), ...JSON.parse(raw) }; } catch { /* storage unavailable */ }
+  try { const raw = localStorage.getItem(KEY); if (raw) { const j = JSON.parse(raw); return { ...empty(), ...j, settings: { ...empty().settings, ...(j.settings ?? {}) } }; } } catch { /* storage unavailable */ }
   return empty();
 }
 function commit(next: Progress) {

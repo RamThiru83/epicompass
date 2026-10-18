@@ -2,6 +2,7 @@ import type { Chapter } from '../content/types';
 import { Markdown } from '../components/Markdown';
 import { useProgress } from '../store/progress';
 import { go } from '../App';
+import { editUrl, chapterFile } from '../config';
 
 export function ChapterPage({ chapter }: { chapter: Chapter }) {
   const p = useProgress();
@@ -9,7 +10,7 @@ export function ChapterPage({ chapter }: { chapter: Chapter }) {
     <div>
       <div className="crumbs">Unit {chapter.unit} · Chapter {chapter.number}</div>
       <h2>{chapter.title}</h2>
-      <div className="reading">Read first: {chapter.reading}</div>
+      <div className="reading">Read first: {chapter.reading}{p.settings.editor && <> · <a href={editUrl(chapterFile(chapter.number))} target="_blank" rel="noreferrer">edit this chapter on GitHub</a></>}</div>
       <Markdown>{chapter.summary}</Markdown>
       <div className="cards" style={{ marginTop: 16 }}>
         {chapter.cards.map((c, i) => {

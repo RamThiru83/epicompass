@@ -60,7 +60,24 @@ The lesson for us: before comparing any two groups, ask what the denominators ar
     },
     // ------------------------------------------------------------------
     {
-      id: 'ch02-snow-natural-experiment', chapter: 2, order: 2,
+      id: 'ch02-bonus-nightingale', chapter: 2, order: 2,
+      title: 'Companion video: Florence Nightingale and the joy of statistics',
+      concepts: [], minutes: 6,
+      bonus: { youtubeId: 'yhX0OR1_Vfc', channel: 'OpenLearn from The Open University', videoTitle: 'Florence Nightingale: Joy of Stats (3/6)' },
+      hook: md`A companion to card 2.1, where you saw Nightingale turn a ledger of burials into rates. In this short clip from the BBC series *The Joy of Stats*, the late Hans Rosling tells the same story with his trademark energy, and argues that her statistics, and the way she drew them, saved more lives than her nursing.`,
+      formalise: md`**Spot the epidemiology while you watch.**
+
+- Nightingale's question was not "how many soldiers died?" but "how many died **out of how many** who were there?" That is the step from a count to a **rate**, as in card 2.1.
+- She sorted deaths by **cause**, separating those from wounds from those from disease that better sanitation could have prevented.
+- Her polar-area diagram ("coxcomb") is an early piece of **data visualisation** built to persuade decision-makers, not just to describe.
+- Notice that the evidence changed policy. Epidemiology has always been an applied science: the point of measuring is to act.
+
+As you watch, ask what Nightingale's denominators were and whether the months she compared covered the same length of time.`,
+      checks: [],
+    },
+    // ------------------------------------------------------------------
+    {
+      id: 'ch02-snow-natural-experiment', chapter: 2, order: 3,
       title: 'Snow and the natural experiment',
       concepts: ['natural_experiment', 'counts_vs_rates'], minutes: 14,
       hook: md`South London, 1854. Cholera is back. John Snow, an anaesthetist, believes the disease spreads through water fouled with sewage, not through bad air as most of his colleagues think. He learns that two private companies pipe water to the same districts: one draws from the Thames downstream of the city's sewage outflows, the other has recently moved its intake upstream. Their mains run side by side down the same streets, and a household's supplier was often chosen by a landlord years earlier. Snow walks door to door asking one question: which company supplies this house?`,
@@ -121,7 +138,7 @@ Later, Wade Hampton Frost in the United States would champion Snow's reasoning a
     },
     // ------------------------------------------------------------------
     {
-      id: 'ch02-comparison-groups', chapter: 2, order: 3,
+      id: 'ch02-comparison-groups', chapter: 2, order: 4,
       title: 'Inventing the comparison group: cohorts, cases, controls and society',
       concepts: ['comparison_group', 'social_determinants'], minutes: 12,
       hook: md`London, 1926. Janet Lane-Claypon, a physician and statistician, is studying breast cancer. Interviewing women with the disease about their pregnancies and breastfeeding would tell her little on its own: how would she know whether those histories were unusual? So she also interviews a comparable group of women without breast cancer and compares the two. Twenty-five years later, two research teams on either side of the Atlantic will use the same logic to ask whether people with lung cancer smoked more than people without it.`,

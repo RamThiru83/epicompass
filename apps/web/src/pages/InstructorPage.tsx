@@ -2,7 +2,8 @@
  * Class dashboard (instructor only; row-level security returns other students' rows only to the instructor).
  * Everything is computed in the browser from each student's progress document.
  */
-import { useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
+import { StudentMastery, CohortConcepts, MasteryLegend } from '../components/MasteryViews';
 import { supabase } from '../lib/supabase';
 import { useAccount } from '../store/account';
 import { normalise, dueConcepts, type Progress } from '../store/progress';
@@ -34,6 +35,7 @@ export function InstructorPage() {
   const [newCohort, setNewCohort] = useState({ name: '', code: '' });
   const [edit, setEdit] = useState<{ id: string; name: string; code: string; confirmDelete?: boolean } | null>(null);
   const [cohortMsg, setCohortMsg] = useState<string | null>(null);
+  const [openStudent, setOpenStudent] = useState<string | null>(null);
   const [wa, setWa] = useState(''); const [waMsg, setWaMsg] = useState<string | null>(null);
 
   const load = async () => {
@@ -56,6 +58,15 @@ export function InstructorPage() {
   useEffect(() => { if (a.profile?.role === 'instructor') load(); }, [a.profile?.role]);
 
   const shown = useMemo(() => rows.filter(r => cohort === 'all' || r.cohort_id === cohort).sort((x, y) => x.full_name.localeCompare(y.full_name)), [rows, cohort]);
+  // Students grouped by cohort, each cohort shown separately (empty cohorts are listed only when selected).
+  const groups = useMemo(() => {
+    const list = cohort === 'all' ? cohorts : cohorts.filter(c => c.id === cohort);
+    const gs = list.map(c => ({ id: c.id, name: c.name, code: c.join_code, students: shown.filter(r => r.cohort_id === c.id) }))
+      .filter(g => g.students.length || cohort !== 'all');
+    const orphans = shown.filter(r => !cohorts.some(c => c.id === r.cohort_id));
+    if (orphans.length && cohort === 'all') gs.push({ id: 'none', name: 'No cohort', code: '', students: orphans });
+    return gs;
+  }, [shown, cohorts, cohort]);
   const stats = (p: Progress) => ({
     cards: ALL_CARDS.filter(c => p.cards[c.id]?.completedAt).length,
     mastered: TAUGHT.filter(c => (p.mastery[c.id]?.pKnown ?? 0) >= MASTERY_THRESHOLD).length,
@@ -109,46 +120,47 @@ export function InstructorPage() {
       </div>
       {err && <p className="fb" style={{ color: 'var(--warn)' }}>{err}</p>}
 
-      <div className="stats">
-        <div className="stat"><div className="k">Students</div><div className="v">{shown.length}</div></div>
-        <div className="stat ok"><div className="k">Active in the last 7 days</div><div className="v">{shown.filter(r => r.updated_at && Date.now() - new Date(r.updated_at).getTime() < 7 * 86400000).length}</div></div>
-        <div className="stat"><div className="k">Median cards completed</div><div className="v">{(() => { const v = shown.map(r => stats(r.progress).cards).sort((x, y) => x - y); return v.length ? v[Math.floor((v.length - 1) / 2)] : 0; })()} / {ALL_CARDS.length}</div></div>
-      </div>
+      {!shown.length && <div className="section"><p className="hint">No students yet. Share a join code (below); students appear here once they create an account.</p></div>}
 
-      <div className="section" style={{ overflowX: 'auto' }}>
-        <h3>Roster</h3>
-        {!shown.length ? <p className="hint">No students yet. Share the join code below; students appear here once they create an account.</p> :
-        <table className="t2 roster">
-          <thead><tr><th>Name</th><th>Email</th><th>Cards</th><th>Mastered</th><th>Revisits due</th><th>Last saved</th><th></th></tr></thead>
-          <tbody>{shown.map(r => { const s = stats(r.progress); return (
-            <tr key={r.id}>
-              <td style={{ textAlign: 'left' }}>{r.full_name}</td><td style={{ textAlign: 'left' }}>{r.email}</td>
-              <td><span className="bar" style={{ display: 'inline-block', width: 60, marginRight: 6 }}><i style={{ width: `${100 * s.cards / ALL_CARDS.length}%` }} /></span>{s.cards}</td>
-              <td>{s.mastered} / {TAUGHT.length}</td><td>{s.due}</td><td>{ago(r.updated_at)}</td>
-              <td>{reset?.id === r.id
-                ? <form onSubmit={async e => { e.preventDefault(); const { error } = await supabase!.rpc('instructor_set_password', { target: r.id, new_password: reset.pw }); setReset({ ...reset, msg: error ? error.message : `Done. Give ${r.full_name.split(' ')[0]} this temporary password and ask them to change it under Account.` }); }} style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                    <input aria-label="Temporary password" type="text" value={reset.pw} onChange={e => setReset({ ...reset, pw: e.target.value })} style={{ width: 130 }} />
-                    <button className="btn ghost">Set</button><button type="button" className="btn ghost" onClick={() => setReset(null)}>Cancel</button>
-                    {reset.msg && <span className="hint" style={{ flexBasis: '100%' }}>{reset.msg}</span>}
-                  </form>
-                : <button className="btn ghost" onClick={() => setReset({ id: r.id, pw: `epi-${Math.random().toString(36).slice(2, 8)}` })}>Reset password</button>}</td>
-            </tr>); })}</tbody>
-        </table>}
-      </div>
-
-      {shown.length > 0 && <div className="section" style={{ overflowX: 'auto' }}>
-        <h3>Concept mastery</h3>
-        <p className="hint">Each cell is the app's estimate that the student knows the concept. Solid = mastered (≥ {Math.round(MASTERY_THRESHOLD * 100)}%); blank = not yet attempted.</p>
-        <table className="heat">
-          <thead><tr><th></th>{TAUGHT.map(c => <th key={c.id} title={c.title}><span>Ch{c.chapter} · {c.title}</span></th>)}</tr></thead>
-          <tbody>{shown.map(r => <tr key={r.id}><th>{r.full_name}</th>{TAUGHT.map(c => {
-            const m = r.progress.mastery[c.id];
-            const v = m?.pKnown;
-            return <td key={c.id} title={`${r.full_name} · ${c.title}: ${v === undefined ? 'not attempted' : Math.round(v * 100) + '%'}`}
-              style={{ background: v === undefined ? 'transparent' : `color-mix(in srgb, var(--accent) ${Math.round(15 + 85 * v)}%, var(--panel))`, outline: v !== undefined && v >= MASTERY_THRESHOLD ? '2px solid var(--accent)' : undefined }} />;
-          })}</tr>)}</tbody>
-        </table>
-      </div>}
+      {groups.map(g => {
+        const cards = g.students.map(r => stats(r.progress).cards).sort((x, y) => x - y);
+        return (
+        <div key={g.id} className="section" style={{ overflowX: 'auto' }}>
+          <h3>{g.name} <span className="hint" style={{ fontWeight: 400 }}>{g.code && <>· code <span className="mono">{g.code}</span> </>}· {g.students.length} student{g.students.length === 1 ? '' : 's'}</span></h3>
+          <div className="stats" style={{ marginTop: 6 }}>
+            <div className="stat ok"><div className="k">Active in the last 7 days</div><div className="v">{g.students.filter(r => r.updated_at && Date.now() - new Date(r.updated_at).getTime() < 7 * 86400000).length}</div></div>
+            <div className="stat"><div className="k">Median cards completed</div><div className="v">{cards.length ? cards[Math.floor((cards.length - 1) / 2)] : 0} / {ALL_CARDS.length}</div></div>
+          </div>
+          <p className="hint">Click a student's name to see their concept mastery.</p>
+          <table className="t2 roster">
+            <thead><tr><th style={{ textAlign: 'left' }}>Name</th><th style={{ textAlign: 'left' }}>Email</th><th>Cards</th><th>Mastered</th><th>Revisits due</th><th>Last saved</th><th></th></tr></thead>
+            <tbody>{g.students.map(r => { const s = stats(r.progress); const open = openStudent === r.id; return (<Fragment key={r.id}>
+              <tr className={open ? 'open' : ''}>
+                <td style={{ textAlign: 'left' }}><button className="linkish" aria-expanded={open} onClick={() => setOpenStudent(open ? null : r.id)}>{open ? '▾' : '▸'} {r.full_name}</button></td>
+                <td style={{ textAlign: 'left' }}>{r.email}</td>
+                <td><span className="bar" style={{ display: 'inline-block', width: 60, marginRight: 6 }}><i style={{ width: `${100 * s.cards / ALL_CARDS.length}%` }} /></span>{s.cards}</td>
+                <td>{s.mastered} / {TAUGHT.length}</td><td>{s.due}</td><td>{ago(r.updated_at)}</td>
+                <td>{reset?.id === r.id
+                  ? <form onSubmit={async e => { e.preventDefault(); const { error } = await supabase!.rpc('instructor_set_password', { target: r.id, new_password: reset.pw }); setReset({ ...reset, msg: error ? error.message : `Done. Give ${r.full_name.split(' ')[0]} this temporary password and ask them to change it under Account.` }); }} style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                      <input aria-label="Temporary password" type="text" value={reset.pw} onChange={e => setReset({ ...reset, pw: e.target.value })} style={{ width: 130 }} />
+                      <button className="btn ghost">Set</button><button type="button" className="btn ghost" onClick={() => setReset(null)}>Cancel</button>
+                      {reset.msg && <span className="hint" style={{ flexBasis: '100%' }}>{reset.msg}</span>}
+                    </form>
+                  : <button className="btn ghost" onClick={() => setReset({ id: r.id, pw: `epi-${Math.random().toString(36).slice(2, 8)}` })}>Reset password</button>}</td>
+              </tr>
+              {open && <tr className="detail"><td colSpan={7} style={{ textAlign: 'left' }}>
+                <MasteryLegend />
+                <StudentMastery name={r.full_name} progress={r.progress} concepts={TAUGHT} />
+              </td></tr>}
+            </Fragment>); })}</tbody>
+          </table>
+          <details className="mv-details">
+            <summary>Concept mastery across {g.name}</summary>
+            <p className="hint">For each concept, how many students have mastered it, are still learning it, or have not started it.</p>
+            <CohortConcepts students={g.students} concepts={TAUGHT} />
+          </details>
+        </div>);
+      })}
 
       {hardest.length > 0 && <div className="section">
         <h3>Questions the class finds hardest</h3>

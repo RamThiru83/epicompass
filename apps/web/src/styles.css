@@ -163,3 +163,5 @@ input[type=range] { accent-color: var(--accent); }
 .inst-logo img { display: block; width: 100%; height: auto; }
 .brand { border-top: 3px solid var(--accent); padding-top: 10px !important; }
 .welcome-logo { max-width: 560px; padding: 10px 14px; margin-bottom: 18px; border: 1px solid var(--line); }
+.brand { align-items: center !important; }
+.brand .mark { width: 28px; height: 28px; flex: none; align-self: center; }

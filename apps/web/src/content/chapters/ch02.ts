@@ -138,7 +138,25 @@ Later, Wade Hampton Frost in the United States would champion Snow's reasoning a
     },
     // ------------------------------------------------------------------
     {
-      id: 'ch02-comparison-groups', chapter: 2, order: 4,
+      id: 'ch02-bonus-kids', chapter: 2, order: 4,
+      title: 'Bonus: John Snow, explained for five-year-olds',
+      concepts: [], minutes: 6,
+      bonus: { youtubeId: 'FarAYzAzNa0', channel: 'Little Scientists Club', videoTitle: 'How John Snow found the cause of cholera (Ep 20)' },
+      hook: md`You have just followed Snow's comparison of the two water companies. Now see if you could tell the story to a five-year-old. In this episode of my children's science channel, Curie follows Dr Snow's clues through 1854 London to find out what was really making people ill.`,
+      formalise: md`**Spot the epidemiology while you watch.**
+
+- Snow suspected the **water**, not the "bad air" most people blamed. A clear hypothesis tells you which clues to look for.
+- Marking where the sick people lived showed a **cluster** around one pump on Broad Street: counting cases by place.
+- Waste from a leaky pit seeping into the pump's well is the **mechanism** that made the water idea believable.
+- Neighbouring houses supplied by two water companies, one dirtier and one cleaner, gave a **natural experiment**: two groups alike in most ways except the water they drank, set up by circumstance rather than by the investigator.
+- A detail for grown-ups: the outbreak was already fading when the pump handle was removed. Acting on the evidence was right, but the falling case count alone could not prove that the handle stopped it.
+
+The catchphrase is good advice for any investigator: *follow the clues to find the cause.*`,
+      checks: [],
+    },
+    // ------------------------------------------------------------------
+    {
+      id: 'ch02-comparison-groups', chapter: 2, order: 5,
       title: 'Inventing the comparison group: cohorts, cases, controls and society',
       concepts: ['comparison_group', 'social_determinants'], minutes: 12,
       hook: md`London, 1926. Janet Lane-Claypon, a physician and statistician, is studying breast cancer. Interviewing women with the disease about their pregnancies and breastfeeding would tell her little on its own: how would she know whether those histories were unusual? So she also interviews a comparable group of women without breast cancer and compares the two. Twenty-five years later, two research teams on either side of the Atlantic will use the same logic to ask whether people with lung cancer smoked more than people without it.`,

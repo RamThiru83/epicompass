@@ -282,11 +282,13 @@ If the answer is no, the result can reasonably be applied; if yes, the specific 
     // ------------------------------------------------------------------
     {
       id: 'ch03-bonus-kids', chapter: 3, order: 6,
-      title: 'Bonus: causes, explained for five-year-olds',
+      title: 'Teach-back: explaining sufficient and component causes',
       concepts: [], minutes: 6,
       bonus: { youtubeId: 'xREaUbLIwcA', channel: 'Little Scientists Club', videoTitle: 'What makes things happen? Causes (Ep 6)' },
-      hook: md`You have spent this chapter on sufficient causes, component causes, induction time and the limits of causal inference. Time to see whether you can explain it to a five-year-old. In this episode of my children's science channel, Curie grows a flower and finds out what it really takes to make something happen.`,
-      formalise: md`**Spot the epidemiology while you watch.**
+      hook: md`This chapter covered sufficient causes, component causes, induction time and the limits of causal inference. Could you explain the causal pie to someone with no science background? Below is one worked example: an episode from my children's science channel, made for five- and six-year-olds, in which Curie grows a flower and finds out what it really takes to make something happen.
+
+*Why a children's video in an MSc course? Explaining a method in plain words is part of a clinical researcher's job: participant information sheets, informed consent, community meetings and talking to families. If you can explain an idea simply and correctly, you have understood it.*`,
+      formalise: md`**What the explanation keeps, in simpler words.**
 
 - The flower's **cause pie**: soil, seed, water, sunlight and time. Each is a **component cause**; together they form one **sufficient cause**.
 - Taking away the water or the sunlight stops the flower: every component is necessary *for that pie*.
@@ -294,7 +296,9 @@ If the answer is no, the result can reasonably be applied; if yes, the specific 
 - Stopping something needs only one piece removed. That is why handwashing works, and it is the logic behind most prevention.
 - "Time" is a piece too: a gentle nod to **induction time**.
 
-If you can explain the video's last line to a child, you have understood the core of this chapter.`,
+**What a simple version has to leave out.** The flower has one pie; most diseases can arise through several different pies, so removing a component prevents only the cases that need it.
+
+**Your turn.** In two or three sentences, explain to a patient's family why their relative developed a disease even though "lots of people smoke and never get it". The video's catchphrase may help: *lots of pieces make it happen.*`,
       checks: [],
     },
   ],

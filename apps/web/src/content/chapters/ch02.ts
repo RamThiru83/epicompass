@@ -139,19 +139,22 @@ Later, Wade Hampton Frost in the United States would champion Snow's reasoning a
     // ------------------------------------------------------------------
     {
       id: 'ch02-bonus-kids', chapter: 2, order: 4,
-      title: 'Bonus: John Snow, explained for five-year-olds',
+      title: 'Teach-back: explaining John Snow’s detective work',
       concepts: [], minutes: 6,
       bonus: { youtubeId: 'FarAYzAzNa0', channel: 'Little Scientists Club', videoTitle: 'How John Snow found the cause of cholera (Ep 20)' },
-      hook: md`You have just followed Snow's comparison of the two water companies. Now see if you could tell the story to a five-year-old. In this episode of my children's science channel, Curie follows Dr Snow's clues through 1854 London to find out what was really making people ill.`,
-      formalise: md`**Spot the epidemiology while you watch.**
+      hook: md`You have just followed Snow's comparison of the two water companies. Could you explain what he did to someone with no science background, without losing what made it good science? Below is one worked example: an episode from my children's science channel, made for five- and six-year-olds, in which Curie follows Dr Snow's clues through 1854 London.
+
+*Why a children's video in an MSc course? Explaining a method in plain words is part of a clinical researcher's job: participant information sheets, informed consent, community meetings and talking to families. If you can explain an idea simply and correctly, you have understood it.*`,
+      formalise: md`**What the explanation keeps, in simpler words.**
 
 - Snow suspected the **water**, not the "bad air" most people blamed. A clear hypothesis tells you which clues to look for.
 - Marking where the sick people lived showed a **cluster** around one pump on Broad Street: counting cases by place.
 - Waste from a leaky pit seeping into the pump's well is the **mechanism** that made the water idea believable.
 - Neighbouring houses supplied by two water companies, one dirtier and one cleaner, gave a **natural experiment**: two groups alike in most ways except the water they drank, set up by circumstance rather than by the investigator.
-- A detail for grown-ups: the outbreak was already fading when the pump handle was removed. Acting on the evidence was right, but the falling case count alone could not prove that the handle stopped it.
 
-The catchphrase is good advice for any investigator: *follow the clues to find the cause.*`,
+**What a simple version has to leave out.** The outbreak was already fading when the pump handle was removed. Acting on the evidence was right, but the falling case count alone could not prove that removing the handle stopped it. Notice where simplifying would tip into overclaiming.
+
+**Your turn.** In two or three sentences, explain to a village health committee why comparing two groups of households told Snow more than counting cases alone. The video's catchphrase may help: *follow the clues to find the cause.*`,
       checks: [],
     },
     // ------------------------------------------------------------------

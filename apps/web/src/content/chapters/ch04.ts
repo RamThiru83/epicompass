@@ -439,11 +439,13 @@ Interpreting relative measures follows from this. An RR of 3 for a causal exposu
     // ------------------------------------------------------------------
     {
       id: 'ch04-bonus-kids', chapter: 4, order: 8,
-      title: 'Bonus: the lucky socks and the counterfactual',
+      title: 'Teach-back: explaining the counterfactual',
       concepts: [], minutes: 6,
       bonus: { youtubeId: 'bmoZPf17dCE', channel: 'Little Scientists Club', videoTitle: 'How do we know what made something happen? (Ep 19)' },
-      hook: md`You have just met the counterfactual ideal: the effect of an exposure is the difference between what happened and what would have happened to the same people without it. Here is the same idea for five-year-olds. In this episode of my children's science channel, Curie wins a race in new spotty socks and is sure the socks did it. Were they really lucky?`,
-      formalise: md`**Spot the epidemiology while you watch.**
+      hook: md`You have just met the counterfactual ideal: the effect of an exposure is the difference between what happened and what would have happened to the same people without it. Could you explain that to someone with no science background? Below is one worked example: an episode from my children's science channel, made for five- and six-year-olds, in which Curie wins a race in new spotty socks and is sure the socks did it.
+
+*Why a children's video in an MSc course? Explaining a method in plain words is part of a clinical researcher's job: participant information sheets, informed consent, community meetings and talking to families. If you can explain an idea simply and correctly, you have understood it.*`,
+      formalise: md`**What the explanation keeps, in simpler words.**
 
 - "Did the socks make me win?" is a causal question about **one** person: Curie.
 - The perfect answer would need the **same** Curie, in the **same** race, at the **same** time, once in spotty socks and once in plain ones. One of those two races can never be seen. That unseen race is the **counterfactual**.
@@ -451,7 +453,9 @@ Interpreting relative measures follows from this. An RR of 3 for a causal exposu
 - Picking names out of a hat, with many runners, makes the two groups alike. That is **randomisation**, and it is how doctors test new medicines.
 - The paper-plane activity is a tiny experiment: same plane, same throw, only the sticker changes.
 
-The video's catchphrase is the whole of card 4.7 in six words: *ask what would happen without it.*`,
+**What a simple version has to leave out.** Picking names from a hat makes groups alike only on average and only when there are enough people; with a handful of runners, chance alone can make the groups differ.
+
+**Your turn.** In two or three sentences, explain to a prospective trial participant why the trial needs a comparison group and why a computer, not the doctor, decides who gets the new treatment. The video's catchphrase may help: *ask what would happen without it.*`,
       checks: [],
     },
     // ------------------------------------------------------------------

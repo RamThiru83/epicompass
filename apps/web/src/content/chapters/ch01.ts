@@ -140,7 +140,7 @@ The population at risk also changes over time: once someone develops the disease
         props: { target: 'accuracy', sens: 90, spec: 90, prev: 20 },
         prompt: md`Think of the dots as 1,000 pregnant women, 20% of whom are truly anaemic. Solid dots are women the meter calls anaemic; hollow dots are women it calls normal. Drag **sensitivity** down and watch hollow teal dots appear: anaemic women the meter misses. Put it back, then drag **specificity** down and watch solid orange dots appear: women wrongly called anaemic. Notice that each slider controls a different kind of mistake.`,
       },
-      formalise: md`This chapter only opens the door on testing; Chapter 12 walks through it properly. For now, three ideas are enough.
+      formalise: md`This chapter only introduces the concepts of testing; Chapter 12 teaches it properly. For now, just understand the three ideas.
 
 **1. A test makes two different kinds of mistake.** It can miss someone who has the condition, or it can raise a false alarm in someone who does not. These have different consequences, so we describe them separately.
 

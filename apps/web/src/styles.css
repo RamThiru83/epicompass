@@ -3,6 +3,7 @@
   --bg: #F5F7F6; --panel: #FFFFFF; --fg: #1B2430; --muted: #5B6773; --line: #D6DDE0;
   --accent: #0F6E8C; --accent-soft: #E2EFF3; --exp: #C8651B; --unexp: #4F7F93;
   --ok: #2E7D4F; --ok-soft: #E3F1E8; --warn: #B4541A; --warn-soft: #F8E9DF;
+  --tp: #0B5F86; --fp: #E8850C; --tn: #D3DADD;
   --display: "Source Serif 4", Georgia, serif;
   --body: "IBM Plex Sans", system-ui, sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
@@ -11,11 +12,11 @@
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
   --bg: #141A20; --panel: #1C242C; --fg: #E6EBEE; --muted: #9AA7B2; --line: #2E3A44;
   --accent: #5FB3CF; --accent-soft: #1E3440; --exp: #E8955A; --unexp: #7FB0C6;
-  --ok: #6CC391; --ok-soft: #1E3328; --warn: #E89A5E; --warn-soft: #3A2A1E; color-scheme: dark; } }
+  --ok: #6CC391; --ok-soft: #1E3328; --warn: #E89A5E; --warn-soft: #3A2A1E; --tp: #6EC1E4; --fp: #FFA53D; --tn: #3A4650; color-scheme: dark; } }
 :root[data-theme="dark"] {
   --bg: #141A20; --panel: #1C242C; --fg: #E6EBEE; --muted: #9AA7B2; --line: #2E3A44;
   --accent: #5FB3CF; --accent-soft: #1E3440; --exp: #E8955A; --unexp: #7FB0C6;
-  --ok: #6CC391; --ok-soft: #1E3328; --warn: #E89A5E; --warn-soft: #3A2A1E; color-scheme: dark; }
+  --ok: #6CC391; --ok-soft: #1E3328; --warn: #E89A5E; --warn-soft: #3A2A1E; --tp: #6EC1E4; --fp: #FFA53D; --tn: #3A4650; color-scheme: dark; }
 
 * { box-sizing: border-box; }
 html, body, #root { height: 100%; }

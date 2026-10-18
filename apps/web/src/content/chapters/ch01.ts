@@ -81,7 +81,7 @@ The simplest remedy is **stratification**: compare like with like within levels 
       hook: md`A district cancer registry in Tamil Nadu reports that cervical cancer [[incidence]] is 9 per 100,000 population per year in one taluk and 14 per 100,000 in another. A resident points out that the denominator is the total population, men included, and that one taluk has a large migrant male workforce. Another notes that a hospital outreach programme performed many hysterectomies in the first taluk. Which comparison, if any, can you trust?`,
       explore: {
         interactive: 'population-at-risk',
-        prompt: md`Think of the 200 dots as a taluk's residents and the outcome as cervical cancer. Under 'Why ineligible' pick 'Other sex', set the number who cannot develop the outcome to 20 or more, and keep the new cases at a non-zero value. Compare 'Cases ÷ everyone' with the figure that appears when you press 'Show the correct risk'. Then switch the reason to 'have had a hysterectomy' and raise the slider further: the two figures drift apart, which is exactly the argument the two residents were making about their taluks.`
+        prompt: md`Think of the 200 dots as a taluk's residents and the outcome as cervical cancer. Under 'Why ineligible' pick 'are men', set the number who cannot develop the outcome to 20 or more, and keep the new cases at a non-zero value. Compare 'Cases ÷ everyone' with the figure that appears when you press 'Show the correct risk'. Then switch the reason to 'have had a hysterectomy' and raise the slider further: the two figures drift apart, which is exactly the argument the two residents were making about their taluks.`
       },
       formalise: md`An occurrence measure is a fraction; the numerator counts new cases, and the denominator should include **only people who could have become a case** during the period. That group is the **population at risk**.
 
@@ -132,58 +132,65 @@ The population at risk also changes over time: once someone develops the disease
     // ------------------------------------------------------------------
     {
       id: 'ch01-screening-tests', chapter: 1, order: 3,
-      title: 'Imperfect tests: sensitivity and specificity',
-      concepts: ['sensitivity_specificity'], minutes: 11,
+      title: 'No test is perfect: a first look at sensitivity and specificity',
+      concepts: ['sensitivity_specificity'], minutes: 10,
       hook: md`An antenatal clinic in Odisha wants to replace laboratory haemoglobin with a finger-prick meter that gives a result in a minute. The team tests 500 pregnant women with both. The meter labels 120 women anaemic; the laboratory labels 110. The vendor says the meter "agrees with the laboratory more than 90% of the time". Before the programme buys 2,000 meters, you are asked whether that single figure is enough to judge the device.`,
       explore: {
         interactive: 'screening-preview',
-        prompt: md`Raise the sensitivity slider from 90% to 100% with specificity at 90%, and watch the false-negative count fall. Now lower specificity and watch the false positives grow and the PPV fall; note that the two sliders are independent here, whereas in a real test a cut-off links them. Finally, hold both at 90% and move the prevalence slider down to 1% or below, and read the PPV.`,
+        props: { target: 'accuracy', sens: 90, spec: 90, prev: 20 },
+        prompt: md`Think of the dots as 1,000 pregnant women, 20% of whom are truly anaemic. Solid dots are women the meter calls anaemic; hollow dots are women it calls normal. Drag **sensitivity** down and watch hollow teal dots appear: anaemic women the meter misses. Put it back, then drag **specificity** down and watch solid orange dots appear: women wrongly called anaemic. Notice that each slider controls a different kind of mistake.`,
       },
-      formalise: md`Compare a test against a reference standard and arrange the results in a $2 \times 2$ table:
+      formalise: md`This chapter only opens the door on testing; Chapter 12 walks through it properly. For now, three ideas are enough.
 
-|  | Condition present | Condition absent |
+**1. A test makes two different kinds of mistake.** It can miss someone who has the condition, or it can raise a false alarm in someone who does not. These have different consequences, so we describe them separately.
+
+**2. Two numbers describe how good a test is**, each asked of a different group of people:
+
+- **Sensitivity**: of the people who *have* the condition, what share does the test catch?
+- **Specificity**: of the people who *do not have* the condition, what share does the test correctly clear?
+
+Put the clinic's results into counts:
+
+|  | Truly anaemic (laboratory) | Not anaemic (laboratory) |
 |---|---|---|
-| Test positive | $a$ (true positive) | $b$ (false positive) |
-| Test negative | $c$ (false negative) | $d$ (true negative) |
+| Meter says anaemic | 99 | 21 |
+| Meter says normal | 11 | 369 |
+| **Total** | **110** | **390** |
 
-$$\text{Sensitivity} = \frac{a}{a + c} \qquad \text{Specificity} = \frac{d}{b + d}$$
+The meter catches 99 of the 110 anaemic women, a sensitivity of 90%. It correctly clears 369 of the 390 women who are not anaemic, a specificity of about 95%. Each figure is read down its own column.
 
-**Sensitivity** is the proportion of people **with** the condition whom the test detects. **Specificity** is the proportion of people **without** the condition whom the test correctly clears. They answer different questions and are read down the columns.
+**3. "Agreement" hides the mistakes.** The meter agrees with the laboratory for 99 + 369 = 468 of 500 women, which is 94%. That sounds excellent, but it blends the two kinds of mistake, and it is dominated by the large group of women who are not anaemic. A test that called *everyone* normal would still "agree" with the laboratory for 390 of 500 women (78%) while catching no anaemia at all.
 
-"Overall agreement", $(a + d)/N$, hides the trade-off: a test can agree 90% of the time while missing half of the true cases if the condition is uncommon.
+The book also notes a trade-off, which Chapter 12 explains: adjusting a test to catch more true cases usually means more false alarms, and vice versa.
 
-Most tests measure something continuous (haemoglobin, glucose, an antibody titre), and the **cut-off** decides who is called positive. Moving the cut-off to catch more true cases raises sensitivity and usually lowers specificity. The right balance depends on the cost of each error: missing severe anaemia in pregnancy is serious, while a false positive leads only to a confirmatory laboratory test.
-
-Sensitivity and specificity are properties of the test in a given clinical spectrum; they tend to be more stable across settings than predictive values (next card), though not perfectly so.
-
-**Common mistake:** judging a test by overall agreement, which can look excellent when most people are disease-free.`,
+**Common mistake:** judging a test by a single "accuracy" or "agreement" figure, which can look impressive simply because most people are healthy.`,
       checks: [
         {
           id: 'ch01-screening-tests-q1', concept: 'sensitivity_specificity',
-          prompt: md`Among 110 women anaemic by the laboratory, the meter is positive in 99. Among 390 non-anaemic women, it is positive in 21. What is the sensitivity?`,
+          prompt: md`Of 110 women who are truly anaemic, the meter calls 99 anaemic. Of 390 women who are not anaemic, it calls 21 anaemic. What is the meter's sensitivity?`,
           options: [
-            { text: '90% (99/110)', correct: true, feedback: 'Correct. Sensitivity uses only those who truly have the condition: 99 of 110.' },
-            { text: '82.5% (99/120)', correct: false, feedback: 'That divides by all test positives, which gives the positive predictive value, not sensitivity.' },
-            { text: '94.6% (369/390)', correct: false, feedback: 'That is specificity: true negatives among those without the condition.' },
-            { text: '93.6% (468/500)', correct: false, feedback: 'That is overall agreement, which blends sensitivity and specificity and hides the trade-off.' },
+            { text: '90% (99 of 110)', correct: true, feedback: 'Correct. Sensitivity looks only at the women who truly have the condition and asks how many the test caught.' },
+            { text: '82.5% (99 of 120)', correct: false, feedback: 'That divides by everyone the meter called anaemic. It answers a different question, which the next card takes up.' },
+            { text: '94.6% (369 of 390)', correct: false, feedback: 'That is the specificity: women without anaemia whom the meter correctly cleared.' },
+            { text: '93.6% (468 of 500)', correct: false, feedback: 'That is overall agreement, which blends both kinds of mistake together.' },
           ],
         },
         {
           id: 'ch01-screening-tests-q2', concept: 'sensitivity_specificity',
-          prompt: md`The programme lowers the meter's haemoglobin threshold for calling a woman "not anaemic" so that fewer anaemic women are missed. What do you expect?`,
+          prompt: md`A meter with low **specificity** will mainly cause which problem in the clinic?`,
           options: [
-            { text: 'Sensitivity and specificity both rise.', correct: false, feedback: 'Changing a cut-off on the same test moves the two in opposite directions; improving both needs a better test.' },
-            { text: 'Sensitivity rises and specificity falls.', correct: true, feedback: 'Yes. Calling more women positive catches more true cases but also labels more healthy women as anaemic.' },
-            { text: 'Specificity rises and sensitivity falls.', correct: false, feedback: 'That would happen if the threshold moved to call fewer women positive.' },
+            { text: 'Many anaemic women will be sent home as normal.', correct: false, feedback: 'Missing true cases is a problem of low sensitivity.' },
+            { text: 'Many women who are not anaemic will be told they are, and sent for unnecessary tests or treatment.', correct: true, feedback: 'Yes. Specificity is about the people without the condition; low specificity means many false alarms among them.' },
+            { text: 'The meter will give different readings for the same woman on different days.', correct: false, feedback: 'That is a problem of reliability (repeatability), a separate property from sensitivity and specificity.' },
           ],
         },
         {
           id: 'ch01-screening-tests-q3', concept: 'sensitivity_specificity',
-          prompt: md`A test for a rare condition (1 in 200) is negative in everyone. Its overall agreement with the reference is 99.5%. What is its sensitivity?`,
+          prompt: md`A test for a rare condition (1 person in 200 has it) gives a negative result for everyone. It agrees with the reference standard for 99.5% of people. What is its sensitivity?`,
           options: [
-            { text: '99.5%', correct: false, feedback: 'That is overall agreement. It is high only because almost everyone is disease-free.' },
-            { text: '100%', correct: false, feedback: 'A test that is never positive cannot detect any case; that is its specificity, not its sensitivity.' },
-            { text: '0%', correct: true, feedback: 'Correct. It misses every true case. This is why agreement alone is a poor summary.' },
+            { text: '99.5%', correct: false, feedback: 'That is overall agreement. It is high only because almost everyone is healthy.' },
+            { text: '100%', correct: false, feedback: 'It correctly clears every healthy person, so its specificity is 100%. But it catches no one who has the condition.' },
+            { text: '0%', correct: true, feedback: 'Correct. It misses every true case. This is why agreement alone is a poor way to judge a test.' },
           ],
         },
       ],
@@ -191,60 +198,60 @@ Sensitivity and specificity are properties of the test in a given clinical spect
     // ------------------------------------------------------------------
     {
       id: 'ch01-predictive-value', chapter: 1, order: 4,
-      title: 'What does a positive result mean? Predictive values',
-      concepts: ['predictive_value', 'sensitivity_specificity'], minutes: 12,
+      title: 'What does a positive result mean?',
+      concepts: ['predictive_value', 'sensitivity_specificity'], minutes: 11,
       hook: md`A rapid syphilis test with sensitivity 95% and specificity 95% works well in the sexually transmitted infection clinic of a Mumbai teaching hospital, where about one in five attendees is infected: most positives are confirmed. The same test is rolled out for universal antenatal screening in a rural block where about one woman in a hundred is infected. Within a month, the confirmatory laboratory complains that most positive samples it receives are negative. Has the test become worse?`,
       explore: {
         interactive: 'screening-preview',
-        prompt: md`Set sensitivity and specificity to 95% each. Move the prevalence slider from 20% down to 1%, watching the false-positive count grow relative to the true-positive count and reading the PPV at each step. At roughly what prevalence do false positives start to outnumber true positives? Keep going below 2% and note how low the PPV falls.`,
+        props: { target: 'prevalence', sens: 95, spec: 95, prev: 20 },
+        prompt: md`The test is set to 95% sensitivity and 95% specificity, and 20% of people are infected, as in the hospital clinic. Look at the block of solid dots (everyone who tested positive): most are teal, true infections. Now move **have the condition** down towards 1%, as in the rural block, without touching the test. Watch the solid block fill with orange false alarms, and read how many of the positives truly have the infection.`,
       },
-      formalise: md`Clinicians start from the test result, not from the true disease status. They want **predictive values**, read across the rows of the $2 \times 2$ table:
+      formalise: md`A patient with a positive result does not ask "what is the sensitivity?" She asks: **now that my test is positive, how likely is it that I really have the condition?** That share, among everyone who tests positive, is called the **positive predictive value**.
 
-$$\text{PPV} = \frac{a}{a + b} \qquad \text{NPV} = \frac{d}{c + d}$$
+The easiest way to work it out is to imagine 1,000 people and count. The test is identical in both settings (95% sensitivity, 95% specificity):
 
-In terms of sensitivity (Se), specificity (Sp) and prevalence (P):
+| | Hospital clinic (20% infected) | Rural block (1% infected) |
+|---|---|---|
+| People infected | 200 | 10 |
+| … of whom test positive | 190 | about 10 |
+| People not infected | 800 | 990 |
+| … of whom test positive (false alarms) | 40 | about 50 |
+| **Everyone testing positive** | **230** | **about 60** |
+| **Share of positives truly infected** | **190 of 230 = 83%** | **10 of 60 = 16%** |
 
-$$\text{PPV} = \frac{\text{Se} \cdot P}{\text{Se} \cdot P + (1 - \text{Sp})(1 - P)}$$
+Nothing about the test changed. What changed is the **population**: when an infection is rare, the 5% of false alarms comes from a very large group of uninfected people, and those false alarms swamp the handful of true cases.
 
-With Se = Sp = 0.95, per 1,000 people tested:
+This is exactly the trap the book describes in its first chapter: common sense says a test that is "95% right" gives positive results you can trust, and common sense is wrong when the condition is uncommon.
 
-| Prevalence | True positives | False positives | PPV |
-|---|---|---|---|
-| 20% | 190 | 40 | 0.83 |
-| 1% | 9.5 | 49.5 | 0.16 |
+Practical consequence: a positive screening result in a low-prevalence setting should be presented as "needs confirmation", not as a diagnosis. Chapter 12 returns to this with the full toolkit: the [[negative predictive value]], how cut-offs are chosen, and how a test should be evaluated.
 
-The test is unchanged; the **population** changed. When the condition is rare, even a small false-positive proportion among the many healthy people swamps the few true positives. Negative predictive value moves the other way: it is very high when prevalence is low.
-
-Practical consequences: screening programmes in low-prevalence settings need confirmatory testing, and a positive screen should be communicated as "needs confirmation", not as a diagnosis.
-
-**Common mistake:** quoting a test's sensitivity as if it were the probability that a person who tests positive has the disease.`,
+**Common mistake:** treating the sensitivity of a test as the probability that someone who tests positive has the condition.`,
       checks: [
         {
           id: 'ch01-predictive-value-q1', concept: 'predictive_value',
-          prompt: md`Why did the positive predictive value fall when the test moved to rural antenatal screening?`,
+          prompt: md`Why did the confirmatory laboratory start receiving mostly negative samples after the test moved to rural antenatal screening?`,
           options: [
-            { text: 'The test kits deteriorated in the field, lowering specificity.', correct: false, feedback: 'Kit quality could matter, but the drop is fully explained even with an unchanged test: prevalence fell twenty-fold.' },
-            { text: 'Prevalence was much lower, so false positives from the large healthy group outnumbered true positives.', correct: true, feedback: 'Right. PPV depends on prevalence as well as on sensitivity and specificity.' },
-            { text: 'Sensitivity is lower in pregnant women.', correct: false, feedback: 'Lower sensitivity would mainly raise false negatives; it cannot explain the flood of false positives.' },
+            { text: 'The test kits deteriorated in the field and became less accurate.', correct: false, feedback: 'Kit quality could matter, but the change is fully explained even with an unchanged test: infection was twenty times rarer.' },
+            { text: 'Infection was much rarer, so false alarms from the large uninfected group outnumbered the true cases.', correct: true, feedback: 'Right. How far a positive result can be trusted depends on how common the condition is, not only on the test.' },
+            { text: 'Pregnant women are harder to test.', correct: false, feedback: 'If the test missed more infections, that would reduce positives, not flood the laboratory with false ones.' },
           ],
         },
         {
           id: 'ch01-predictive-value-q2', concept: 'predictive_value',
           prompt: md`A woman in the rural block tests positive. Using the table on this card, roughly how likely is she to be infected?`,
           options: [
-            { text: 'About 95%, the sensitivity.', correct: false, feedback: 'Sensitivity is the chance of a positive test given infection; she wants the reverse, the chance of infection given a positive test.' },
-            { text: 'About 16%, the PPV at 1% prevalence.', correct: true, feedback: 'Correct. Only about 1 in 6 positives is a true infection here, which is why confirmation is essential.' },
-            { text: 'About 5%, one minus specificity.', correct: false, feedback: 'One minus specificity is the false-positive proportion among uninfected women, not the probability of infection after a positive result.' },
-            { text: 'About 1%, the prevalence.', correct: false, feedback: 'That was her probability before testing. The positive result raises it, to about 16%.' },
+            { text: 'About 95%, the sensitivity.', correct: false, feedback: 'Sensitivity tells you how many infected people test positive. She wants the reverse: how many people who test positive are infected.' },
+            { text: 'About 16%: roughly 10 of the 60 positives are true infections.', correct: true, feedback: 'Correct. Only about 1 positive in 6 is a true infection here, which is why confirmation is essential.' },
+            { text: 'About 1%, the share infected.', correct: false, feedback: 'That was her chance before testing. The positive result raises it, but only to about 16%.' },
           ],
         },
         {
           id: 'ch01-predictive-value-q3', concept: 'sensitivity_specificity',
-          prompt: md`Which pair of measures would you expect to stay roughly the same when the same test is used in the hospital clinic and in the rural block?`,
+          prompt: md`Which figures would you expect to stay roughly the same when the same test is used in the hospital clinic and in the rural block?`,
           options: [
-            { text: 'Positive and negative predictive values', correct: false, feedback: 'Predictive values change with prevalence, which differs twenty-fold between the settings.' },
-            { text: 'Sensitivity and specificity', correct: true, feedback: 'Yes. They are conditional on true status, so they do not depend directly on prevalence, although a different spectrum of disease can shift them somewhat.' },
-            { text: 'Sensitivity and positive predictive value', correct: false, feedback: 'Sensitivity is fairly stable, but PPV depends heavily on prevalence.' },
+            { text: 'The share of positive results that are true infections', correct: false, feedback: 'That fell from 83% to 16% between the two settings.' },
+            { text: 'Sensitivity and specificity', correct: true, feedback: 'Yes. They describe the test among people who do and do not have the infection, so they do not depend directly on how common it is.' },
+            { text: 'The number of positive results per 1,000 people tested', correct: false, feedback: 'That fell from about 230 to about 60, because far fewer people were infected.' },
           ],
         },
       ],

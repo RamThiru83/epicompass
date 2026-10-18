@@ -26,6 +26,10 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     plain: 'A range of values that the data are reasonably compatible with; its width shows precision.' },
   'P-value': { chapter: 7, pattern: /\bP-values?\b/i,
     plain: 'How compatible the data are with one particular hypothesis, usually "no effect".' },
+  'negative predictive value': { chapter: 12, pattern: /\bnegative predictive values?\b|\bNPV\b/i,
+    plain: 'Of the people who test negative, the share who truly do not have the condition.' },
+  'ROC curve': { chapter: 12, pattern: /\bROC\b|\breceiver operating/i,
+    plain: 'A plot of sensitivity against the false-alarm rate across every possible cut-off of a test.' },
   'likelihood ratio': { chapter: 12, pattern: /\blikelihood ratios?\b|\bLR[+-]/i,
     plain: 'How much a test result changes the odds of disease.' },
 };

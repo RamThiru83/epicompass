@@ -1,22 +1,25 @@
-/* EpiCompass design tokens. Light first; dark follows the OS or an explicit data-theme. */
+/* EpiCompass design tokens, drawn from the BRIC-THSTI identity: THSTI maroon and orange, the gold of
+   the THSTI ring, and BRIC navy. Light first; dark follows the OS or an explicit data-theme. */
 :root {
-  --bg: #F5F7F6; --panel: #FFFFFF; --fg: #1B2430; --muted: #5B6773; --line: #D6DDE0;
-  --accent: #0F6E8C; --accent-soft: #E2EFF3; --exp: #C8651B; --unexp: #4F7F93;
-  --ok: #2E7D4F; --ok-soft: #E3F1E8; --warn: #B4541A; --warn-soft: #F8E9DF;
-  --tp: #0B5F86; --fp: #E8850C; --tn: #D3DADD;
+  --bg: #FAF7F4; --panel: #FFFFFF; --fg: #26232A; --muted: #6E645F; --line: #E6DCD5;
+  --accent: #9A3029; --accent-soft: #F7E8E5; --on-accent: #FFFFFF; --exp: #E07A1F; --unexp: #3E4C70;
+  --ok: #2E7D4F; --ok-soft: #E3F1E8; --warn: #B8551A; --warn-soft: #FBEADB;
+  --tp: #2C4A7A; --fp: #F08A24; --tn: #DED5CE; --gold: #F2B84B; --navy: #2C3349;
   --display: "Source Serif 4", Georgia, serif;
   --body: "IBM Plex Sans", system-ui, sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #141A20; --panel: #1C242C; --fg: #E6EBEE; --muted: #9AA7B2; --line: #2E3A44;
-  --accent: #5FB3CF; --accent-soft: #1E3440; --exp: #E8955A; --unexp: #7FB0C6;
-  --ok: #6CC391; --ok-soft: #1E3328; --warn: #E89A5E; --warn-soft: #3A2A1E; --tp: #6EC1E4; --fp: #FFA53D; --tn: #3A4650; color-scheme: dark; } }
+  --bg: #171518; --panel: #221F23; --fg: #EFE9E5; --muted: #A69B95; --line: #3B3438;
+  --accent: #EC8B78; --accent-soft: #3D2522; --on-accent: #1C1214; --exp: #F5A04A; --unexp: #9AAED6;
+  --ok: #6CC391; --ok-soft: #1E3328; --warn: #F0A15E; --warn-soft: #3B2A1E;
+  --tp: #92B5EA; --fp: #FFA53D; --tn: #3B3438; --gold: #F2C46A; --navy: #9AAED6; color-scheme: dark; } }
 :root[data-theme="dark"] {
-  --bg: #141A20; --panel: #1C242C; --fg: #E6EBEE; --muted: #9AA7B2; --line: #2E3A44;
-  --accent: #5FB3CF; --accent-soft: #1E3440; --exp: #E8955A; --unexp: #7FB0C6;
-  --ok: #6CC391; --ok-soft: #1E3328; --warn: #E89A5E; --warn-soft: #3A2A1E; --tp: #6EC1E4; --fp: #FFA53D; --tn: #3A4650; color-scheme: dark; }
+  --bg: #171518; --panel: #221F23; --fg: #EFE9E5; --muted: #A69B95; --line: #3B3438;
+  --accent: #EC8B78; --accent-soft: #3D2522; --on-accent: #1C1214; --exp: #F5A04A; --unexp: #9AAED6;
+  --ok: #6CC391; --ok-soft: #1E3328; --warn: #F0A15E; --warn-soft: #3B2A1E;
+  --tp: #92B5EA; --fp: #FFA53D; --tn: #3B3438; --gold: #F2C46A; --navy: #9AAED6; color-scheme: dark; }
 
 * { box-sizing: border-box; }
 html, body, #root { height: 100%; }
@@ -82,7 +85,7 @@ input[type=range] { accent-color: var(--accent); }
 .prose blockquote { margin: 0 0 10px; padding: 6px 12px; border-left: 3px solid var(--accent); color: var(--muted); }
 .katex-display { overflow-x: auto; overflow-y: hidden; padding: 4px 0; }
 .actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 12px; }
-.btn { background: var(--accent); color: #fff; border: 0; border-radius: 6px; padding: 8px 16px; }
+.btn { background: var(--accent); color: var(--on-accent); border: 0; border-radius: 6px; padding: 8px 16px; }
 .btn[disabled] { opacity: .5; cursor: default; }
 .btn.ghost { background: none; color: var(--accent); border: 1px solid var(--accent); }
 .hint { font-size: 13px; color: var(--muted); }
@@ -135,7 +138,7 @@ input[type=range] { accent-color: var(--accent); }
 .msg .src { display: block; font-size: 11px; color: var(--muted); margin-top: 3px; }
 .tutor form { display: flex; gap: 6px; padding: 8px; border-top: 1px solid var(--line); }
 .tutor form input { flex: 1; min-width: 0; font-family: var(--body); }
-.tutor-fab { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: max(16px, env(safe-area-inset-bottom, 0px)); background: var(--accent); color: #fff; border: 0; border-radius: 22px; padding: 10px 16px; z-index: 20; }
+.tutor-fab { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: max(16px, env(safe-area-inset-bottom, 0px)); background: var(--accent); color: var(--on-accent); border: 0; border-radius: 22px; padding: 10px 16px; z-index: 20; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 
 /* Welcome letter */
@@ -154,3 +157,9 @@ input[type=range] { accent-color: var(--accent); }
   padding: 7px 10px; font-size: 12.5px; line-height: 1.4; font-weight: 400; box-shadow: 0 4px 16px rgba(0,0,0,.12);
 }
 .preview:focus { outline: none; background: var(--accent-soft); }
+
+/* Institutional logo: the official artwork is on white, so it sits on a white plate in both themes. */
+.inst-logo { display: block; background: #FFFFFF; border-radius: 6px; padding: 6px 8px; margin-bottom: 14px; }
+.inst-logo img { display: block; width: 100%; height: auto; }
+.brand { border-top: 3px solid var(--accent); padding-top: 10px !important; }
+.welcome-logo { max-width: 560px; padding: 10px 14px; margin-bottom: 18px; border: 1px solid var(--line); }

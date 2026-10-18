@@ -5,6 +5,7 @@ import { useProgress } from '../store/progress';
 import { chapterCompletion } from '../store/gates';
 import { editUrl } from '../config';
 import { go } from '../App';
+import logoUrl from '../assets/bric-thsti-logo.png';
 
 export function WelcomePage() {
   const p = useProgress();
@@ -12,6 +13,7 @@ export function WelcomePage() {
   const next = CHAPTERS.find(c => c.cards.length && chapterCompletion(p, c) < 1);
   return (
     <div className="welcome">
+      <div className="inst-logo welcome-logo"><img src={logoUrl} alt="BRIC, a DBT organisation, and THSTI, Translational Health Science and Technology Institute" /></div>
       <div className="crumbs">Epidemiology 101 · MSc Clinical Research · BRIC-THSTI</div>
       <h2>{WELCOME.title}</h2>
       {p.settings.editor && <div className="hint" style={{ marginTop: 4 }}>Instructor: <a href={editUrl('apps/web/src/content/welcome.ts')} target="_blank" rel="noreferrer">edit this page on GitHub</a></div>}

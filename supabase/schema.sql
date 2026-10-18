@@ -38,7 +38,7 @@ $$;
 -- Lets the sign-up form check a join code before creating an account (returns the cohort name or null).
 create or replace function public.check_join_code(code text) returns text
 language sql stable security definer set search_path = public as $$
-  select name from public.cohorts where upper(join_code) = upper(trim(code)) and active limit 1;
+  select name from public.cohorts where upper(regexp_replace(join_code, '\s', '', 'g')) = upper(regexp_replace(coalesce(code, ''), '\s', '', 'g')) and active limit 1;
 $$;
 grant execute on function public.check_join_code(text) to anon, authenticated;
 
@@ -48,7 +48,7 @@ language plpgsql security definer set search_path = public as $$
 declare c uuid;
 begin
   select id into c from public.cohorts
-   where upper(join_code) = upper(trim(coalesce(new.raw_user_meta_data->>'join_code', ''))) and active limit 1;
+   where upper(regexp_replace(join_code, '\s', '', 'g')) = upper(regexp_replace(coalesce(new.raw_user_meta_data->>'join_code', ''), '\s', '', 'g')) and active limit 1;
   if c is null then
     raise exception 'Invalid or inactive join code';
   end if;

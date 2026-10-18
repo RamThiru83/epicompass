@@ -15,6 +15,8 @@ interface Cohort { id: string; name: string; join_code: string; active: boolean 
 
 const ALL_CARDS = CHAPTERS.flatMap(c => coreCards(c));
 const TAUGHT = concepts.filter(c => ALL_CARDS.some(k => k.concepts.includes(c.id)));
+/** Join codes: upper case, no spaces ("yi - 2026" becomes "YI-2026"). */
+const cleanCode = (s: string) => s.toUpperCase().replace(/\s+/g, '');
 const ago = (iso?: string) => {
   if (!iso) return 'never';
   const d = (Date.now() - new Date(iso).getTime()) / 86400000;
@@ -30,6 +32,8 @@ export function InstructorPage() {
   const [loading, setLoading] = useState(true);
   const [reset, setReset] = useState<{ id: string; pw: string; msg?: string } | null>(null);
   const [newCohort, setNewCohort] = useState({ name: '', code: '' });
+  const [edit, setEdit] = useState<{ id: string; name: string; code: string; confirmDelete?: boolean } | null>(null);
+  const [cohortMsg, setCohortMsg] = useState<string | null>(null);
   const [wa, setWa] = useState(''); const [waMsg, setWaMsg] = useState<string | null>(null);
 
   const load = async () => {
@@ -175,15 +179,47 @@ export function InstructorPage() {
 
       <div className="section">
         <h3>Cohorts and join codes</h3>
-        <table className="t2"><thead><tr><th style={{ textAlign: 'left' }}>Cohort</th><th>Join code</th><th>Accepting sign-ups</th></tr></thead>
-          <tbody>{cohorts.map(c => <tr key={c.id}><td style={{ textAlign: 'left' }}>{c.name}</td><td className="mono">{c.join_code}</td>
-            <td><label><input type="checkbox" checked={c.active} onChange={async e => { await supabase!.from('cohorts').update({ active: e.target.checked }).eq('id', c.id); load(); }} /> {c.active ? 'open' : 'closed'}</label></td></tr>)}</tbody></table>
-        <form className="actions" onSubmit={async e => { e.preventDefault(); if (!newCohort.name || !newCohort.code) return; const { error } = await supabase!.from('cohorts').insert({ name: newCohort.name, join_code: newCohort.code.toUpperCase() }); if (error) setErr(error.message); else { setNewCohort({ name: '', code: '' }); load(); } }}>
+        <table className="t2"><thead><tr><th style={{ textAlign: 'left' }}>Cohort</th><th>Join code</th><th>Students</th><th>Accepting sign-ups</th><th></th></tr></thead>
+          <tbody>{cohorts.map(c => {
+            const members = rows.filter(r => r.cohort_id === c.id).length;
+            const editing = edit?.id === c.id;
+            return <tr key={c.id}>
+              {editing ? <>
+                <td style={{ textAlign: 'left' }}><input aria-label="Cohort name" value={edit!.name} onChange={e => setEdit({ ...edit!, name: e.target.value })} style={{ width: 230 }} /></td>
+                <td><input aria-label="Join code" value={edit!.code} onChange={e => setEdit({ ...edit!, code: e.target.value })} style={{ width: 120 }} /></td>
+              </> : <>
+                <td style={{ textAlign: 'left' }}>{c.name}</td><td className="mono">{c.join_code}</td>
+              </>}
+              <td>{members}</td>
+              <td><label><input type="checkbox" checked={c.active} onChange={async e => { await supabase!.from('cohorts').update({ active: e.target.checked }).eq('id', c.id); load(); }} /> {c.active ? 'open' : 'closed'}</label></td>
+              <td style={{ whiteSpace: 'nowrap' }}>{editing ? <>
+                  <button className="btn ghost" onClick={async () => {
+                    const name = edit!.name.trim(), code = cleanCode(edit!.code);
+                    if (!name || !code) { setCohortMsg('Name and join code are both needed.'); return; }
+                    const { error } = await supabase!.from('cohorts').update({ name, join_code: code }).eq('id', c.id);
+                    if (error) setCohortMsg(error.code === '23505' ? `Another cohort already uses ${code}.` : error.message);
+                    else { setEdit(null); setCohortMsg(code !== c.join_code ? `Saved. The old code ${c.join_code} no longer works; students who already joined are unaffected.` : 'Saved.'); load(); }
+                  }}>Save</button>{' '}
+                  <button className="btn ghost" onClick={() => setEdit(null)}>Cancel</button>
+                </> : edit?.confirmDelete === undefined || edit.id !== c.id ? <>
+                  <button className="btn ghost" onClick={() => { setCohortMsg(null); setEdit({ id: c.id, name: c.name, code: c.join_code }); }}>Edit</button>{' '}
+                  {members === 0 && <button className="btn ghost" onClick={() => setEdit({ id: c.id, name: c.name, code: c.join_code, confirmDelete: true })}>Delete</button>}
+                </> : null}
+                {edit?.id === c.id && edit.confirmDelete && <span>
+                  Delete {c.name}?{' '}
+                  <button className="btn ghost" onClick={async () => { const { error } = await supabase!.from('cohorts').delete().eq('id', c.id); setEdit(null); setCohortMsg(error ? error.message : 'Cohort deleted.'); load(); }}>Yes, delete</button>{' '}
+                  <button className="btn ghost" onClick={() => setEdit(null)}>Cancel</button>
+                </span>}
+              </td>
+            </tr>;
+          })}</tbody></table>
+        {cohortMsg && <p className="hint">{cohortMsg}</p>}
+        <form className="actions" onSubmit={async e => { e.preventDefault(); const name = newCohort.name.trim(), code = cleanCode(newCohort.code); if (!name || !code) return; const { error } = await supabase!.from('cohorts').insert({ name, join_code: code }); if (error) setCohortMsg(error.code === '23505' ? `Another cohort already uses ${code}.` : error.message); else { setNewCohort({ name: '', code: '' }); setCohortMsg(`Added. Students can join with ${code}.`); load(); } }}>
           <input aria-label="New cohort name" placeholder="New cohort name" value={newCohort.name} onChange={e => setNewCohort({ ...newCohort, name: e.target.value })} style={{ width: 240 }} />
-          <input aria-label="Join code" placeholder="Join code" value={newCohort.code} onChange={e => setNewCohort({ ...newCohort, code: e.target.value })} style={{ width: 140 }} />
+          <input aria-label="Join code" placeholder="Join code, e.g. YI-2026" value={newCohort.code} onChange={e => setNewCohort({ ...newCohort, code: e.target.value })} style={{ width: 170 }} />
           <button className="btn ghost">Add cohort</button>
         </form>
-        <p className="hint">Close a cohort's code once everyone has joined, so the code cannot be passed on.</p>
+        <p className="hint">Join codes are saved in capitals without spaces. Close a cohort's code once everyone has joined, so it cannot be passed on. A cohort can be deleted only while it has no students.</p>
       </div>
     </div>
   );

@@ -21,7 +21,7 @@ First, a randomised trial is an epidemiologic study. Randomisation is a device f
 
 Second, measurement is everything. Risk, rate, prevalence, risk ratio, risk difference, attributable fraction: these are not vocabulary to be memorised but tools that answer different questions. Choosing the wrong measure, or the wrong denominator, is a more common and more damaging error than any statistical slip. Chapter 4 will probably be the most useful chapter you read this year.
 
-Third, estimation over significance. Much of what passes for analysis in clinical research is a ritual around the number 0·05. The authors of our textbook have argued for decades, and I agree with them, that the job of a study is to estimate an effect and to say how precisely it has been estimated. A confidence interval tells you what the data are compatible with; a P-value tells you much less. Learning to think this way will change how you read every paper, and how you write your own.`,
+Third, estimation over significance. Much of what passes for analysis in clinical research is a ritual around the number 0·05. The authors of our textbook have argued for decades, and I agree with them, that the job of a study is to estimate an effect and to say how precisely it has been estimated. Epidemiologists are estimators and not testers. A confidence interval tells you what the data are compatible with; a P-value tells you much less. Learning to think this way will change how you read every paper, and how you write your own.`,
 
   theBook: md`## The book, our beloved "Baby Rothman!"
 

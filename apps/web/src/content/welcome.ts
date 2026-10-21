@@ -15,7 +15,7 @@ What makes epidemiology a discipline rather than a collection of formulas is the
 
   whyItMatters: md`## Why it matters for a clinical researcher and a trialist
 
-Over time, I have come to believe that the single biggest difference between a researcher who grows and one who stagnates is whether they have internalised the fundamental principles of epidemiology. Let me give you three such concepts, as example.
+Over time, I have come to believe that the single biggest catalyst for a clinical researcher's growth is internalising the fundamental principles of epidemiology. Let me give you three such concepts as examples.
 
 First, a randomised trial is an epidemiologic study. Randomisation is a device for dealing with confounding, nothing more and nothing less. If you do not understand confounding, you cannot appreciate what randomisation buys you, when it fails (losses to follow-up, non-adherence, unblinded outcome assessment), or how to read the observational studies that will always outnumber the trials in your field. The trialist who understands bias designs better trials; the one who does not merely follows the template.
 

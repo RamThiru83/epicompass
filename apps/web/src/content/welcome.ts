@@ -21,13 +21,13 @@ First, a randomised trial is an epidemiologic study. Randomisation is a device f
 
 Second, measurement is everything. Risk, rate, prevalence, risk ratio, risk difference, attributable fraction: these are not vocabulary to be memorised but tools that answer different questions. Choosing the wrong measure, or the wrong denominator, is a more common and more damaging error than any statistical slip. Chapter 4 will probably be the most useful chapter you read this year.
 
-Third, estimation over significance. Much of what passes for analysis in clinical research is a ritual around the number 0·05. The authors of our textbook have argued for decades, and I agree with them, that the job of a study is to estimate an effect and to say how precisely it has been estimated. Epidemiologists are estimators and not testers. A confidence interval tells you what the data are compatible with; a P-value tells you much less. Learning to think this way will change how you read every paper, and how you write your own.`,
+Third, estimation over significance. Much of what happens in clinical research analysis is an obsession around p-value 0·05. The authors of our textbook have argued for decades, and I agree with them, that the job of a study is to estimate an effect and to say how precisely it has been estimated. Epidemiologists are estimators and not testers. A confidence interval tells you what the data are compatible with; a P-value tells you much less. Learning to think this way will change how you read every paper, and how you write your own.`,
 
   theBook: md`## The book, our beloved "Baby Rothman!"
 
 The content of this site follows, chapter by chapter, *Epidemiology: An Introduction* by Kenneth J. Rothman, Krista F. Huybrechts and Eleanor J. Murray (third edition, Oxford University Press). Among those of us who teach epidemiology it is known affectionately as "Baby Rothman", to distinguish it from its formidable elder sibling *Modern Epidemiology*. Baby Rothman is short, opinionated and unusually clear, and it has shaped how I think more than any other book in my field. It starts with confounding on page one, builds causation before measurement, and treats error and statistics as servants of inference rather than its masters. If you read only one epidemiology book in your career, read this one, and read it more than once.
 
-Please do read it. This site does not reproduce the book; it is my own commentary, exercises and simulations, built so that each chapter's ideas can be handled rather than only read. The two work together. Read the chapter first, then come here and work the cards.`,
+**Please read it.** This site does not reproduce the book; it is my own commentary, exercises, and simulations, built so that each chapter's ideas can be worked through rather than only read. The two work together. Read the chapter first, then come here and work the cards.`,
 
   howToUse: md`## How to use this site
 

@@ -404,3 +404,21 @@ button.rowcard:hover, a.rowcard:hover { border-color: var(--control); }
 .sidebar > .ask { margin: 0 10px 18px; flex: none; }
 .sidebar > * { flex-shrink: 0; }
 .sidebar.open > .ask { display: none; }
+
+/* Inline editing of course text (instructor) */
+.edtog { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); padding: 6px 10px; cursor: pointer; }
+.ed { outline: 1px dashed var(--line); outline-offset: 2px; cursor: text; border-radius: 3px; }
+.ed:hover, .ed:focus { outline: 2px solid var(--accent); }
+.edited { box-shadow: -4px 0 0 var(--gold, #F2B84B); }
+.ed-dirty { box-shadow: -4px 0 0 var(--warn); }
+.ed-box { display: block; margin: 6px 0 10px; padding: 8px; border: 2px solid var(--accent); border-radius: 6px; background: var(--panel); }
+.ed-box textarea { width: 100%; min-height: 64px; font-family: var(--mono, monospace); font-size: 13px; line-height: 1.5; padding: 8px; border: 1px solid var(--line); border-radius: 5px; background: var(--bg); color: var(--fg); resize: vertical; box-sizing: border-box; }
+.ed-help { display: block; font-size: 12px; color: var(--muted); margin: 4px 0; }
+.ed-prev { display: block; border-top: 1px dashed var(--line); margin-top: 6px; padding-top: 6px; }
+.ed-actions { display: flex; gap: 6px; margin-top: 6px; }
+.edbar { position: fixed; z-index: 60; left: 0; right: 0; bottom: 0; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: var(--panel); border-top: 2px solid var(--accent); padding: 10px max(16px, env(safe-area-inset-left, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)); font-size: 13.5px; box-shadow: 0 -6px 20px rgba(0,0,0,.08); }
+.edbar .ed-t { flex: 1 1 320px; } .edbar .ed-c { color: var(--warn); }
+body:has(.edbar) .main { padding-bottom: 96px; }
+.qhead { display: flex; gap: 6px; align-items: baseline; } .qhead > div { flex: 1; } .qhead .prose > :first-child { margin-top: 0; }
+.opt-edit { display: block; text-align: left; cursor: default; margin: 6px 0; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; }
+.opt-edit .fb { margin-top: 4px; }

@@ -7,12 +7,14 @@ import { cloudEnabled } from '../lib/supabase';
 import logoUrl from '../assets/bric-thsti-logo.png';
 import markUrl from '../assets/epicompass-mark.svg';
 import { openTutor } from './TutorPanel';
+import { useEditState, setEditMode } from '../store/overrides';
 
 /** Open-plane sidebar on the page ground. On tablets and phones it is hidden behind the top bar's Menu
  *  button and opens as a full-screen sheet (`open`). */
 export function Sidebar({ units, chapters, active, route, open }: { units: Unit[]; chapters: Chapter[]; active?: number; route?: string; open?: boolean }) {
   const p = useProgress();
   const acc = useAccount();
+  const ed = useEditState();
   return (
     <aside className={`sidebar ${open ? 'open' : ''}`} id="site-nav" aria-label="Course navigation">
       <button className="brand" onClick={() => go('#/')}>
@@ -28,6 +30,7 @@ export function Sidebar({ units, chapters, active, route, open }: { units: Unit[
           {acc.session && <span className={`sync ${acc.sync}`} title={acc.sync === 'error' ? 'Last save failed' : acc.sync === 'saving' ? 'Saving…' : 'Saved to your account'} />}
         </button>}
         {acc.profile?.role === 'instructor' && <button className={`chap plain ${route === 'instructor' ? 'active' : ''}`} onClick={() => go('#/instructor')} aria-current={route === 'instructor' ? 'page' : undefined}><span className="t">Class dashboard</span></button>}
+        {acc.profile?.role === 'instructor' && <label className="edtog"><input type="checkbox" checked={ed.edit} onChange={e => setEditMode(e.target.checked)} /> Edit course text</label>}
       </nav>
       {units.map(u => {
         const unlocked = unitUnlocked(p, u, chapters);

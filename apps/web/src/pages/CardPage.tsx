@@ -1,15 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { Card, Chapter } from '../content/types';
 import { templates } from '../content';
-import { Markdown } from '../components/Markdown';
+import { EditableMd } from '../components/EditableMd';
 import { Check } from '../components/Check';
 import { Exercise } from '../components/Exercise';
 import { INTERACTIVES } from '../interactives/registry';
 import { useProgress, markStep, completeCard } from '../store/progress';
-import { useEditorMode } from '../store/account';
 import { go } from '../App';
 import { CHAPTERS } from '../content';
-import { editUrl, chapterFile } from '../config';
 import { UNITS, conceptById } from '../content';
 import { STEP_LABEL as LABEL, stepsOf, type Step } from '../components/Path';
 import { MASTERY_THRESHOLD } from '@epicompass/epi-core';
@@ -17,7 +15,6 @@ import { MASTERY_THRESHOLD } from '@epicompass/epi-core';
 
 export function CardPage({ card, chapter }: { card: Card; chapter: Chapter }) {
   const p = useProgress();
-  const editor = useEditorMode();
   const prog = p.cards[card.id];
   const steps = stepsOf(card);
   const firstOpen = steps.find(s => !prog?.steps[s]) ?? steps[steps.length - 1];
@@ -90,16 +87,15 @@ export function CardPage({ card, chapter }: { card: Card; chapter: Chapter }) {
         <div className="title-row"><div>
           <div className="crumbs">{crumb} · optional video</div>
           <h1>{card.title}</h1>
-          {editor && <p className="edit-link">Instructor: <a href={editUrl(chapterFile(chapter.number))} target="_blank" rel="noreferrer">edit this card on GitHub</a> (search for <code>id: '{card.id}'</code>).</p>}
         </div></div>
         <div className="card-layout"><div className="card-main">
-        <div className="section"><Markdown>{card.hook}</Markdown>
+        <div className="section"><EditableMd scope={`card.${card.id}.hook`}>{card.hook}</EditableMd>
           <div className="video">
             <iframe src={`https://www.youtube-nocookie.com/embed/${b.youtubeId}?rel=0`} title={b.videoTitle} loading="lazy"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen />
           </div>
           <p className="hint">{b.channel}: {b.videoTitle}. <a href={`https://youtu.be/${b.youtubeId}`} target="_blank" rel="noreferrer">Watch on YouTube</a></p>
-          <Markdown>{card.formalise}</Markdown>
+          <EditableMd scope={`card.${card.id}.formalise`}>{card.formalise}</EditableMd>
           <div className="actions">
             <button className="btn" onClick={() => { completeCard(card.id); go(nextCard ? `#/card/${nextCard.id}` : `#/ch/${chapter.number}`); }}>{!nextCard ? 'Done' : nextCard.chapter === chapter.number ? 'Done, continue' : 'Done, on to the next chapter'}</button>
             <span className="hint">Optional: this card does not count towards your progress.</span>
@@ -115,7 +111,6 @@ export function CardPage({ card, chapter }: { card: Card; chapter: Chapter }) {
       <div className="title-row"><div>
         <div className="crumbs">{crumb} · {card.minutes} min</div>
         <h1>{card.title}</h1>
-        {editor && <p className="edit-link">Instructor: <a href={editUrl(chapterFile(chapter.number))} target="_blank" rel="noreferrer">edit this card on GitHub</a> (search the file for <code>id: '{card.id}'</code>; the site redeploys about two minutes after you commit).</p>}
       </div></div>
       <div className="card-layout"><div className="card-main">
       <div className="steps" role="tablist" aria-label="Steps in this card">
@@ -123,19 +118,19 @@ export function CardPage({ card, chapter }: { card: Card; chapter: Chapter }) {
       </div>
 
       {now === 'hook' && (
-        <div className="section step-body" role="tabpanel"><Markdown>{card.hook}</Markdown>
+        <div className="section step-body" role="tabpanel"><EditableMd scope={`card.${card.id}.hook`}>{card.hook}</EditableMd>
           <div className="actions"><button className="btn" onClick={advance}>Continue</button></div></div>
       )}
 
       {now === 'explore' && card.explore && (
-        <div className="section step-body" role="tabpanel"><Markdown>{card.explore.prompt}</Markdown>
+        <div className="section step-body" role="tabpanel"><EditableMd scope={`card.${card.id}.explore`}>{card.explore.prompt}</EditableMd>
           {Interactive ? <Interactive config={card.explore.props} onReached={(r, d) => { if (r) markStep(card.id, 'explore-reached'); }} />
             : <p className="hint">Interactive "{card.explore.interactive}" is not available in this build.</p>}
           <div className="actions"><button className="btn" onClick={advance}>Continue</button>{prog?.steps['explore-reached'] && <span className="reached">Target state reached.</span>}</div></div>
       )}
 
       {now === 'formalise' && (
-        <div className="section step-body" role="tabpanel"><Markdown>{card.formalise}</Markdown>
+        <div className="section step-body" role="tabpanel"><EditableMd scope={`card.${card.id}.formalise`}>{card.formalise}</EditableMd>
           <div className="actions"><button className="btn" onClick={advance}>Continue</button></div></div>
       )}
 

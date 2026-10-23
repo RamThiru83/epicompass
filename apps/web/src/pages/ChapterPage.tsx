@@ -1,17 +1,14 @@
 import type { Chapter } from '../content/types';
 import { coreCards } from '../content/types';
 import { UNITS, conceptById } from '../content';
-import { Markdown } from '../components/Markdown';
+import { EditableMd } from '../components/EditableMd';
 import { Path, cardState } from '../components/Path';
 import { useProgress } from '../store/progress';
-import { useEditorMode } from '../store/account';
 import { MASTERY_THRESHOLD } from '@epicompass/epi-core';
 import { go } from '../App';
-import { editUrl, chapterFile } from '../config';
 
 export function ChapterPage({ chapter }: { chapter: Chapter }) {
   const p = useProgress();
-  const editor = useEditorMode();
   const unit = UNITS.find(u => u.id === chapter.unit);
   const core = coreCards(chapter);
   const done = core.filter(k => p.cards[k.id]?.completedAt).length;
@@ -31,8 +28,8 @@ export function ChapterPage({ chapter }: { chapter: Chapter }) {
       <div className="grid">
         <div className={core.length ? 's9' : 's12'}>
           <div className="sheet" style={{ marginBottom: 16 }}>
-            <Markdown>{chapter.summary}</Markdown>
-            <p className="reading">Read first: {chapter.reading}{editor && <> · <a href={editUrl(chapterFile(chapter.number))} target="_blank" rel="noreferrer">edit this chapter on GitHub</a></>}</p>
+            <EditableMd scope={`ch.${chapter.number}.summary`}>{chapter.summary}</EditableMd>
+            <p className="reading">Read first: {chapter.reading}</p>
           </div>
           {core.length === 0 && unit && <section className="panel" aria-labelledby="h-unit" style={{ marginBottom: 16 }}>
             <div className="panel-head"><h2 id="h-unit">What Unit {unit.id} will let you do</h2><span className="aside">Chapters {unit.chapters.join(', ')}</span></div>

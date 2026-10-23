@@ -85,8 +85,6 @@ export function HomePage() {
           <div className="panel">
             <label className="toggle-row"><input type="checkbox" checked={p.settings.hardGates} onChange={e => setSettings({ hardGates: e.target.checked })} />
               <span>Lock later units until the previous unit's concepts are mastered</span></label>
-            {acc.profile?.role === 'instructor' && <label className="toggle-row"><input type="checkbox" checked={p.settings.editor} onChange={e => setSettings({ editor: e.target.checked })} />
-              <span>Instructor mode: show "Edit this card" links that open the content file on GitHub (visible only to your instructor account)</span></label>}
           </div>
         </div>
         <div className="setrow">

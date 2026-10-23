@@ -4,6 +4,7 @@
  */
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { StudentMastery, CohortConcepts, MasteryLegend } from '../components/MasteryViews';
+import { useOverrides, locate, revertKeys, hash, useEditState, setEditMode } from '../store/overrides';
 import { supabase } from '../lib/supabase';
 import { useAccount } from '../store/account';
 import { normalise, dueConcepts, type Progress } from '../store/progress';
@@ -36,6 +37,8 @@ export function InstructorPage() {
   const [edit, setEdit] = useState<{ id: string; name: string; code: string; confirmDelete?: boolean } | null>(null);
   const [cohortMsg, setCohortMsg] = useState<string | null>(null);
   const [openStudent, setOpenStudent] = useState<string | null>(null);
+  const over = useOverrides();
+  const edState = useEditState();
   const [wa, setWa] = useState(''); const [waMsg, setWaMsg] = useState<string | null>(null);
 
   const load = async () => {
@@ -168,6 +171,27 @@ export function InstructorPage() {
         <table className="t2"><thead><tr><th style={{ textAlign: 'left' }}>Question</th><th>Card</th><th>Wrong first time</th></tr></thead>
           <tbody>{hardest.map(h => <tr key={h.id}><td style={{ textAlign: 'left' }}>{questionText(h.id, h.cardId)}</td><td>{cardById(h.cardId)?.title ?? h.cardId}</td><td>{h.wrong} of {h.n} ({Math.round(100 * h.rate)}%)</td></tr>)}</tbody></table>
       </div>}
+
+      <div className="section" style={{ overflowX: 'auto' }}>
+        <h3>Published text edits</h3>
+        {!Object.keys(over).length
+          ? <p className="hint">No text edits yet. Tick “Edit course text” in the sidebar, open any page and click a paragraph, question, option or feedback to edit it.{!edState.edit && <> <button className="btn ghost" onClick={() => setEditMode(true)}>Start editing</button></>}</p>
+          : <>
+            <p className="hint">Edits are published to all learners. An edit marked <b>outdated</b> no longer matches the course text underneath (the content was updated in the repository) and is ignored until you revert it or edit it again.</p>
+            <table className="t2">
+              <thead><tr><th style={{ textAlign: 'left' }}>Where</th><th style={{ textAlign: 'left' }}>Edited text</th><th>Status</th><th>Edited</th><th></th></tr></thead>
+              <tbody>{Object.values(over).sort((a, b) => a.key.localeCompare(b.key)).map(o => {
+                const l = locate(o.key); const live = l.original !== null && hash(l.original) === o.base_hash;
+                return <tr key={o.key}>
+                  <td style={{ textAlign: 'left' }}><a href={l.href}>{l.where}</a></td>
+                  <td style={{ textAlign: 'left', maxWidth: 420, whiteSpace: 'normal' }}>{o.md.replace(/[*_$`]/g, '').slice(0, 160)}{o.md.length > 160 ? '…' : ''}</td>
+                  <td>{live ? 'live' : <b style={{ color: 'var(--warn)' }}>outdated</b>}</td><td>{ago(o.updated_at)}</td>
+                  <td><button className="btn ghost" onClick={() => revertKeys([o.key])}>Revert</button></td>
+                </tr>;
+              })}</tbody>
+            </table>
+          </>}
+      </div>
 
       <div className="section">
         <h3>WhatsApp for student questions</h3>

@@ -1,12 +1,11 @@
 import { WELCOME } from '../content/welcome';
 import { CHAPTERS, UNITS, concepts } from '../content';
 import { coreCards } from '../content/types';
-import { Markdown } from '../components/Markdown';
+import { EditableMd } from '../components/EditableMd';
 import { Path, cardState } from '../components/Path';
 import { useProgress, dueConcepts, isMastered } from '../store/progress';
-import { useAccount, useEditorMode } from '../store/account';
+import { useAccount } from '../store/account';
 import { chapterCompletion } from '../store/gates';
-import { editUrl } from '../config';
 import { go } from '../App';
 
 const TOTAL_CHAPTERS = 15;
@@ -20,7 +19,6 @@ function partOfDay(d = new Date()) {
 export function WelcomePage() {
   const p = useProgress();
   const acc = useAccount();
-  const editor = useEditorMode();
   const open = CHAPTERS.filter(c => c.cards.length);
   const all = open.flatMap(c => coreCards(c));
   const doneCards = all.filter(k => p.cards[k.id]?.completedAt).length;
@@ -89,12 +87,11 @@ export function WelcomePage() {
 
         <article className="sheet letter s9" aria-labelledby="h-letter">
           <h2 id="h-letter" style={{ fontSize: 22, lineHeight: '28px', marginBottom: 18 }}>{WELCOME.title}</h2>
-          <Markdown>{WELCOME.intro}</Markdown>
-          <Markdown>{WELCOME.whatIsEpi}</Markdown>
-          <Markdown>{WELCOME.whyItMatters}</Markdown>
-          <Markdown>{WELCOME.theBook}</Markdown>
-          <Markdown>{WELCOME.howToUse}</Markdown>
-          {editor && <p className="edit-link" style={{ marginTop: 20 }}>Instructor: <a href={editUrl('apps/web/src/content/welcome.ts')} target="_blank" rel="noreferrer">edit this letter on GitHub</a></p>}
+          <EditableMd scope="welcome.intro">{WELCOME.intro}</EditableMd>
+          <EditableMd scope="welcome.whatisepi">{WELCOME.whatIsEpi}</EditableMd>
+          <EditableMd scope="welcome.whyitmatters">{WELCOME.whyItMatters}</EditableMd>
+          <EditableMd scope="welcome.thebook">{WELCOME.theBook}</EditableMd>
+          <EditableMd scope="welcome.howtouse">{WELCOME.howToUse}</EditableMd>
         </article>
 
         <aside className="panel s3" aria-labelledby="h-about" style={{ position: 'sticky', top: 24 }}>

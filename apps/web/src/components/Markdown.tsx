@@ -2,9 +2,10 @@ import { useMemo } from 'react';
 import { marked } from 'marked';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
+import DOMPurify from 'dompurify';
 import { renderPreviews } from '../content/glossary';
 
-/** Render trusted instructor markdown with $inline$ and $$display$$ maths. Content is authored in-repo, so no sanitiser. */
+/** Render instructor markdown with $inline$ and $$display$$ maths. Repository content is trusted; database edits are sanitised. */
 function renderMath(src: string): string {
   // display first, then inline; protect code spans
   const codes: string[] = [];
@@ -15,11 +16,13 @@ function renderMath(src: string): string {
   return s;
 }
 
-export function Markdown({ children, className = 'prose', inline = false }: { children: string; className?: string; inline?: boolean }) {
+/** `sanitize` is set for text that comes from the database (published inline edits) rather than the repository. */
+export function Markdown({ children, className = 'prose', inline = false, sanitize = false }: { children: string; className?: string; inline?: boolean; sanitize?: boolean }) {
   const html = useMemo(() => {
     const src = renderPreviews(renderMath(children));
-    return (inline ? marked.parseInline(src, { async: false }) : marked.parse(src, { async: false })) as string;
-  }, [children, inline]);
+    const out = (inline ? marked.parseInline(src, { async: false }) : marked.parse(src, { async: false })) as string;
+    return sanitize ? DOMPurify.sanitize(out, { FORBID_TAGS: ['style', 'form', 'input', 'iframe', 'object', 'embed'] }) : out;
+  }, [children, inline, sanitize]);
   return inline ? <span className={className} dangerouslySetInnerHTML={{ __html: html }} /> : <div className={className} dangerouslySetInnerHTML={{ __html: html }} />;
 }
 

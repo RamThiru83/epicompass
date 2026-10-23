@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { CHAPTERS, UNITS, conceptById } from '../content';
+import { CHAPTERS, UNITS, conceptById, concepts } from '../content';
 import { coreCards } from '../content/types';
-import { useProgress, dueConcepts, setSettings, resetProgress } from '../store/progress';
+import { useProgress, dueConcepts, setSettings, resetProgress, isMastered } from '../store/progress';
 import { chapterCompletion } from '../store/gates';
 import { go } from '../App';
 import { useAccount } from '../store/account';
@@ -12,57 +12,94 @@ export function HomePage() {
   const [confirmReset, setConfirmReset] = useState(false);
   const acc = useAccount();
   const due = dueConcepts(p);
+  const open = CHAPTERS.filter(c => c.cards.length);
   const totalCards = CHAPTERS.reduce((s, c) => s + coreCards(c).length, 0);
   const doneCards = CHAPTERS.reduce((s, c) => s + coreCards(c).filter(k => p.cards[k.id]?.completedAt).length, 0);
-  const next = CHAPTERS.find(c => c.cards.length && chapterCompletion(p, c) < 1);
+  const taught = concepts.filter(c => open.some(ch => ch.number === c.chapter));
+  const mastered = taught.filter(c => isMastered(p, c.id)).length;
+  const next = open.find(c => chapterCompletion(p, c) < 1);
   return (
     <div>
-      <div className="crumbs">Epidemiology 101 · MSc Clinical Research</div>
-      <h2>My progress</h2>
-      <p className="reading">Mastery, not time, moves you on. Read the chapter first, then work the cards; revisits appear here when a concept is due.</p>
-
-      <div className="stats">
-        <div className="stat"><div className="k">Cards completed</div><div className="v">{doneCards} / {totalCards}</div></div>
-        <div className="stat ok"><div className="k">Concepts mastered</div><div className="v">{Object.values(p.mastery).filter(m => m.pKnown >= 0.85).length}</div></div>
-        <div className="stat warn"><div className="k">Revisits due</div><div className="v">{due.length}</div></div>
-      </div>
-
-      {due.length > 0 && (
-        <div className="section">
-          <h3>Revisit before new material</h3>
-          <p className="prose">These concepts are due for a spaced check: {due.map(d => conceptById(d)?.title ?? d).join(', ')}. Open the card that teaches each one and redo its check.</p>
+      <div className="title-row">
+        <div>
+          <h1>My progress</h1>
+          <p className="sub">Mastery, not time, moves you on. Read the chapter first, then work its cards; revisits appear here when a concept is due.</p>
         </div>
-      )}
-
-      <div className="section">
-        <h3>Continue</h3>
-        {next ? <button className="btn" onClick={() => go(`#/ch/${next.number}`)}>Chapter {next.number}: {next.title}</button> : <p className="prose">All available chapters complete. More arrive in the next release.</p>}
+        {next && <button className="btn" onClick={() => go(`#/ch/${next.number}`)}>Continue Chapter {next.number}</button>}
       </div>
 
-      <div className="section">
-        <h3>Course map</h3>
-        <div className="prose">
-          {UNITS.map(u => (
-            <p key={u.id}><strong>Unit {u.id} · {u.title}</strong> (chapters {u.chapters.join(', ')}): {u.outcome}</p>
-          ))}
+      <div className="grid">
+        <div className="tiles three s12">
+          <div className="tile"><span className="k">Cards completed</span><span className="v">{doneCards} <small>of {totalCards}</small></span><span className="c">Optional videos are not counted</span></div>
+          <div className="tile"><span className="k">Concepts mastered</span><span className="v">{mastered} <small>of {taught.length}</small></span><span className="c">At 85% estimated mastery</span></div>
+          <div className="tile"><span className="k">Revisits due</span><span className="v">{due.length}</span><span className="c">{due.length ? 'Redo the check of each card below' : 'Nothing due today'}</span></div>
         </div>
+
+        <section className="panel s8" aria-labelledby="h-chapters">
+          <div className="panel-head"><h2 id="h-chapters">Chapters</h2><span className="aside">Cards complete</span></div>
+          <div className="rows">
+            {open.map(c => {
+              const core = coreCards(c);
+              const d = core.filter(k => p.cards[k.id]?.completedAt).length;
+              return (
+                <button key={c.number} className="rowcard" onClick={() => go(`#/ch/${c.number}`)}>
+                  <span><div className="title">{c.number}. {c.title}</div><div className="meta">Unit {c.unit} · {c.reading}</div></span>
+                  <span style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                    <span className="bar" style={{ width: 72 }}><i style={{ width: `${(100 * d) / core.length}%` }} /></span>
+                    <span className="num" style={{ minWidth: 44, textAlign: 'right' }}>{d} / {core.length}</span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
+        <div className="s4" style={{ display: 'grid', gap: 16 }}>
+        <section className="panel" aria-labelledby="h-due">
+          <div className="panel-head"><h2 id="h-due">Revisit before new material</h2></div>
+          {due.length > 0
+            ? <div className="kv">{due.map(d => <div key={d}><dt>{conceptById(d)?.title ?? d}</dt><dd>Chapter {conceptById(d)?.chapter}</dd></div>)}</div>
+            : <p className="hint">No concept is due for a spaced check. Concepts you have answered come back here a few days later, so the idea stays with you.</p>}
+        </section>
+        <section className="panel" aria-labelledby="h-cbc">
+          <div className="panel-head"><h2 id="h-cbc">Concepts mastered</h2><span className="aside">By chapter</span></div>
+          <dl className="kv">{open.map(c => {
+            const cs = taught.filter(k => k.chapter === c.number);
+            return <div key={c.number}><dt>Chapter {c.number}</dt><dd className="num">{cs.filter(k => isMastered(p, k.id)).length} of {cs.length}</dd></div>;
+          })}</dl>
+        </section>
+        </div>
+
+        <section className="panel s12" aria-labelledby="h-map">
+          <div className="panel-head"><h2 id="h-map">Course map</h2><span className="aside">What you should be able to do at the end of each unit</span></div>
+          <div className="kv">
+            {UNITS.map(u => <div key={u.id} style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 220px) minmax(0, 1fr)', gap: 16 }}><dt>Unit {u.id}: {u.title}<br /><span className="hint">Chapters {u.chapters.join(', ')}</span></dt><dd style={{ textAlign: 'left' }}>{u.outcome}</dd></div>)}
+          </div>
+        </section>
       </div>
 
-      <div className="section">
-        <h3>Settings</h3>
-        <label className="row" style={{ justifyContent: 'flex-start' }}>
-          <input type="checkbox" checked={p.settings.hardGates} onChange={e => setSettings({ hardGates: e.target.checked })} />
-          Lock later units until the previous unit's concepts are mastered
-        </label>
-        {acc.profile?.role === 'instructor' && <label className="row" style={{ justifyContent: 'flex-start' }}>
-          <input type="checkbox" checked={p.settings.editor} onChange={e => setSettings({ editor: e.target.checked })} />
-          Instructor mode: show "Edit this card" links that open the content file on GitHub (visible only to your instructor account)
-        </label>}
-        <div className="actions">
-          <button className="btn ghost" onClick={() => { if (confirmReset) { resetProgress(); setConfirmReset(false); } else { setConfirmReset(true); setTimeout(() => setConfirmReset(false), 4000); } }}>{confirmReset ? 'Click again to confirm reset' : 'Reset my progress'}</button>
-          <span className="hint">{acc.session ? 'Progress is saved to your account and on this device.' : cloudEnabled ? <>Progress is stored in this browser only. <a href="#/account">Sign in or join</a> to save it across devices.</> : 'Progress is stored in this browser only.'}</span>
+      <section style={{ marginTop: 48 }} aria-labelledby="h-settings">
+        <h2 id="h-settings" style={{ fontSize: 18, marginBottom: 24 }}>Settings</h2>
+        <div className="setrow">
+          <div className="lbl"><h2>Unit locks</h2><p>Keep yourself to the course order.</p></div>
+          <div className="panel">
+            <label className="toggle-row"><input type="checkbox" checked={p.settings.hardGates} onChange={e => setSettings({ hardGates: e.target.checked })} />
+              <span>Lock later units until the previous unit's concepts are mastered</span></label>
+            {acc.profile?.role === 'instructor' && <label className="toggle-row"><input type="checkbox" checked={p.settings.editor} onChange={e => setSettings({ editor: e.target.checked })} />
+              <span>Instructor mode: show "Edit this card" links that open the content file on GitHub (visible only to your instructor account)</span></label>}
+          </div>
         </div>
-      </div>
+        <div className="setrow">
+          <div className="lbl"><h2>Where your progress is kept</h2><p>{acc.session ? 'Saved to your account and on this device.' : 'In this browser only.'}</p></div>
+          <div className="panel">
+            <p style={{ margin: 0 }}>{acc.session ? 'Sign in with the same email on any device to continue where you left off.' : cloudEnabled ? <>Progress is stored in this browser only. <a href="#/account">Sign in or join</a> to save it across devices.</> : 'Progress is stored in this browser only.'}</p>
+            <div className="actions" style={{ marginTop: 16 }}>
+              <button className="btn ghost" style={{ color: 'var(--negative)' }} onClick={() => { if (confirmReset) { resetProgress(); setConfirmReset(false); } else { setConfirmReset(true); setTimeout(() => setConfirmReset(false), 4000); } }}>{confirmReset ? 'Click again to erase all progress' : 'Reset my progress'}</button>
+              <span className="hint">Erases every card, answer and mastery estimate.</span>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

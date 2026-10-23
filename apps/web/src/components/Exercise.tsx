@@ -43,7 +43,7 @@ export function Exercise({ cardId, template, required, onSatisfied }: { cardId: 
       </div>
       {template.hints.slice(0, hints).map((h, i) => <p key={i} className="hint">Hint {i + 1}: {h}</p>)}
       {result && Object.values(result).every(Boolean) && <p className="reached">Correct. {passed + 1 >= required ? 'Practice requirement met.' : `${required - passed - 1} more to go.`}</p>}
-      {showSolution && <div className="section" style={{ marginTop: 12 }}><h3>Worked solution</h3><Markdown>{fill(template.solution, { ...inst.params, ...inst.key, ...formatted })}</Markdown></div>}
+      {showSolution && <div className="panel" style={{ marginTop: 16 }}><h3 style={{ marginBottom: 8 }}>Worked solution</h3><Markdown>{fill(template.solution, { ...inst.params, ...inst.key, ...formatted })}</Markdown></div>}
     </div>
   );
 }

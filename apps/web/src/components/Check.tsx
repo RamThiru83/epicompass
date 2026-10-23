@@ -11,8 +11,8 @@ export function Check({ cardId, items, onAllAnswered }: { cardId: string; items:
   return (
     <div>
       {items.map((it, n) => (
-        <div key={it.id} style={{ marginBottom: 16 }}>
-          <div className="prose" style={{ fontWeight: 500 }}><Markdown>{`${n + 1}. ${it.prompt}`}</Markdown></div>
+        <div key={it.id} className="check-item">
+          <div><Markdown>{`${n + 1}. ${it.prompt}`}</Markdown></div>
           <div className="opts">
             {it.options.map((o, i) => {
               const sel = picked[it.id] === i;

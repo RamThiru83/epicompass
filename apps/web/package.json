@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@epicompass/epi-core": "*",
+    "@fontsource/instrument-sans": "^5.3.0",
+    "@fontsource/instrument-serif": "^5.3.0",
     "@supabase/supabase-js": "^2.45.4",
     "katex": "^0.16.11",
     "marked": "^14.1.3",

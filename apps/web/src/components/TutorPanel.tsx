@@ -11,11 +11,15 @@ import { go } from '../App';
 
 let cached: string | null | undefined;
 
+/** Open the panel from anywhere (the sidebar on desktop, the top bar on a phone). */
+export const openTutor = () => window.dispatchEvent(new Event('epi:ask'));
+
 export function TutorPanel({ card }: { card?: Card }) {
   const a = useAccount();
   const [open, setOpen] = useState(false);
   const [num, setNum] = useState<string | null | undefined>(cached);
   const [q, setQ] = useState('');
+  useEffect(() => { const h = () => setOpen(true); addEventListener('epi:ask', h); return () => removeEventListener('epi:ask', h); }, []);
 
   useEffect(() => {
     if (!open || !a.session || !supabase || num !== undefined) return;
@@ -23,7 +27,7 @@ export function TutorPanel({ card }: { card?: Card }) {
   }, [open, a.session, num]);
   useEffect(() => { if (!a.session) { cached = undefined; setNum(undefined); } }, [a.session]);
 
-  if (!open) return <button className="tutor-fab" onClick={() => setOpen(true)}>Ask your instructor</button>;
+  if (!open) return null;
 
   const where = card ? `Chapter ${card.chapter}, card "${card.title}"` : 'EpiCompass';
   const message = () => [

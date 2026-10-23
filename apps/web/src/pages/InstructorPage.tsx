@@ -104,35 +104,35 @@ export function InstructorPage() {
   };
 
   if (!a.ready) return <p className="hint">Loading…</p>;
-  if (a.profile?.role !== 'instructor') return <div><h2>Class dashboard</h2><p className="reading">This page is for the course instructor.</p></div>;
+  if (a.profile?.role !== 'instructor') return <div><div className="title-row"><h1>Class dashboard</h1></div><p className="reading">This page is for the course instructor.</p></div>;
 
   return (
     <div>
-      <div className="crumbs">Instructor</div>
-      <h2>Class dashboard</h2>
-      <div className="actions" style={{ marginBottom: 12 }}>
-        <select id="ins-cohort" aria-label="Cohort" value={cohort} onChange={e => setCohort(e.target.value)}>
+      <div className="title-row"><div><div className="crumbs">Instructor</div>
+      <h1>Class dashboard</h1></div>
+      <div className="actions" style={{ marginTop: 0 }}>
+        <select id="ins-cohort" aria-label="Cohort" style={{ height: 36 }} value={cohort} onChange={e => setCohort(e.target.value)}>
           <option value="all">All cohorts</option>
           {cohorts.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
         </select>
         <button className="btn ghost" onClick={load} disabled={loading}>{loading ? 'Loading…' : 'Refresh'}</button>
         <button className="btn ghost" onClick={csv} disabled={!shown.length}>Download CSV</button>
-      </div>
-      {err && <p className="fb" style={{ color: 'var(--warn)' }}>{err}</p>}
+      </div></div>
+      {err && <p className="fb" style={{ color: 'var(--negative)' }}>{err}</p>}
 
       {!shown.length && <div className="section"><p className="hint">No students yet. Share a join code (below); students appear here once they create an account.</p></div>}
 
       {groups.map(g => {
         const cards = g.students.map(r => stats(r.progress).cards).sort((x, y) => x - y);
         return (
-        <div key={g.id} className="section" style={{ overflowX: 'auto' }}>
+        <div key={g.id} className="section table-wrap">
           <h3>{g.name} <span className="hint" style={{ fontWeight: 400 }}>{g.code && <>· code <span className="mono">{g.code}</span> </>}· {g.students.length} student{g.students.length === 1 ? '' : 's'}</span></h3>
           <div className="stats" style={{ marginTop: 6 }}>
             <div className="stat ok"><div className="k">Active in the last 7 days</div><div className="v">{g.students.filter(r => r.updated_at && Date.now() - new Date(r.updated_at).getTime() < 7 * 86400000).length}</div></div>
             <div className="stat"><div className="k">Median cards completed</div><div className="v">{cards.length ? cards[Math.floor((cards.length - 1) / 2)] : 0} / {ALL_CARDS.length}</div></div>
           </div>
           <p className="hint">Click a student's name to see their concept mastery.</p>
-          <table className="t2 roster">
+          <table className="roster">
             <thead><tr><th style={{ textAlign: 'left' }}>Name</th><th style={{ textAlign: 'left' }}>Email</th><th>Cards</th><th>Mastered</th><th>Revisits due</th><th>Last saved</th><th></th></tr></thead>
             <tbody>{g.students.map(r => { const s = stats(r.progress); const open = openStudent === r.id; return (<Fragment key={r.id}>
               <tr className={open ? 'open' : ''}>

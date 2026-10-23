@@ -6,46 +6,54 @@ import { useAccount } from '../store/account';
 import { cloudEnabled } from '../lib/supabase';
 import logoUrl from '../assets/bric-thsti-logo.png';
 import markUrl from '../assets/epicompass-mark.svg';
+import { openTutor } from './TutorPanel';
 
-export function Sidebar({ units, chapters, active, route }: { units: Unit[]; chapters: Chapter[]; active?: number; route?: string }) {
+/** Open-plane sidebar on the page ground. On tablets and phones it is hidden behind the top bar's Menu
+ *  button and opens as a full-screen sheet (`open`). */
+export function Sidebar({ units, chapters, active, route, open }: { units: Unit[]; chapters: Chapter[]; active?: number; route?: string; open?: boolean }) {
   const p = useProgress();
   const acc = useAccount();
   return (
-    <aside className="sidebar">
-      <a className="inst-logo" href="https://thsti.res.in" target="_blank" rel="noreferrer" title="BRIC-Translational Health Science and Technology Institute">
-        <img src={logoUrl} alt="BRIC, a DBT organisation, and THSTI, Translational Health Science and Technology Institute" />
-      </a>
-      <button className="brand" onClick={() => go('#/')} style={{ background: 'none', border: 0, padding: 0, color: 'inherit' }}>
-        <img className="mark" src={markUrl} alt="" width={28} height={28} /><h1>EpiCompass</h1><small>v0.1</small>
+    <aside className={`sidebar ${open ? 'open' : ''}`} id="site-nav" aria-label="Course navigation">
+      <button className="brand" onClick={() => go('#/')}>
+        <img className="mark" src={markUrl} alt="" width={26} height={26} />
+        <span><span className="name">EpiCompass</span><small>Epidemiology 101</small></span>
       </button>
-      <div className="unit">
-        <button className={`chap ${route === 'home' ? 'active' : ''}`} onClick={() => go('#/')}><span className="n">·</span><span className="t">Welcome: a note before you begin</span></button>
-        <button className={`chap ${route === 'progress' ? 'active' : ''}`} onClick={() => go('#/progress')}><span className="n">·</span><span className="t">My progress and settings</span></button>
-        {cloudEnabled && <button className={`chap ${route === 'account' ? 'active' : ''}`} onClick={() => go('#/account')}>
-          <span className="n">·</span><span className="t">{acc.session ? (acc.profile?.full_name ?? 'My account') : 'Sign in or join'}</span>
+      <button className="btn ghost ask" onClick={openTutor}>Ask your instructor</button>
+      <nav className="nav-group">
+        <button className={`chap plain ${route === 'home' ? 'active' : ''}`} onClick={() => go('#/')} aria-current={route === 'home' ? 'page' : undefined}><span className="t">Home and welcome letter</span></button>
+        <button className={`chap plain ${route === 'progress' ? 'active' : ''}`} onClick={() => go('#/progress')} aria-current={route === 'progress' ? 'page' : undefined}><span className="t">My progress and settings</span></button>
+        {cloudEnabled && <button className={`chap plain ${route === 'account' ? 'active' : ''}`} onClick={() => go('#/account')} aria-current={route === 'account' ? 'page' : undefined}>
+          <span className="t">{acc.session ? (acc.profile?.full_name ?? 'My account') : 'Sign in or join'}</span>
           {acc.session && <span className={`sync ${acc.sync}`} title={acc.sync === 'error' ? 'Last save failed' : acc.sync === 'saving' ? 'Saving…' : 'Saved to your account'} />}
         </button>}
-        {acc.profile?.role === 'instructor' && <button className={`chap ${route === 'instructor' ? 'active' : ''}`} onClick={() => go('#/instructor')}><span className="n">·</span><span className="t">Class dashboard</span></button>}
-      </div>
+        {acc.profile?.role === 'instructor' && <button className={`chap plain ${route === 'instructor' ? 'active' : ''}`} onClick={() => go('#/instructor')} aria-current={route === 'instructor' ? 'page' : undefined}><span className="t">Class dashboard</span></button>}
+      </nav>
       {units.map(u => {
         const unlocked = unitUnlocked(p, u, chapters);
         return (
-          <div className="unit" key={u.id}>
-            <div className="unit-head"><span>Unit {u.id} · {u.title}</span>{!unlocked && p.settings.hardGates && <span className="lock" title="Complete the previous unit's concepts to unlock">locked</span>}</div>
+          <nav className="nav-group" key={u.id} aria-label={`Unit ${u.id}: ${u.title}`}>
+            <div className="unit-head"><span>Unit {u.id}: {u.title}</span>{!unlocked && p.settings.hardGates && <span className="lock" title="Complete the previous unit's concepts to unlock">Locked</span>}</div>
             {u.chapters.map(n => {
               const ch = chapters.find(c => c.number === n)!;
               const done = chapterCompletion(p, ch);
               const locked = !unlocked && p.settings.hardGates;
               return (
-                <button key={n} className={`chap ${active === n ? 'active' : ''} ${locked ? 'locked' : ''}`} disabled={locked} onClick={() => go(`#/ch/${n}`)}>
+                <button key={n} className={`chap ${active === n ? 'active' : ''} ${locked ? 'locked' : ''}`} disabled={locked} onClick={() => go(`#/ch/${n}`)} aria-current={active === n ? 'page' : undefined}>
                   <span className="n">{n}</span><span className="t">{ch.title}</span>
-                  {ch.cards.length > 0 && <span className="bar" title={`${Math.round(done * 100)}% of cards complete`}><i style={{ width: `${done * 100}%` }} /></span>}
+                  {ch.cards.length > 0 ? <span className="bar" title={`${Math.round(done * 100)}% of cards complete`}><i style={{ width: `${done * 100}%` }} /></span> : <span />}
                 </button>
               );
             })}
-          </div>
+          </nav>
         );
       })}
+      <div className="side-foot">
+        <a className="inst-logo" href="https://thsti.res.in" target="_blank" rel="noreferrer" title="BRIC-Translational Health Science and Technology Institute">
+          <img src={logoUrl} alt="BRIC, a DBT organisation, and THSTI, Translational Health Science and Technology Institute" />
+        </a>
+        <p>Maternal and Child Health Programme, BRIC-THSTI, Faridabad</p>
+      </div>
     </aside>
   );
 }

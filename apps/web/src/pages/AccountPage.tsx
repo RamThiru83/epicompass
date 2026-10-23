@@ -16,14 +16,15 @@ export function AccountPage() {
   const upd = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setF(s => ({ ...s, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));
 
-  if (!cloudEnabled) return <div><h2>Accounts</h2><p className="reading">Accounts are not switched on for this copy of the app; progress is saved in this browser only.</p></div>;
-  if (!a.ready) return <div><h2>Account</h2><p className="hint">Checking your sign-in…</p></div>;
+  if (!cloudEnabled) return <div><div className="title-row"><h1>Accounts</h1></div><p className="reading">Accounts are not switched on for this copy of the app; progress is saved in this browser only.</p></div>;
+  if (!a.ready) return <div><div className="title-row"><h1>Account</h1></div><p className="hint">Checking your sign-in…</p></div>;
 
   if (a.session) {
     return (
       <div>
-        <div className="crumbs">Account</div>
-        <h2>{a.profile?.full_name ?? a.session.user.email}</h2>
+        <div className="title-row"><div><div className="crumbs">Account</div>
+        <h1>{a.profile?.full_name ?? a.session.user.email}</h1></div></div>
+        <div className="grid"><div className="s8">
         <div className="section">
           <h3>Your account</h3>
           <div className="prose">
@@ -44,6 +45,7 @@ export function AccountPage() {
           </form>
           {msg && <p className="hint">{msg}</p>}
         </div>
+        </div></div>
       </div>
     );
   }
@@ -56,15 +58,15 @@ export function AccountPage() {
   };
 
   return (
-    <div style={{ maxWidth: 520 }}>
-      <div className="crumbs">Account</div>
-      <h2>{mode === 'in' ? 'Sign in' : 'Create your account'}</h2>
-      <p className="reading">{mode === 'in'
+    <div className="grid"><div className="s6" style={{ maxWidth: 560 }}>
+      <div className="title-row" style={{ marginBottom: 20 }}><div><div className="crumbs">Account</div>
+      <h1>{mode === 'in' ? 'Sign in' : 'Create your account'}</h1>
+      <p className="sub">{mode === 'in'
         ? 'Sign in to save your progress across devices.'
-        : 'You need the join code your instructor gave the class. Use an email address you check, and a password you will remember.'}</p>
-      <div className="steps">
-        <button className={`step ${mode === 'in' ? 'now' : ''}`} style={{ cursor: 'pointer' }} onClick={() => { setMode('in'); setMsg(null); }}>I have an account</button>
-        <button className={`step ${mode === 'up' ? 'now' : ''}`} style={{ cursor: 'pointer' }} onClick={() => { setMode('up'); setMsg(null); }}>I'm new: join with a code</button>
+        : 'You need the join code your instructor gave the class. Use an email address you check, and a password you will remember.'}</p></div></div>
+      <div className="segctl" role="tablist">
+        <button className={mode === 'in' ? 'now' : ''} onClick={() => { setMode('in'); setMsg(null); }}>I have an account</button>
+        <button className={mode === 'up' ? 'now' : ''} onClick={() => { setMode('up'); setMsg(null); }}>I'm new: join with a code</button>
       </div>
       <form className="section account-form" onSubmit={submit}>
         {mode === 'up' && <>
@@ -89,9 +91,20 @@ export function AccountPage() {
           <button className="btn" disabled={busy}>{busy ? 'Please wait…' : mode === 'in' ? 'Sign in' : 'Create account'}</button>
           {mode === 'in' && <span className="hint">Forgotten your password? Ask your instructor to set a temporary one.</span>}
         </div>
-        {msg && <p className="fb" role="alert" style={{ color: 'var(--warn)' }}>{msg}</p>}
+        {msg && <p className="fb" role="alert" style={{ color: 'var(--negative)' }}>{msg}</p>}
       </form>
       <p className="hint">You can also use EpiCompass without an account; your progress then stays in this browser only and your instructor will not see it.</p>
+    </div>
+    <aside className="panel s6" style={{ marginTop: 92 }} aria-labelledby="h-why">
+      <div className="panel-head"><h2 id="h-why">What an account does</h2></div>
+      <dl className="kv">
+        <div><dt>Progress</dt><dd>Saved across your devices</dd></div>
+        <div><dt>Your instructor</dt><dd>Sees your class progress</dd></div>
+        <div><dt>Questions</dt><dd>Ask on WhatsApp from any card</dd></div>
+        <div><dt>Data held</dt><dd>Name, email, cohort, answers</dd></div>
+        <div><dt>Stored in</dt><dd>Mumbai, India</dd></div>
+      </dl>
+    </aside>
     </div>
   );
 }

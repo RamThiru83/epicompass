@@ -26,7 +26,7 @@ export function AccountPage() {
         <h1>{a.profile?.full_name ?? a.session.user.email}</h1></div></div>
         <div className="grid"><div className="s8">
         <div className="section">
-          <h3>Your account</h3>
+          <h2 className='sec-h'>Your account</h2>
           <div className="prose">
             <p>Signed in as <b>{a.session.user.email}</b>{a.cohortName && <> · cohort <b>{a.cohortName}</b></>}{a.profile?.role === 'instructor' && <> · <b>instructor</b></>}.</p>
             <p>Your progress is saved to your account{a.sync === 'saved' && a.lastSaved ? <> (last saved {new Date(a.lastSaved).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })})</> : null}{a.sync === 'error' && <>; <b>the last save failed</b>, and the app will retry with your next answer</>}. Sign in with the same email and password on any device to continue where you left off.</p>
@@ -38,7 +38,7 @@ export function AccountPage() {
           </div>
         </div>
         <div className="section">
-          <h3>Change password</h3>
+          <h2 className='sec-h'>Change password</h2>
           <form className="row" style={{ justifyContent: 'flex-start', flexWrap: 'wrap' }} onSubmit={async e => { e.preventDefault(); setBusy(true); const err = await changePassword(newPw); setBusy(false); setMsg(err ?? 'Password changed.'); if (!err) setNewPw(''); }}>
             <input id="acc-newpw" type="password" autoComplete="new-password" placeholder="New password (8+ characters)" value={newPw} onChange={e => setNewPw(e.target.value)} style={{ width: 260 }} aria-label="New password" />
             <button className="btn ghost" disabled={busy}>Change password</button>

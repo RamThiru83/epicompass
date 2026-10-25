@@ -1,3 +1,4 @@
+import { useState } from 'react';
 /**
  * Concept-mastery views for the class dashboard.
  *  - StudentMastery: one student's concepts as bullet bars (estimate vs the 85% mastery line), grouped by chapter.
@@ -34,12 +35,34 @@ export function MasteryLegend() {
 export function StudentMastery({ name, progress, concepts }: { name: string; progress: Progress; concepts: Concept[] }) {
   const counts = { mastered: 0, learning: 0, none: 0 };
   for (const c of concepts) counts[statusOf(progress, c.id)]++;
+  const [all, setAll] = useState(false);
+  // Default view: what needs attention (learning, weakest first); mastered and not-started on request.
+  const learning = concepts.filter(c => statusOf(progress, c.id) === 'learning').sort((a, b) => progress.mastery[a.id].pKnown - progress.mastery[b.id].pKnown);
+  if (!all) return (
+    <div className="mv-student">
+      <div className="mv-head">
+        <b>{name}</b>
+        <span className="hint">{counts.mastered} mastered · {counts.learning} learning · {counts.none} not started, of {concepts.length} concepts</span>
+      </div>
+      <div className="mv-chapter">
+        <div className="mv-ch">{learning.length ? 'Still learning, weakest first' : 'Nothing in progress'}</div>
+        {learning.map(c => { const m = progress.mastery[c.id]; const label = `Learning · ${pct(m.pKnown)} · ${m.attempts} attempt${m.attempts === 1 ? '' : 's'}`; return (
+          <div key={c.id} className="mv-row" title={`${c.title}: ${label}`}>
+            <span className="mv-name">Ch {c.chapter} · {c.title}</span>
+            <span className="mv-track" role="img" aria-label={`${c.title}: ${label}`}><i className="mv-fill learning" style={{ width: `${Math.max(2, m.pKnown * 100)}%` }} /><b className="mv-goal" style={{ left: pct(MASTERY_THRESHOLD) }} /></span>
+            <span className="mv-val learning">{label}</span>
+          </div>); })}
+      </div>
+      <button className="textlink" onClick={() => setAll(true)}>Show all {concepts.length} concepts by chapter</button>
+    </div>
+  );
   return (
     <div className="mv-student">
       <div className="mv-head">
         <b>{name}</b>
         <span className="hint">{counts.mastered} mastered · {counts.learning} learning · {counts.none} not started, of {concepts.length} concepts</span>
       </div>
+      <button className="textlink" onClick={() => setAll(false)}>Show only concepts still being learnt</button>
       {byChapter(concepts).map(([ch, cs]) => (
         <div key={ch} className="mv-chapter">
           <div className="mv-ch">Chapter {ch}</div>

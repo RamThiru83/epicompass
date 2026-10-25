@@ -1,10 +1,10 @@
 import type { Chapter } from '../content/types';
 import { coreCards } from '../content/types';
-import { UNITS, conceptById } from '../content';
+import { UNITS, conceptById, cardNumber } from '../content';
+import { MasteryMeter, masteryText } from '../components/Mastery';
 import { EditableMd } from '../components/EditableMd';
 import { Path, cardState } from '../components/Path';
 import { useProgress } from '../store/progress';
-import { MASTERY_THRESHOLD } from '@epicompass/epi-core';
 import { go } from '../App';
 
 export function ChapterPage({ chapter }: { chapter: Chapter }) {
@@ -27,9 +27,11 @@ export function ChapterPage({ chapter }: { chapter: Chapter }) {
 
       <div className="grid">
         <div className={core.length ? 's9' : 's12'}>
-          <div className="sheet" style={{ marginBottom: 16 }}>
+          <div className={`sheet ${core.length ? 'note' : ''}`} style={{ marginBottom: 16 }}>
+            {core.length > 0 && <h2 className="note-title">Before you start</h2>}
             <EditableMd scope={`ch.${chapter.number}.summary`}>{chapter.summary}</EditableMd>
-            <p className="reading">Read first: {chapter.reading}</p>
+            {core.length > 0 && <p className="sign">Ram</p>}
+            <p className="reading">Read first in the book: {chapter.reading}</p>
           </div>
           {core.length === 0 && unit && <section className="panel" aria-labelledby="h-unit" style={{ marginBottom: 16 }}>
             <div className="panel-head"><h2 id="h-unit">What Unit {unit.id} will let you do</h2><span className="aside">Chapters {unit.chapters.join(', ')}</span></div>
@@ -38,11 +40,11 @@ export function ChapterPage({ chapter }: { chapter: Chapter }) {
           <section className="panel" aria-labelledby="h-cards">
             <div className="panel-head"><h2 id="h-cards">Cards</h2><span className="aside">{done} of {core.length} complete{chapter.cards.length > core.length ? ` · ${chapter.cards.length - core.length} optional video${chapter.cards.length - core.length > 1 ? 's' : ''}` : ''}</span></div>
             <div className="cardlist">
-              {chapter.cards.map((c, i) => {
+              {chapter.cards.map(c => {
                 const st = cardState(c, p);
                 return (
                   <button key={c.id} className="cardrow" onClick={() => go(`#/card/${c.id}`)}>
-                    <span className="idx">{chapter.number}.{i + 1}</span>
+                    <span className="idx">{cardNumber(c) ?? 'Video'}</span>
                     <span><div className="title">{c.title}</div><div className="meta">{c.bonus ? <>{c.minutes} min · video · optional</> : <>{c.minutes} min · {c.concepts.length} concept{c.concepts.length > 1 ? 's' : ''}{c.explore ? ' · interactive' : ''}{c.practise ? ' · practice problems' : ''}</>}</div></span>
                     {c.bonus ? <span /> : <Path card={c} p={p} />}
                     <span className={`state ${st}`}>{st === 'done' ? 'Complete' : st === 'started' ? 'In progress' : c.bonus ? 'Watch' : 'Not started'}</span>
@@ -66,16 +68,14 @@ export function ChapterPage({ chapter }: { chapter: Chapter }) {
           {ids.length > 0 && <section className="panel" aria-labelledby="h-con">
             <div className="panel-head"><h2 id="h-con">Concept mastery</h2></div>
             {ids.map(id => {
-              const m = p.mastery[id];
-              const v = m && m.attempts ? m.pKnown : 0;
               return (
                 <div className="concept" key={id}>
-                  <div className="top"><span>{conceptById(id)?.title ?? id}</span><span>{m && m.attempts ? `${Math.round(v * 100)}%` : '—'}</span></div>
-                  <div className="meter" aria-hidden><i style={{ width: `${v * 100}%` }} /><b style={{ left: `${MASTERY_THRESHOLD * 100}%` }} /></div>
+                  <div className="top"><span>{conceptById(id)?.title ?? id}</span><span>{masteryText(p.mastery[id])}</span></div>
+                  <MasteryMeter m={p.mastery[id]} />
                 </div>
               );
             })}
-            <p className="hint" style={{ marginTop: 10 }}>The tick marks the 85% mastery line.</p>
+            <p className="hint" style={{ marginTop: 10 }}>The tick marks the 85% mastery line. Estimates appear after two answers.</p>
           </section>}
         </aside>}
       </div>

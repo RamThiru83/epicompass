@@ -25,3 +25,14 @@ export const concepts: Concept[] = CONCEPTS;
 export const templates: Record<string, ExerciseTemplate> = Object.fromEntries(TEMPLATES.map(t => [t.id, t]));
 export const conceptById = (id: string) => CONCEPTS.find(c => c.id === id);
 export const cardById = (id: string) => CHAPTERS.flatMap(c => c.cards).find(c => c.id === id);
+
+/** Display number of a card: core cards are numbered 1, 2, 3… within their chapter; optional video cards
+ *  carry no number (they sit between core cards and would otherwise renumber them). */
+export function cardNumber(card: { id: string; chapter: number; bonus?: unknown }): string | null {
+  if (card.bonus) return null;
+  const ch = CHAPTERS.find(c => c.number === card.chapter);
+  if (!ch) return null;
+  const core = ch.cards.filter(k => !k.bonus);
+  return `${card.chapter}.${core.findIndex(k => k.id === card.id) + 1}`;
+}
+export const cardLabel = (card: { id: string; chapter: number; bonus?: unknown }) => cardNumber(card) ? `Card ${cardNumber(card)}` : 'Video';

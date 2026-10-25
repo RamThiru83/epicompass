@@ -129,21 +129,21 @@ export function InstructorPage() {
         const cards = g.students.map(r => stats(r.progress).cards).sort((x, y) => x - y);
         return (
         <div key={g.id} className="section table-wrap">
-          <h3>{g.name} <span className="hint" style={{ fontWeight: 400 }}>{g.code && <>· code <span className="mono">{g.code}</span> </>}· {g.students.length} student{g.students.length === 1 ? '' : 's'}</span></h3>
-          <div className="stats" style={{ marginTop: 6 }}>
+          <h2 className='sec-h'>{g.name} <span className="hint" style={{ fontWeight: 400 }}>{g.code && <>· code <span className="mono">{g.code}</span> </>}· {g.students.length} student{g.students.length === 1 ? '' : 's'}</span></h2>
+          <div className="stats flat" style={{ marginTop: 6 }}>
             <div className="stat ok"><div className="k">Active in the last 7 days</div><div className="v">{g.students.filter(r => r.updated_at && Date.now() - new Date(r.updated_at).getTime() < 7 * 86400000).length}</div></div>
             <div className="stat"><div className="k">Median cards completed</div><div className="v">{cards.length ? cards[Math.floor((cards.length - 1) / 2)] : 0} / {ALL_CARDS.length}</div></div>
           </div>
           <p className="hint">Click a student's name to see their concept mastery.</p>
           <table className="roster">
-            <thead><tr><th style={{ textAlign: 'left' }}>Name</th><th style={{ textAlign: 'left' }}>Email</th><th>Cards</th><th>Mastered</th><th>Revisits due</th><th>Last saved</th><th></th></tr></thead>
+            <thead><tr><th>Name</th><th>Email</th><th>Cards</th><th>Mastered</th><th>Revisits due</th><th>Last saved</th><th><span className="sr-only">Actions</span></th></tr></thead>
             <tbody>{g.students.map(r => { const s = stats(r.progress); const open = openStudent === r.id; return (<Fragment key={r.id}>
               <tr className={open ? 'open' : ''}>
-                <td style={{ textAlign: 'left' }}><button className="linkish" aria-expanded={open} onClick={() => setOpenStudent(open ? null : r.id)}>{open ? '▾' : '▸'} {r.full_name}</button></td>
-                <td style={{ textAlign: 'left' }}>{r.email}</td>
-                <td><span className="bar" style={{ display: 'inline-block', width: 60, marginRight: 6 }}><i style={{ width: `${100 * s.cards / ALL_CARDS.length}%` }} /></span>{s.cards}</td>
-                <td>{s.mastered} / {TAUGHT.length}</td><td>{s.due}</td><td>{ago(r.updated_at)}</td>
-                <td>{reset?.id === r.id
+                <td className="who"><button className="linkish disclose" aria-expanded={open} onClick={() => setOpenStudent(open ? null : r.id)}><svg viewBox="0 0 12 12" aria-hidden className="chev"><path d="M4 2.5l3.5 3.5L4 9.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>{r.full_name}</button></td>
+                <td data-label="Email">{r.email}</td>
+                <td data-label="Cards"><span className="bar" style={{ display: 'inline-block', width: 60, marginRight: 6 }}><i style={{ width: `${100 * s.cards / ALL_CARDS.length}%` }} /></span>{s.cards} / {ALL_CARDS.length}</td>
+                <td data-label="Mastered">{s.mastered} / {TAUGHT.length}</td><td data-label="Revisits due">{s.due}</td><td data-label="Last saved">{ago(r.updated_at)}</td>
+                <td className="act">{reset?.id === r.id
                   ? <form onSubmit={async e => { e.preventDefault(); const { error } = await supabase!.rpc('instructor_set_password', { target: r.id, new_password: reset.pw }); setReset({ ...reset, msg: error ? error.message : `Done. Give ${r.full_name.split(' ')[0]} this temporary password and ask them to change it under Account.` }); }} style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                       <input aria-label="Temporary password" type="text" value={reset.pw} onChange={e => setReset({ ...reset, pw: e.target.value })} style={{ width: 130 }} />
                       <button className="btn ghost">Set</button><button type="button" className="btn ghost" onClick={() => setReset(null)}>Cancel</button>
@@ -166,19 +166,19 @@ export function InstructorPage() {
       })}
 
       {hardest.length > 0 && <div className="section">
-        <h3>Questions the class finds hardest</h3>
+        <h2 className='sec-h'>Questions the class finds hardest</h2>
         <p className="hint">Share of students who got each check question wrong at their first attempt (questions answered by at least two students).</p>
-        <table className="t2"><thead><tr><th style={{ textAlign: 'left' }}>Question</th><th>Card</th><th>Wrong first time</th></tr></thead>
-          <tbody>{hardest.map(h => <tr key={h.id}><td style={{ textAlign: 'left' }}>{questionText(h.id, h.cardId)}</td><td>{cardById(h.cardId)?.title ?? h.cardId}</td><td>{h.wrong} of {h.n} ({Math.round(100 * h.rate)}%)</td></tr>)}</tbody></table>
+        <div className="t2-wrap"><table className="t2"><thead><tr><th style={{ textAlign: 'left' }}>Question</th><th>Card</th><th>Wrong first time</th></tr></thead>
+          <tbody>{hardest.map(h => <tr key={h.id}><td style={{ textAlign: 'left' }}>{questionText(h.id, h.cardId)}</td><td>{cardById(h.cardId)?.title ?? h.cardId}</td><td>{h.wrong} of {h.n} ({Math.round(100 * h.rate)}%)</td></tr>)}</tbody></table></div>
       </div>}
 
       <div className="section" style={{ overflowX: 'auto' }}>
-        <h3>Published text edits</h3>
+        <h2 className='sec-h'>Published text edits</h2>
         {!Object.keys(over).length
           ? <p className="hint">No text edits yet. Tick “Edit course text” in the sidebar, open any page and click a paragraph, question, option or feedback to edit it.{!edState.edit && <> <button className="btn ghost" onClick={() => setEditMode(true)}>Start editing</button></>}</p>
           : <>
             <p className="hint">Edits are published to all learners. An edit marked <b>outdated</b> no longer matches the course text underneath (the content was updated in the repository) and is ignored until you revert it or edit it again.</p>
-            <table className="t2">
+            <div className="t2-wrap"><table className="t2">
               <thead><tr><th style={{ textAlign: 'left' }}>Where</th><th style={{ textAlign: 'left' }}>Edited text</th><th>Status</th><th>Edited</th><th></th></tr></thead>
               <tbody>{Object.values(over).sort((a, b) => a.key.localeCompare(b.key)).map(o => {
                 const l = locate(o.key); const live = l.original !== null && hash(l.original) === o.base_hash;
@@ -189,12 +189,12 @@ export function InstructorPage() {
                   <td><button className="btn ghost" onClick={() => revertKeys([o.key])}>Revert</button></td>
                 </tr>;
               })}</tbody>
-            </table>
+            </table></div>
           </>}
       </div>
 
       <div className="section">
-        <h3>WhatsApp for student questions</h3>
+        <h2 className='sec-h'>WhatsApp for student questions</h2>
         <p className="hint">The "Ask your instructor" button opens WhatsApp to this number with the student's name, card and question filled in. Only signed-in students see it; it is not in the public code. Include the country code, e.g. +91 98xxx xxxxx. Leave empty to switch the button off.</p>
         <form className="actions" onSubmit={async e => {
           e.preventDefault(); setWaMsg(null);
@@ -214,8 +214,8 @@ export function InstructorPage() {
       </div>
 
       <div className="section">
-        <h3>Cohorts and join codes</h3>
-        <table className="t2"><thead><tr><th style={{ textAlign: 'left' }}>Cohort</th><th>Join code</th><th>Students</th><th>Accepting sign-ups</th><th></th></tr></thead>
+        <h2 className='sec-h'>Cohorts and join codes</h2>
+        <div className="t2-wrap"><table className="t2"><thead><tr><th style={{ textAlign: 'left' }}>Cohort</th><th>Join code</th><th>Students</th><th>Accepting sign-ups</th><th></th></tr></thead>
           <tbody>{cohorts.map(c => {
             const members = rows.filter(r => r.cohort_id === c.id).length;
             const editing = edit?.id === c.id;
@@ -248,7 +248,7 @@ export function InstructorPage() {
                 </span>}
               </td>
             </tr>;
-          })}</tbody></table>
+          })}</tbody></table></div>
         {cohortMsg && <p className="hint">{cohortMsg}</p>}
         <form className="actions" onSubmit={async e => { e.preventDefault(); const name = newCohort.name.trim(), code = cleanCode(newCohort.code); if (!name || !code) return; const { error } = await supabase!.from('cohorts').insert({ name, join_code: code }); if (error) setCohortMsg(error.code === '23505' ? `Another cohort already uses ${code}.` : error.message); else { setNewCohort({ name: '', code: '' }); setCohortMsg(`Added. Students can join with ${code}.`); load(); } }}>
           <input aria-label="New cohort name" placeholder="New cohort name" value={newCohort.name} onChange={e => setNewCohort({ ...newCohort, name: e.target.value })} style={{ width: 240 }} />

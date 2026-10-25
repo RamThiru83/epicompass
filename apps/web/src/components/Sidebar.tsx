@@ -30,8 +30,10 @@ export function Sidebar({ units, chapters, active, route, open }: { units: Unit[
           {acc.session && <span className={`sync ${acc.sync}`} title={acc.sync === 'error' ? 'Last save failed' : acc.sync === 'saving' ? 'Saving…' : 'Saved to your account'} />}
         </button>}
         {acc.profile?.role === 'instructor' && <button className={`chap plain ${route === 'instructor' ? 'active' : ''}`} onClick={() => go('#/instructor')} aria-current={route === 'instructor' ? 'page' : undefined}><span className="t">Class dashboard</span></button>}
-        {acc.profile?.role === 'instructor' && <label className="edtog"><input type="checkbox" checked={ed.edit} onChange={e => setEditMode(e.target.checked)} /> Edit course text</label>}
       </nav>
+      {acc.profile?.role === 'instructor' && <div className="tools" role="group" aria-label="Instructor tools">
+        <label className="toggle-row"><input type="checkbox" checked={ed.edit} onChange={e => setEditMode(e.target.checked)} /><span>Edit course text</span></label>
+      </div>}
       {units.map(u => {
         const unlocked = unitUnlocked(p, u, chapters);
         return (
@@ -42,9 +44,9 @@ export function Sidebar({ units, chapters, active, route, open }: { units: Unit[
               const done = chapterCompletion(p, ch);
               const locked = !unlocked && p.settings.hardGates;
               return (
-                <button key={n} className={`chap ${active === n ? 'active' : ''} ${locked ? 'locked' : ''}`} disabled={locked} onClick={() => go(`#/ch/${n}`)} aria-current={active === n ? 'page' : undefined}>
+                <button key={n} className={`chap ${active === n ? 'active' : ''} ${locked ? 'locked' : ''} ${ch.cards.length ? '' : 'soon'}`} disabled={locked} onClick={() => go(`#/ch/${n}`)} aria-current={active === n ? 'page' : undefined}>
                   <span className="n">{n}</span><span className="t">{ch.title}</span>
-                  {ch.cards.length > 0 ? <span className="bar" title={`${Math.round(done * 100)}% of cards complete`}><i style={{ width: `${done * 100}%` }} /></span> : <span />}
+                  {ch.cards.length > 0 ? <span className="bar" role="img" aria-label={`${Math.round(done * 100)}% of cards complete`} title={`${Math.round(done * 100)}% of cards complete`}><i style={{ width: `${done * 100}%` }} /></span> : <span className="soon-tag">Soon</span>}
                 </button>
               );
             })}

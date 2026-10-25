@@ -9,7 +9,7 @@
 import { useSyncExternalStore } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAccount } from './account';
-import { CHAPTERS, cardById } from '../content';
+import { CHAPTERS, cardById, cardLabel } from '../content';
 import { WELCOME } from '../content/welcome';
 
 export interface Override { key: string; md: string; base_hash: string; updated_at: string }
@@ -114,15 +114,14 @@ export function locate(key: string): { where: string; href: string; original: st
   else if (parts[0] === 'ch') { const ch = CHAPTERS.find(c => String(c.number) === parts[1]); field = ch?.summary; where = `Chapter ${parts[1]} summary`; href = `#/ch/${parts[1]}`; }
   else if (parts[0] === 'card') {
     const card = cardById(parts[1]); href = `#/card/${parts[1]}`;
-    const pos = card ? CHAPTERS.find(c => c.number === card.chapter)!.cards.indexOf(card) + 1 : 0;
-    where = card ? `Card ${card.chapter}.${pos} ${parts[2]}` : parts[1];
+    where = card ? `${cardLabel(card)} ${parts[2]}` : parts[1];
     field = parts[2] === 'hook' ? card?.hook : parts[2] === 'formalise' ? card?.formalise : parts[2] === 'explore' ? card?.explore?.prompt : undefined;
   } else if (parts[0] === 'chk') {
     for (const ch of CHAPTERS) for (const c of ch.cards) {
       const it = c.checks.find(x => x.id === parts[1]); if (!it) continue;
       href = `#/card/${c.id}`; const n = c.checks.indexOf(it) + 1;
       const f = parts[2];
-      where = `Card ${c.chapter}.${ch.cards.indexOf(c) + 1} check ${n} ${f === 'prompt' ? 'question' : f.startsWith('o') ? `option ${+f.slice(1) + 1}` : `feedback ${+f.slice(1) + 1}`}`;
+      where = `${cardLabel(c)} check ${n} ${f === 'prompt' ? 'question' : f.startsWith('o') ? `option ${+f.slice(1) + 1}` : `feedback ${+f.slice(1) + 1}`}`;
       field = f === 'prompt' ? it.prompt : f.startsWith('o') ? it.options[+f.slice(1)]?.text : it.options[+f.slice(1)]?.feedback;
     }
   }

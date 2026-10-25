@@ -3,7 +3,7 @@
  * pre-filled. The instructor's number is fetched from Supabase (tutor_contact RPC) and is returned only to
  * signed-in students in a cohort, so it never appears in the public code.
  */
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { Card } from '../content/types';
 import { supabase, cloudEnabled } from '../lib/supabase';
 import { useAccount } from '../store/account';
@@ -19,7 +19,16 @@ export function TutorPanel({ card }: { card?: Card }) {
   const [open, setOpen] = useState(false);
   const [num, setNum] = useState<string | null | undefined>(cached);
   const [q, setQ] = useState('');
-  useEffect(() => { const h = () => setOpen(true); addEventListener('epi:ask', h); return () => removeEventListener('epi:ask', h); }, []);
+  const opener = useRef<HTMLElement | null>(null);
+  const box = useRef<HTMLDivElement>(null);
+  useEffect(() => { const h = () => { opener.current = document.activeElement as HTMLElement; setOpen(true); }; addEventListener('epi:ask', h); return () => removeEventListener('epi:ask', h); }, []);
+  const close = () => { setOpen(false); requestAnimationFrame(() => opener.current?.focus()); };
+  useEffect(() => {
+    if (!open) return;
+    requestAnimationFrame(() => (box.current?.querySelector('textarea, button.btn:not(.close)') as HTMLElement | null)?.focus());
+    const k = (e: KeyboardEvent) => { if (e.key === 'Escape') close(); };
+    addEventListener('keydown', k); return () => removeEventListener('keydown', k);
+  }, [open]);
 
   useEffect(() => {
     if (!open || !a.session || !supabase || num !== undefined) return;
@@ -49,13 +58,13 @@ export function TutorPanel({ card }: { card?: Card }) {
   else if (num === null) body = <p>Your instructor has not set up messaging yet.</p>;
   else body = <form className="tutor-wa" onSubmit={send}>
     <p className="hint">Your question opens in WhatsApp with your name and this card's link added, so Dr Ram knows where you are. You then carry on the conversation there. Dr Ram will see your WhatsApp number.</p>
-    <textarea value={q} onChange={e => setQ(e.target.value)} rows={4} placeholder={card ? `Your question about "${card.title}"…` : 'Your question…'} aria-label="Your question" autoFocus />
+    <textarea value={q} onChange={e => setQ(e.target.value)} rows={4} placeholder={card ? `Your question about "${card.title}"…` : 'Your question…'} aria-label="Your question" />
     <button className="btn" type="submit" disabled={!q.trim()}>Open in WhatsApp</button>
   </form>;
 
   return (
-    <div className="tutor" role="dialog" aria-label="Ask your instructor">
-      <div className="tutor-head"><span>Ask your instructor</span><button className="btn ghost" onClick={() => setOpen(false)}>Close</button></div>
+    <div className="tutor" role="dialog" aria-modal="false" aria-labelledby="tutor-h" ref={box}>
+      <div className="tutor-head"><h2 id="tutor-h">Ask your instructor</h2><button className="btn ghost close" onClick={close} aria-label="Close (Esc)">Close</button></div>
       <div className="tutor-body">{body}</div>
     </div>
   );

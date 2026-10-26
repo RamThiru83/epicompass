@@ -161,7 +161,7 @@ The video's catchphrase sums it up: *follow the clues to find the cause.*`,
     {
       id: 'ch02-comparison-groups', chapter: 2, order: 5,
       title: 'Inventing the comparison group: cohorts, cases, controls and society',
-      concepts: ['comparison_group', 'social_determinants'], minutes: 12,
+      concepts: ['comparison_group', 'social_determinants'], minutes: 14,
       hook: md`London, 1926. Janet Lane-Claypon, a physician and statistician, is studying breast cancer. Interviewing women with the disease about their pregnancies and breastfeeding would tell her little on its own: how would she know whether those histories were unusual? So she also interviews a comparable group of women without breast cancer and compares the two. Twenty-five years later, two research teams on either side of the Atlantic will use the same logic to ask whether people with lung cancer smoked more than people without it.`,
       formalise: md`Every causal question is a comparison: what happened to people with a characteristic, **compared with** what would have happened without it. The twentieth century turned that idea into two study designs.
 
@@ -203,6 +203,33 @@ Epidemiology has also always had a social strand. Mortality has been tied to pov
             { text: 'As irrelevant, because poverty is not a biological cause.', correct: false, feedback: 'Social conditions shape exposures, access to care and outcomes; they can be causes and confounders.' },
             { text: 'As a likely confounder, because it is linked both to vaccination and to diarrhoea risk.', correct: true, feedback: 'Correct. Social factors often sit behind many exposures at once and must be addressed in the design or analysis.' },
             { text: 'As the outcome, because poverty is the real problem.', correct: false, feedback: 'Poverty may be an important cause, but in this study the outcome is diarrhoea.' },
+          ],
+        },
+        {
+          id: 'ch02-comparison-groups-q4', concept: 'comparison_group',
+          prompt: md`A case-control study of mobile phone use and brain tumours recruits its cases from a regional neurosurgery unit. Which control group best does the job of the comparison group?`,
+          options: [
+            { text: 'Healthy volunteers who reply to a newspaper advertisement for the study.', correct: false, feedback: 'Volunteers tend to differ from the general population (for example, in health awareness and habits), so they may not show what phone use among the cases would have looked like otherwise.' },
+            { text: 'People without brain tumours drawn from the same population the cases arose from, selected without regard to their phone use.', correct: true, feedback: 'Correct. Controls should represent the exposure experience of the population that gave rise to the cases.' },
+            { text: 'Close friends nominated by each case.', correct: false, feedback: 'Friends often share habits, including phone use, which would push the comparison towards finding no difference.' },
+          ],
+        },
+        {
+          id: 'ch02-comparison-groups-q5', concept: 'social_determinants',
+          prompt: md`In a city, infant mortality in the poorest fifth of wards is three times that in the richest fifth. How would a social epidemiologist read this gradient?`,
+          options: [
+            { text: 'As a sign that income, housing, education and access to care shape health, so the gradient itself is worth explaining and acting on.', correct: true, feedback: 'Correct. Social conditions can be causes in their own right, often sitting upstream of many individual risk factors.' },
+            { text: 'As irrelevant to epidemiology, because only individual behaviours cause disease.', correct: false, feedback: 'Social epidemiology studies exactly these population patterns; they are not reducible to individual choices.' },
+            { text: 'As probably due to chance, because ward boundaries are arbitrary.', correct: false, feedback: 'A threefold gradient across a whole city is unlikely to be chance, and similar gradients are seen almost everywhere they are measured.' },
+          ],
+        },
+        {
+          id: 'ch02-comparison-groups-q6', concept: 'social_determinants',
+          prompt: md`Two villages have similar smoking rates, but tuberculosis is twice as common in the poorer village. Which explanation fits a social-determinants view?`,
+          options: [
+            { text: 'Tuberculosis is mainly genetic, so the villages must differ in ancestry.', correct: false, feedback: 'Genetic susceptibility plays a small part; it cannot explain large differences linked to poverty.' },
+            { text: 'The difference cannot be real, because smoking rates are the same.', correct: false, feedback: 'Smoking is only one of many causes. Equal smoking rates say nothing about the other component causes.' },
+            { text: 'Crowded housing and poor nutrition, both linked to poverty, increase exposure to infection and susceptibility to disease.', correct: true, feedback: 'Correct. Poverty acts through living conditions that raise both exposure and vulnerability.' },
           ],
         },
       ],

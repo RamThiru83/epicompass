@@ -105,3 +105,23 @@ describe('vocabulary order', () => {
     });
   }
 });
+
+describe('mastery is reachable', () => {
+  // A learner who answers every check and practice problem correctly at the first try must cross the
+  // mastery line for every concept taught in an open chapter. With the default BKT settings that takes
+  // three correct first answers, so a concept with fewer opportunities would stay below 85% for ever.
+  it('every taught concept gets enough first answers for a perfect run to reach mastery', async () => {
+    const { DEFAULT_BKT, bktUpdate, MASTERY_THRESHOLD } = await import('@epicompass/epi-core');
+    const n: Record<string, number> = {};
+    for (const { card } of cards) {
+      for (const it of card.checks) n[it.concept] = (n[it.concept] ?? 0) + 1;
+      if (card.practise) for (const c of templates[card.practise.template]?.concepts ?? []) n[c] = (n[c] ?? 0) + card.practise.count;
+    }
+    const taught = new Set(cards.flatMap(({ card }) => card.concepts));
+    for (const id of taught) {
+      let p = DEFAULT_BKT.pInit;
+      for (let i = 0; i < (n[id] ?? 0); i++) p = bktUpdate(p, true);
+      expect(p, `${id}: only ${n[id] ?? 0} answers across the course; a perfect run reaches ${Math.round(p * 100)}%. Add check items.`).toBeGreaterThanOrEqual(MASTERY_THRESHOLD);
+    }
+  });
+});

@@ -6,10 +6,15 @@ import { MASTERY_THRESHOLD } from '@epicompass/epi-core';
 
 export const MIN_ATTEMPTS = 2;
 
+/** Percent shown for an estimate. Below the line it rounds down, so 84.6% never reads as "85%" while not yet mastered. */
+export function masteryPct(pKnown: number): string {
+  return `${pKnown >= MASTERY_THRESHOLD ? Math.round(pKnown * 100) : Math.floor(pKnown * 100)}%`;
+}
+
 export function masteryText(m?: Pick<MasteryState, 'pKnown' | 'attempts'>): string {
   if (!m || !m.attempts) return 'Not started';
   if (m.attempts < MIN_ATTEMPTS) return 'Learning';
-  return m.pKnown >= MASTERY_THRESHOLD ? `Mastered · ${Math.round(m.pKnown * 100)}%` : `${Math.round(m.pKnown * 100)}%`;
+  return `${m.pKnown >= MASTERY_THRESHOLD ? 'Mastered' : 'Learning'} · ${masteryPct(m.pKnown)}`;
 }
 
 /** `from` draws where the estimate stood before (the end-of-card view). */

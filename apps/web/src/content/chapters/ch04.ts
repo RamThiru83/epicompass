@@ -257,7 +257,7 @@ Better treatment that prolongs survival raises prevalence without any change in 
     {
       id: 'ch04-ratios-differences', chapter: 4, order: 5,
       title: 'Comparing groups: ratios and differences',
-      concepts: ['risk_ratio', 'risk_difference', 'rate_ratio'], minutes: 14,
+      concepts: ['risk_ratio', 'risk_difference', 'rate_ratio'], minutes: 17,
       hook: md`In a Faridabad antenatal cohort, 400 women with moderate-to-severe anaemia at booking and 500 women without anaemia are followed to delivery. Postpartum haemorrhage occurs in 40 anaemic and 25 non-anaemic women. The obstetrics department wants a single number to put on a poster for the anaemia programme; the programme manager wants to know how many haemorrhages could be avoided per 1,000 women treated. They are asking for different measures.`,
       explore: {
         interactive: 'measures-calculator',
@@ -312,6 +312,33 @@ Report two or three significant digits (RR 2.0, not 2.000).
             { text: 'Both drugs prevent the same number of strokes, because their risk ratios are equal.', correct: false, feedback: 'Equal ratios can hide very different absolute effects. Work out the risk difference in each group.' },
             { text: 'Drug A prevents 10 strokes per 100 people treated; drug B prevents 0.2 per 100, so the same relative effect gives a 50-fold difference in impact.', correct: true, feedback: 'Correct. 20% − 10% = 10 per 100; 0.4% − 0.2% = 0.2 per 100. The risk difference carries the public-health impact.' },
             { text: 'Drug B is more effective because it works in lower-risk people.', correct: false, feedback: 'Both have the same relative effect; drug B simply has much less risk to remove.' },
+          ],
+        },
+        {
+          id: 'ch04-ratios-differences-q4', concept: 'rate_ratio',
+          prompt: md`In a synthetic mining cohort, tuberculosis occurs at 12 per 1,000 person-years among underground miners and 3 per 1,000 person-years among surface workers. What is the rate ratio?`,
+          options: [
+            { text: '9 per 1,000 person-years', correct: false, feedback: 'That is the rate difference. The ratio divides one rate by the other.' },
+            { text: '4.0: the rate among underground miners divided by the rate among surface workers.', correct: true, feedback: 'Correct. 12 / 3 = 4.0, so underground miners have four times the incidence rate.' },
+            { text: '0.25', correct: false, feedback: 'You divided the rate in the comparison group by the rate in the exposed group. Put the exposed group in the numerator.' },
+          ],
+        },
+        {
+          id: 'ch04-ratios-differences-q5', concept: 'rate_ratio',
+          prompt: md`When is a rate ratio, rather than a risk ratio, the natural way to compare two groups?`,
+          options: [
+            { text: 'When people are followed for different lengths of time, so outcomes are counted per unit of person-time.', correct: true, feedback: 'Correct. Rates use person-time in the denominator, so unequal follow-up is handled directly.' },
+            { text: 'When the outcome is common.', correct: false, feedback: 'How common the outcome is does not decide between risk and rate; the way follow-up was measured does.' },
+            { text: 'When the exposure is rare.', correct: false, feedback: 'The rarity of the exposure affects study design, not whether you compare risks or rates.' },
+          ],
+        },
+        {
+          id: 'ch04-ratios-differences-q6', concept: 'rate_ratio',
+          prompt: md`Former smokers have a rate ratio of 0.6 for myocardial infarction compared with current smokers. Which reading is correct?`,
+          options: [
+            { text: 'Their incidence rate of myocardial infarction is 40% lower than that of current smokers.', correct: true, feedback: 'Correct. A ratio of 0.6 means the rate is 60% of the comparison rate, that is 40% lower.' },
+            { text: 'Their rate is 0.6 per 1,000 person-years lower.', correct: false, feedback: 'That would be a rate difference. A ratio has no units.' },
+            { text: '60% of their heart attacks have been prevented.', correct: false, feedback: 'The ratio compares rates between groups; it is not the share of cases prevented.' },
           ],
         },
       ],

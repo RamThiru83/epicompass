@@ -5,7 +5,7 @@ import { templates, CHAPTERS, UNITS, conceptById, cardLabel } from '../content';
 import { EditableMd } from '../components/EditableMd';
 import { Check } from '../components/Check';
 import { Exercise } from '../components/Exercise';
-import { MasteryMeter, masteryText } from '../components/Mastery';
+import { MasteryMeter, masteryText, masteryPct } from '../components/Mastery';
 import { INTERACTIVES } from '../interactives/registry';
 import { useProgress, markStep, completeCard, getProgress } from '../store/progress';
 import { go } from '../App';
@@ -124,7 +124,7 @@ export function CardPage({ card, chapter }: { card: Card; chapter: Chapter }) {
                   <div className="shift-row" key={id}>
                     <span className="nm">{conceptById(id)?.title ?? id}</span>
                     <MasteryMeter m={a} from={b?.pKnown} />
-                    <span className="val">{b && b.attempts >= 2 ? `${Math.round(b.pKnown * 100)}% → ` : ''}{masteryText(a)}</span>
+                    <span className="val">{b && b.attempts >= 2 ? `${masteryPct(b.pKnown)} → ` : ''}{masteryText(a)}</span>
                   </div>
                 );
               })}

@@ -124,7 +124,7 @@ Retrospective cohorts are fast and cheap when good records exist; their weakness
     {
       id: 'ch05-case-control-logic', chapter: 5, order: 3,
       title: 'Case-control studies and the source population',
-      concepts: ['case_control_study', 'source_population'], minutes: 14,
+      concepts: ['case_control_study', 'source_population'], minutes: 17,
       hook: md`A cancer hospital in Guwahati sees many patients with oesophageal cancer from surrounding districts. An investigator wants to test whether drinking very hot tea is a cause. A cohort study would need tens of thousands of people followed for decades. Instead, she plans to interview the cases and a comparison group. A colleague suggests using hospital visitors as controls because "they are convenient and healthy". Another asks a sharper question: "Who would have come to this hospital if they had developed this cancer?"`,
       explore: {
         interactive: 'two-by-two',
@@ -178,6 +178,24 @@ Controls are **not** meant to be "healthy" or "typical"; they are meant to repre
             { text: 'Nothing; risks can be computed from the case and control counts.', correct: false, feedback: 'The number of controls is set by the investigator, so risks calculated from the table are meaningless.' },
             { text: 'Because controls are a sample of unknown size relative to the source population, only ratio measures (via the odds ratio) can be estimated, not risks.', correct: true, feedback: 'Correct. The ratio of controls to source population cancels in the OR but not in a risk.' },
             { text: 'Case-control studies can estimate risks but not ratios.', correct: false, feedback: 'The reverse: they estimate ratios, not absolute risks.' },
+          ],
+        },
+        {
+          id: 'ch05-case-control-logic-q4', concept: 'source_population',
+          prompt: md`A study takes as cases all new hip fractures among residents of one district during 2025, found through every hospital in the district. Which control group fits the source population?`,
+          options: [
+            { text: 'A random sample of people living in the district during 2025.', correct: true, feedback: 'Correct. The cases are all the district residents who fractured a hip, so the district population over that year is the source population.' },
+            { text: 'Patients attending the orthopaedic outpatient clinic of the largest hospital.', correct: false, feedback: 'They come from a narrower, selected group and may differ in exposures linked to bone health.' },
+            { text: 'Residents of a neighbouring district with a similar age structure.', correct: false, feedback: 'They did not give rise to the cases. Similar age structure does not make them part of the source population.' },
+          ],
+        },
+        {
+          id: 'ch05-case-control-logic-q5', concept: 'source_population',
+          prompt: md`A proposed control would not have become a case in your study even if they had developed the disease. What follows?`,
+          options: [
+            { text: 'They are a good control, because they are unlikely to share the exposures of the cases.', correct: false, feedback: 'Controls are not meant to differ from cases; they are meant to show how exposure is distributed in the source population.' },
+            { text: 'They lie outside the source population and should not be used as a control.', correct: true, feedback: 'Correct. Anyone who could not have been a case is not part of the population the cases came from.' },
+            { text: 'It does not matter, provided they do not have the disease.', correct: false, feedback: 'Being free of the disease is not enough. Controls must come from the same population as the cases.' },
           ],
         },
       ],
@@ -246,7 +264,7 @@ When the outcome is rare, all three designs give similar odds ratios. When it is
     {
       id: 'ch05-nested-case-crossover', chapter: 5, order: 5,
       title: 'Nested case-control and case-crossover designs',
-      concepts: ['nested_case_control', 'case_crossover'], minutes: 12,
+      concepts: ['nested_case_control', 'case_crossover'], minutes: 15,
       hook: md`Two questions arrive at a research unit in Bengaluru on the same morning. A cardiologist asks whether an episode of heavy physical exertion can trigger a heart attack within the following hour. A neurologist with a large epilepsy cohort and stored blood samples asks whether a genetic marker predicts sudden unexpected death. Both want a case-control approach, but the right comparison is very different for each.`,
       formalise: md`**Nested case-control study.** When a cohort already exists, with exposure information or stored samples, cases are all those who develop the outcome during follow-up, and controls are sampled from the cohort (usually by risk-set sampling). It keeps the validity of the cohort, because the source population is fully defined and exposure was recorded before the outcome, while measuring expensive exposures only in a fraction of members. The epilepsy question suits this design: analyse stored samples from all deaths and from a few matched members at risk at each death.
 
@@ -288,6 +306,33 @@ Requirements: the exposure must vary over time within a person, its effect must 
             { text: 'Because the design uses a very large sample.', correct: false, feedback: 'Sample size does not remove confounding.' },
             { text: 'Because each person is compared with themselves, so fixed characteristics are identical in hazard and control windows.', correct: true, feedback: 'Correct. Self-matching removes confounding by anything that does not change between windows.' },
             { text: 'Because those characteristics are adjusted for in regression.', correct: false, feedback: 'No adjustment is needed; the design itself controls them.' },
+          ],
+        },
+        {
+          id: 'ch05-nested-case-crossover-q4', concept: 'nested_case_control',
+          prompt: md`In the nested case-control study within the epilepsy cohort, where should the controls for each death come from?`,
+          options: [
+            { text: 'Cohort members still alive and in follow-up at the time of that death.', correct: true, feedback: 'Correct. Risk-set sampling draws controls from those at risk when each case occurs.' },
+            { text: 'Healthy blood donors from the same city.', correct: false, feedback: 'They are outside the cohort, so the advantage of a fully defined source population is lost.' },
+            { text: 'Cohort members who survived to the end of follow-up.', correct: false, feedback: 'Choosing only survivors excludes people who were at risk when each case occurred but died or left later, and can bias the comparison.' },
+          ],
+        },
+        {
+          id: 'ch05-nested-case-crossover-q5', concept: 'nested_case_control',
+          prompt: md`Why is exposure information in a nested case-control study protected from recall bias?`,
+          options: [
+            { text: 'Because cases and controls are interviewed by the same person.', correct: false, feedback: 'A single interviewer does not stop cases remembering differently from controls.' },
+            { text: 'Because the exposure was recorded, or the samples stored, before the outcome occurred.', correct: true, feedback: 'Correct. Nobody is asked to remember anything after the outcome, so the outcome cannot colour the exposure data.' },
+            { text: 'Because the cohort is very large.', correct: false, feedback: 'Size improves precision, not the way exposure was measured.' },
+          ],
+        },
+        {
+          id: 'ch05-nested-case-crossover-q6', concept: 'case_crossover',
+          prompt: md`In a case-crossover study of heavy exertion and heart attack, which control window is most appropriate?`,
+          options: [
+            { text: 'The same hour of the day on several previous days for the same person.', correct: true, feedback: 'Correct. These windows reflect the person’s usual pattern of exertion at that time of day.' },
+            { text: 'The hour after the heart attack.', correct: false, feedback: 'Exertion after the event cannot have caused it, and is changed by the event itself.' },
+            { text: 'The hour before a heart attack in a different person.', correct: false, feedback: 'The design compares each person with themselves; using someone else loses the self-matching.' },
           ],
         },
       ],
@@ -356,7 +401,7 @@ A case-control study is not cross-sectional: it samples on outcome and asks abou
     {
       id: 'ch05-response-comparison', chapter: 5, order: 7,
       title: 'Response rates, and choosing between cohort and case-control',
-      concepts: ['response_rate', 'case_control_study', 'cohort_study'], minutes: 12,
+      concepts: ['response_rate', 'case_control_study', 'cohort_study'], minutes: 15,
       hook: md`A thesis committee in Puducherry reviews two proposals. The first is a cohort of 5,000 adults to study salt intake and stroke; a pilot achieved only a 45% response to the baseline invitation, and one member says the study is therefore worthless. The second is a case-control study of a rare childhood leukaemia and parental occupational exposures. A second member asks why the leukaemia study is not a cohort study, since cohorts are "always better".`,
       formalise: md`**Response rates.** A low response rate is a warning, not a verdict. What matters is whether non-response distorts the **comparison**:
 
@@ -405,6 +450,24 @@ Neither design is inherently "better". A well-chosen case-control study is a coh
             { text: 'A cohort study enrolling exposed workers and a comparison group', correct: true, feedback: 'Correct. Selecting on a rare exposure and following several outcomes is a natural cohort strength.' },
             { text: 'A case-control study for each outcome', correct: false, feedback: 'With a rare exposure, very few cases or controls would be exposed, so the studies would be imprecise.' },
             { text: 'A cross-sectional survey of the general population', correct: false, feedback: 'Almost nobody in the general population would be exposed, and temporality would be unclear.' },
+          ],
+        },
+        {
+          id: 'ch05-response-comparison-q4', concept: 'response_rate',
+          prompt: md`The salt and stroke cohort achieved a 45% response at baseline. What does this mainly affect?`,
+          options: [
+            { text: 'The validity of comparing high-salt and low-salt groups among participants.', correct: false, feedback: 'Participation was decided before any stroke occurred, so the comparison among participants is relatively protected.' },
+            { text: 'How far the results can be generalised to other people.', correct: true, feedback: 'Correct. Low baseline response in a cohort mainly raises a question of generalisation, which is a scientific judgement.' },
+            { text: 'It makes the study worthless.', correct: false, feedback: 'A low response rate is a warning to examine, not a verdict.' },
+          ],
+        },
+        {
+          id: 'ch05-response-comparison-q5', concept: 'response_rate',
+          prompt: md`In a survey of hypertension prevalence, only half the sample responds, and people who know they have high blood pressure are more willing to take part. What happens to the prevalence estimate?`,
+          options: [
+            { text: 'It is unaffected, because the sample was chosen at random.', correct: false, feedback: 'Random selection is undone if participation then depends on the outcome.' },
+            { text: 'It is likely to be too high, because people with hypertension are over-represented among responders.', correct: true, feedback: 'Correct. In a prevalence survey, non-response related to the outcome directly biases the estimate.' },
+            { text: 'It is only less precise, not biased.', correct: false, feedback: 'Fewer responders reduce precision, but responders who differ in the outcome also bias the estimate.' },
           ],
         },
       ],

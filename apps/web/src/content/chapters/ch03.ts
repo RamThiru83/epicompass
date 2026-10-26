@@ -13,7 +13,7 @@ export const ch03: Chapter = {
     {
       id: 'ch03-causal-pies', chapter: 3, order: 1,
       title: 'The causal pie: sufficient and component causes',
-      concepts: ['sufficient_cause', 'component_cause'], minutes: 13,
+      concepts: ['sufficient_cause', 'component_cause'], minutes: 16,
       hook: md`In a slum resettlement colony in Delhi, a TB programme officer notices that almost every adult has been exposed to *Mycobacterium tuberculosis* at some point, yet only a small fraction ever develop active disease. Those who do are more often undernourished, living with HIV, or have poorly controlled diabetes; a few have none of these. A student asks: "So what is the cause of TB here: the bacillus, malnutrition, HIV or diabetes?" The officer replies that the question has more than one right answer.`,
       explore: {
         interactive: 'causal-pies',
@@ -57,6 +57,33 @@ The model is conceptual: we rarely know the full content of any pie. Its value i
             { text: 'HIV and diabetes cannot be causes of TB.', correct: false, feedback: 'One counterexample does not refute a component cause; it is not sufficient on its own.' },
             { text: 'At least one other component needed to complete any of his pies was missing.', correct: true, feedback: 'Correct. Unknown components are usually part of each pie, so having every known risk factor does not guarantee disease.' },
             { text: 'He must have been misdiagnosed.', correct: false, feedback: 'Not necessary: the model expects people with known risk factors to remain well if a pie is incomplete.' },
+          ],
+        },
+        {
+          id: 'ch03-causal-pies-q4', concept: 'component_cause',
+          prompt: md`In the causal pie model, what is a component cause?`,
+          options: [
+            { text: 'A factor that produces the disease on its own whenever it is present.', correct: false, feedback: 'That would be a sufficient cause. Few single factors are.' },
+            { text: 'One slice of a sufficient cause: it produces disease only together with the other slices of that pie.', correct: true, feedback: 'Correct. Most causes act only in company, which is why exposed people often stay well.' },
+            { text: 'A factor that must be present in every case of the disease.', correct: false, feedback: 'That describes a necessary cause, a special kind of component that appears in every pie.' },
+          ],
+        },
+        {
+          id: 'ch03-causal-pies-q5', concept: 'component_cause',
+          prompt: md`A student argues that HIV cannot be a cause of TB in the colony, because many people with TB do not have HIV. What is wrong with the argument?`,
+          options: [
+            { text: 'Nothing: a cause has to be present in every case.', correct: false, feedback: 'Only a necessary cause appears in every case. Most causes are not necessary.' },
+            { text: 'A component cause need not be present in every case; it causes the cases that arise from pies containing it.', correct: true, feedback: 'Correct. Other cases arise from other pies, such as those that include undernutrition or diabetes.' },
+            { text: 'HIV would count as a cause only if everyone with HIV developed TB.', correct: false, feedback: 'That would make HIV sufficient. A component cause needs its partner slices to complete a pie.' },
+          ],
+        },
+        {
+          id: 'ch03-causal-pies-q6', concept: 'sufficient_cause',
+          prompt: md`Two neighbours in the colony develop TB. One has HIV; the other is undernourished and has no HIV. How does the pie model describe this?`,
+          options: [
+            { text: 'One of the two diagnoses must be wrong, because a disease has a single cause.', correct: false, feedback: 'The model expects the same disease to arise in different ways in different people.' },
+            { text: 'Their cases arose from different sufficient causes that share the bacillus as a component.', correct: true, feedback: 'Correct. A disease can have several sufficient causes; each case is completed by one of them.' },
+            { text: 'HIV and undernutrition must be the same component under different names.', correct: false, feedback: 'They are different components that sit in different pies, each completed by other slices.' },
           ],
         },
       ],
@@ -118,7 +145,7 @@ Statistical "heritability" estimates answer a different question: how much of th
     {
       id: 'ch03-strength-interaction', chapter: 3, order: 3,
       title: 'Strong and weak causes; causes that act together',
-      concepts: ['strength_of_cause', 'causal_interaction'], minutes: 13,
+      concepts: ['strength_of_cause', 'causal_interaction'], minutes: 16,
       hook: md`G6PD deficiency is common in several communities of central India. For years, a village health worker saw no special problem among G6PD-deficient men. Then a malaria elimination drive started giving primaquine to everyone with vivax malaria, and within weeks several deficient men were admitted with acute haemolysis. A district officer asks whether G6PD deficiency is a "strong" or a "weak" cause of haemolysis. The health worker answers, "It depends on the year you ask me."`,
       explore: {
         interactive: 'causal-pies',
@@ -167,6 +194,33 @@ The joint risk is far above what the two separate effects would suggest. Chapter
             { text: 'Y is the more important cause because its effect is stronger.', correct: false, feedback: 'Strength per exposed person is not the same as public-health importance; Y is very rare.' },
             { text: 'X may account for more cases, because a weak but common cause can matter more than a strong but rare one.', correct: true, feedback: 'Correct. The burden of disease depends on both strength and how common the exposure is.' },
             { text: 'X is not a real cause because it raises risk only slightly.', correct: false, feedback: 'A cause that raises risk only slightly can still be genuine; its complementary causes may simply be uncommon.' },
+          ],
+        },
+        {
+          id: 'ch03-strength-interaction-q4', concept: 'strength_of_cause',
+          prompt: md`Using the synthetic table on this card, how strong a cause of haemolysis is G6PD deficiency among people taking primaquine, and among people not taking it?`,
+          options: [
+            { text: 'About 50 with primaquine (10% divided by 0.2%) and 2 without it (0.2% divided by 0.1%).', correct: true, feedback: 'Correct. The same deficiency looks weak or strong depending on whether its partner component is present.' },
+            { text: '2 in both groups, because the strength of a cause is fixed by its biology.', correct: false, feedback: 'Work out the ratio separately in each column; strength depends on the complementary components present.' },
+            { text: '10, the risk of haemolysis in deficient people taking primaquine.', correct: false, feedback: '10% is a risk, not a measure of strength. Strength compares the risk with the factor to the risk without it.' },
+          ],
+        },
+        {
+          id: 'ch03-strength-interaction-q5', concept: 'causal_interaction',
+          prompt: md`Which feature of the synthetic table shows that G6PD deficiency and primaquine interact?`,
+          options: [
+            { text: 'Each factor on its own raises the risk from 0.1% to 0.2%.', correct: false, feedback: 'Those are the separate effects. Interaction is about how the joint effect compares with them.' },
+            { text: 'The risk with both factors, 10%, is far higher than their separate effects would predict.', correct: true, feedback: 'Correct. A joint effect that departs from what the separate effects predict is the signature of interaction.' },
+            { text: 'The risk with neither factor is only 0.1%.', correct: false, feedback: 'The baseline risk is the reference point, not evidence of interaction.' },
+          ],
+        },
+        {
+          id: 'ch03-strength-interaction-q6', concept: 'causal_interaction',
+          prompt: md`G6PD deficiency and primaquine sit in the same pie. If primaquine is replaced by a safer drug, what happens to the cases that pie would have produced?`,
+          options: [
+            { text: 'All of them are prevented, even though G6PD deficiency is still present.', correct: true, feedback: 'Correct. Removing any one component disables the pie, so every case it would have produced is prevented.' },
+            { text: 'Half are prevented, because each component is responsible for half of those cases.', correct: false, feedback: 'Each case from that pie needs both components, so each is fully responsible. Shares of causation do not add up to 100%.' },
+            { text: 'None are prevented unless G6PD deficiency is also corrected.', correct: false, feedback: 'One missing slice is enough to stop the pie from being completed.' },
           ],
         },
       ],

@@ -9,7 +9,7 @@ import type { Concept } from '../content/types';
 import type { Progress } from '../store/progress';
 import { MASTERY_THRESHOLD } from '@epicompass/epi-core';
 
-const pct = (v: number) => `${Math.round(v * 100)}%`;
+const pct = (v: number) => `${v >= MASTERY_THRESHOLD ? Math.round(v * 100) : Math.floor(v * 100)}%`;
 type Status = 'mastered' | 'learning' | 'none';
 export const statusOf = (p: Progress, id: string): Status => {
   const m = p.mastery[id];

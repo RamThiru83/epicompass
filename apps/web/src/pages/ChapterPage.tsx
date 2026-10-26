@@ -75,7 +75,7 @@ export function ChapterPage({ chapter }: { chapter: Chapter }) {
                 </div>
               );
             })}
-            <p className="hint" style={{ marginTop: 10 }}>The tick marks the 85% mastery line. Estimates appear after two answers.</p>
+            <p className="hint" style={{ marginTop: 10 }}>The tick marks the 85% mastery line. Finishing a card does not by itself mean mastery: the bar rises with each correct first answer, and three in a row usually cross the line. A faint bar means fewer than two answers so far.</p>
           </section>}
         </aside>}
       </div>

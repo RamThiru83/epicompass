@@ -199,7 +199,7 @@ The book also notes a trade-off, which Chapter 12 explains: adjusting a test to 
     {
       id: 'ch01-predictive-value', chapter: 1, order: 4,
       title: 'What does a positive result mean?',
-      concepts: ['predictive_value', 'sensitivity_specificity'], minutes: 11,
+      concepts: ['predictive_value', 'sensitivity_specificity'], minutes: 12,
       hook: md`A rapid syphilis test with sensitivity 95% and specificity 95% works well in the sexually transmitted infection clinic of a Mumbai teaching hospital, where about one in five attendees is infected: most positives are confirmed. The same test is rolled out for universal antenatal screening in a rural block where about one woman in a hundred is infected. Within a month, many patients complain that they were wrongly flagged as having the disease, only to be found negative by the confirmatory laboratory. The confirmatory laboratory also complained that most positive samples it receives are negative. Has the test become worse?`,
       explore: {
         interactive: 'screening-preview',
@@ -252,6 +252,15 @@ Practical consequence: a positive screening result in a low-prevalence setting s
             { text: 'The share of positive results that are true infections', correct: false, feedback: 'That fell from 83% to 16% between the two settings.' },
             { text: 'Sensitivity and specificity', correct: true, feedback: 'Yes. They describe the test among people who do and do not have the infection, so they do not depend directly on how common it is.' },
             { text: 'The number of positive results per 1,000 people tested', correct: false, feedback: 'That fell from about 230 to about 60, because far fewer people were infected.' },
+          ],
+        },
+        {
+          id: 'ch01-predictive-value-q4', concept: 'predictive_value',
+          prompt: md`The same test (95% sensitivity, 95% specificity) is later used only for people who already have symptoms and a reactive first test, about half of whom are infected. What happens to the share of positive results that are true infections?`,
+          options: [
+            { text: 'It stays at about 16%, because the test has not changed.', correct: false, feedback: 'The test is the same, but the people tested are not. How far a positive can be trusted depends on how common infection is among them.' },
+            { text: 'It rises to about 95%, because infection is now common among the people tested.', correct: true, feedback: 'Correct. Among 1,000 such people, 475 of the 500 infected and 25 of the 500 uninfected test positive: 475 of 500 positives are true.' },
+            { text: 'It falls, because people with symptoms are harder to test accurately.', correct: false, feedback: 'Nothing suggests the test performs worse in them. The rise in the share of infected people pushes the predictive value up, not down.' },
           ],
         },
       ],

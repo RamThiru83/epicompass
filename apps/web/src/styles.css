@@ -541,3 +541,7 @@ article.letter details.more:not([open]) > summary .letter-title::after { content
 @media (max-width: 480px) {
   .btn { max-width: 100%; white-space: normal; height: auto; min-height: var(--control-height); padding-top: 6px; padding-bottom: 6px; text-align: center; }
 }
+.join-prompt { display: flex; align-items: center; justify-content: space-between; gap: 16px 32px; flex-wrap: wrap; }
+.join-prompt h2 { font-size: 1rem; margin: 0 0 4px; }
+.join-prompt p { margin: 0; color: var(--muted); max-width: 70ch; }
+.join-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }

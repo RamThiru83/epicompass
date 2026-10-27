@@ -13,13 +13,13 @@ import { EditBar } from './components/EditBar';
 import markUrl from './assets/epicompass-mark.svg';
 
 /** Hash routes: #/ , #/ch/4 , #/card/ch04-risk-vs-rate */
-export type Route = { kind: 'home' } | { kind: 'progress' } | { kind: 'account' } | { kind: 'instructor' } | { kind: 'chapter'; n: number } | { kind: 'card'; id: string };
+export type Route = { kind: 'home' } | { kind: 'progress' } | { kind: 'account'; join?: boolean } | { kind: 'instructor' } | { kind: 'chapter'; n: number } | { kind: 'card'; id: string };
 function parse(hash: string): Route {
   const m = hash.replace(/^#\/?/, '').split('/');
   if (m[0] === 'ch' && m[1]) return { kind: 'chapter', n: +m[1] };
   if (m[0] === 'card' && m[1]) return { kind: 'card', id: m[1] };
   if (m[0] === 'progress') return { kind: 'progress' };
-  if (m[0] === 'account') return { kind: 'account' };
+  if (m[0] === 'account') return { kind: 'account', join: m[1] === 'join' };
   if (m[0] === 'instructor') return { kind: 'instructor' };
   return { kind: 'home' };
 }
@@ -46,7 +46,7 @@ export default function App() {
       <main className="main"><div className="page">
         {route.kind === 'home' && <WelcomePage />}
         {route.kind === 'progress' && <HomePage />}
-        {route.kind === 'account' && <AccountPage />}
+        {route.kind === 'account' && <AccountPage key={route.join ? 'join' : 'in'} join={route.join} />}
         {route.kind === 'instructor' && <InstructorPage />}
         {route.kind === 'chapter' && chapter && <ChapterPage chapter={chapter} />}
         {route.kind === 'card' && card && chapter && <CardPage card={card} chapter={chapter} />}

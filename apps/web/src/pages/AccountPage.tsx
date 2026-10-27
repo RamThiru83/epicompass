@@ -5,9 +5,9 @@ import { go } from '../App';
 
 const PRIVACY = `EpiCompass stores your name, email address, the cohort you joined and your learning progress (which cards you have completed, your answers to check questions and practice problems, and the app's estimate of which concepts you have mastered). It is used to save your work across devices and to let your course instructor follow the class's progress and help where needed. It is kept in a database in Mumbai, visible only to you and your instructor, and is not used for research or shared with anyone else. You can ask your instructor to delete your account at any time.`;
 
-export function AccountPage() {
+export function AccountPage({ join = false }: { join?: boolean }) {
   const a = useAccount();
-  const [mode, setMode] = useState<'in' | 'up'>('in');
+  const [mode, setMode] = useState<'in' | 'up'>(join ? 'up' : 'in');
   const [f, setF] = useState({ joinCode: '', fullName: '', email: '', password: '', consent: false });
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);

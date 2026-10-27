@@ -7,6 +7,7 @@ import { useProgress, dueConcepts, isMastered } from '../store/progress';
 import { useAccount } from '../store/account';
 import { useEditing } from '../store/overrides';
 import { go } from '../App';
+import { cloudEnabled } from '../lib/supabase';
 
 function partOfDay(d = new Date()) {
   const h = d.getHours();
@@ -16,6 +17,24 @@ function partOfDay(d = new Date()) {
 function firstName(full?: string | null) {
   const parts = (full ?? '').trim().split(/\s+/).filter(w => !/^(dr|prof|professor|mr|mrs|ms|miss|mx|sir)\.?$/i.test(w));
   return parts[0] ?? '';
+}
+
+/** Shown only to visitors who are not signed in: joining keeps progress on every device and lets the instructor help. */
+function JoinPrompt({ started }: { started: boolean }) {
+  return (
+    <section className="panel join-prompt s12" aria-labelledby="h-join">
+      <div>
+        <h2 id="h-join">{started ? 'Save your progress to your account' : 'Joining a cohort?'}</h2>
+        <p>{started
+          ? 'You are not signed in, so your progress is kept in this browser only. Join with your code or sign in, and it moves to your account and follows you to any device.'
+          : 'Create your account with the join code your instructor sent, so your progress is saved and follows you to any device. You can also start without an account; your progress then stays in this browser.'}</p>
+      </div>
+      <div className="join-actions">
+        <button className="btn ghost" onClick={() => go('#/account/join')}>Join with a code</button>
+        <button className="textlink" onClick={() => go('#/account')}>I have an account</button>
+      </div>
+    </section>
+  );
 }
 
 const HOW = [
@@ -47,6 +66,7 @@ export function WelcomePage() {
   const name = firstName(acc.profile?.full_name);
   const greeting = `${partOfDay()}${name ? `, ${name}` : ''}.`;
   const cardFor = (conceptId: string) => all.find(k => k.concepts.includes(conceptId));
+  const guest = cloudEnabled && !acc.session;
 
   const letterRest = (
     <>
@@ -69,6 +89,7 @@ export function WelcomePage() {
       </div>
 
       <div className="grid">
+        {guest && <JoinPrompt started={false} />}
         <article className="sheet letter s8" aria-labelledby="h-letter">
           <h2 id="h-letter" className="letter-title">{WELCOME.title}</h2>
           <EditableMd scope="welcome.intro">{WELCOME.intro}</EditableMd>
@@ -109,6 +130,7 @@ export function WelcomePage() {
       </div>
 
       <div className="grid">
+        {guest && <JoinPrompt started />}
         {due.length > 0 && <section className="panel s12 due" aria-labelledby="h-due">
           <div className="panel-head"><h2 id="h-due">Due for a revisit</h2><span className="aside">A spaced check keeps an idea from fading</span></div>
           <div className="rows">{due.map(d => { const k = cardFor(d); return k && (

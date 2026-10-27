@@ -25,14 +25,14 @@ export const frame = (W: number, H: number, m = { l: 48, r: 16, t: 14, b: 38 }) 
 export function XAxis({ ticks, x, y, label, W, fmt = String }: { ticks: number[]; x: (v: number) => number; y: number; label?: string; W: number; fmt?: (v: number) => string }) {
   return <g>
     <line x1={x(ticks[0])} x2={x(ticks[ticks.length - 1])} y1={y} y2={y} stroke="var(--line)" />
-    {ticks.map(t => <g key={t}><line x1={x(t)} x2={x(t)} y1={y} y2={y + 4} stroke="var(--muted)" /><text x={x(t)} y={y + 16} textAnchor="middle" fontSize="11" fill="var(--muted)" fontFamily="var(--mono)">{fmt(t)}</text></g>)}
-    {label && <text x={W / 2} y={y + 32} textAnchor="middle" fontSize="12" fill="var(--fg)">{label}</text>}
+    {ticks.map(t => <g key={t}><line x1={x(t)} x2={x(t)} y1={y} y2={y + 4} stroke="var(--muted)" /><text x={x(t)} y={y + 16} textAnchor="middle" fontSize="13" fill="var(--muted)" fontFamily="var(--mono)">{fmt(t)}</text></g>)}
+    {label && <text x={W / 2} y={y + 32} textAnchor="middle" fontSize="14" fill="var(--fg)">{label}</text>}
   </g>;
 }
 export function YAxis({ ticks, y, x, x1, label, fmt = String }: { ticks: number[]; y: (v: number) => number; x: number; x1: number; label?: string; fmt?: (v: number) => string }) {
   return <g>
-    {ticks.map(t => <g key={t}><line x1={x} x2={x1} y1={y(t)} y2={y(t)} stroke="var(--line)" /><text x={x - 6} y={y(t) + 4} textAnchor="end" fontSize="11" fill="var(--muted)" fontFamily="var(--mono)">{fmt(t)}</text></g>)}
-    {label && <text transform={`translate(12,${(y(ticks[0]) + y(ticks[ticks.length - 1])) / 2}) rotate(-90)`} textAnchor="middle" fontSize="12" fill="var(--fg)">{label}</text>}
+    {ticks.map(t => <g key={t}><line x1={x} x2={x1} y1={y(t)} y2={y(t)} stroke="var(--line)" /><text x={x - 6} y={y(t) + 4} textAnchor="end" fontSize="13" fill="var(--muted)" fontFamily="var(--mono)">{fmt(t)}</text></g>)}
+    {label && <text transform={`translate(12,${(y(ticks[0]) + y(ticks[ticks.length - 1])) / 2}) rotate(-90)`} textAnchor="middle" fontSize="14" fill="var(--fg)">{label}</text>}
   </g>;
 }
 

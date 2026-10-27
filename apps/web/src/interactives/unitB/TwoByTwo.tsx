@@ -66,7 +66,7 @@ export function TwoByTwo({ onReached, config }: InteractiveProps) {
       <line x1={X(1)} x2={X(1)} y1={Y(1)} y2={Y(0)} stroke="var(--muted)" strokeDasharray="4 3" />
       <line x1={L} x2={W - R} y1={Y(alpha)} y2={Y(alpha)} stroke="var(--exp)" strokeDasharray="2 3" />
       <line x1={X(Math.max(x0, ci.lower))} x2={X(Math.min(x1, ci.upper))} y1={Y(alpha)} y2={Y(alpha)} stroke="var(--exp)" strokeWidth="4" />
-      <text x={X(Math.min(x1, ci.upper)) + 4} y={Y(alpha) - 4} fontSize="11" fill="var(--exp)" fontFamily="var(--mono)">{level}% CI</text>
+      <text x={X(Math.min(x1, ci.upper)) + 4} y={Y(alpha) - 4} fontSize="13" fill="var(--exp)" fontFamily="var(--mono)">{level}% CI</text>
       <polyline points={pts.map(p => `${X(p.x).toFixed(1)},${Y(p.p).toFixed(1)}`).join(' ')} fill="none" stroke="var(--accent)" strokeWidth="2.2" />
       <circle cx={X(r.ratio.estimate)} cy={Y(1)} r={3.5} fill="var(--accent)" />
     </svg>;

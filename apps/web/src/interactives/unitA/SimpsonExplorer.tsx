@@ -97,17 +97,17 @@ export function SimpsonExplorer({ onReached, config }: InteractiveProps) {
         <svg viewBox={`0 0 ${fr.W} ${fr.H}`} role="img" aria-label={`${unit} in each group, overall and within each ${confounder} group`}>
           {ticks.map(t => <g key={t}>
             <line x1={fr.l} x2={fr.l + fr.iw} y1={y(t)} y2={y(t)} stroke="var(--line)" />
-            <text x={fr.l - 6} y={y(t) + 4} textAnchor="end" fontSize="11" fill="var(--muted)" fontFamily="var(--mono)">{t}</text>
+            <text x={fr.l - 6} y={y(t) + 4} textAnchor="end" fontSize="13" fill="var(--muted)" fontFamily="var(--mono)">{t}</text>
           </g>)}
-          <text transform={`translate(12,${fr.t + fr.ih / 2}) rotate(-90)`} textAnchor="middle" fontSize="12" fill="var(--fg)">{unit}</text>
+          <text transform={`translate(12,${fr.t + fr.ih / 2}) rotate(-90)`} textAnchor="middle" fontSize="14" fill="var(--fg)">{unit}</text>
           {rows.map((r, i) => {
             const x0 = fr.l + i * gw + gw * 0.18, w = gw * 0.3;
             return <g key={r.k}>
               {[{ v: r.a, f: 'var(--exp)' }, { v: r.b, f: 'var(--unexp)' }].map((b, j) => <g key={j}>
                 <rect x={x0 + j * (w + 4)} width={w} y={y(b.v)} height={Math.max(1, y(0) - y(b.v))} fill={b.f} />
-                <text x={x0 + j * (w + 4) + w / 2} y={y(b.v) - 5} textAnchor="middle" fontSize="11" fill="var(--fg)" fontFamily="var(--mono)">{p2(b.v)}</text>
+                <text x={x0 + j * (w + 4) + w / 2} y={y(b.v) - 5} textAnchor="middle" fontSize="13" fill="var(--fg)" fontFamily="var(--mono)">{p2(b.v)}</text>
               </g>)}
-              <text x={x0 + w + 2} y={fr.t + fr.ih + 18} textAnchor="middle" fontSize="12" fill="var(--fg)" fontWeight={i === 0 ? 600 : 400}>{r.k}</text>
+              <text x={x0 + w + 2} y={fr.t + fr.ih + 18} textAnchor="middle" fontSize="14" fill="var(--fg)" fontWeight={i === 0 ? 600 : 400}>{r.k}</text>
             </g>;
           })}
         </svg>

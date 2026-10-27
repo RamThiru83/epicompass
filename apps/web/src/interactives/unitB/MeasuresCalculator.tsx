@@ -88,8 +88,8 @@ export function MeasuresCalculator({ onReached }: InteractiveProps) {
                 <rect x={cx - bw - 3} y={y1} width={bw} height={Math.max(0, base - y1)} fill="var(--exp)" />
                 <rect x={cx + 3} y={y0} width={bw} height={Math.max(0, base - y0)} fill="var(--unexp)" />
                 <line x1={cx - bw - 3} x2={cx + bw + 3} y1={y1} y2={y1} stroke="var(--muted)" strokeDasharray="3 3" />
-                <text x={cx} y={base + 16} textAnchor="middle" fontSize="12" fill="var(--fg)">{s.name}{i === sel && scen.length > 1 ? ' (editing)' : ''}</text>
-                <text x={cx} y={base + 32} textAnchor="middle" fontSize="11" fill="var(--muted)" fontFamily="var(--mono)">
+                <text x={cx} y={base + 16} textAnchor="middle" fontSize="14" fill="var(--fg)">{s.name}{i === sel && scen.length > 1 ? ' (editing)' : ''}</text>
+                <text x={cx} y={base + 32} textAnchor="middle" fontSize="13" fill="var(--muted)" fontFamily="var(--mono)">
                   {scale === 'ratio' ? `RR ${f2(mm.rr)}` : `RD ${f3(mm.rd)}`} · PAF {pct(mm.paf)}
                 </text>
               </g>;

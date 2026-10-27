@@ -70,7 +70,7 @@ export function AttributableFraction({ onReached }: InteractiveProps) {
         <div className="fig">
           <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Icon array of 1,000 people coloured by exposure and case status">
             <rect x="0" y="0" width={W} height={H} fill="var(--panel)" />
-            <text x={gx} y={16} fontSize="12" fill="var(--fg)">Exposed first, then unexposed; one square per person (hypothetical)</text>
+            <text x={gx} y={16} fontSize="14" fill="var(--fg)">Exposed first, then unexposed; one square per person (hypothetical)</text>
             {kinds.map((kd, i) => {
               const c = i % COLS, r = Math.floor(i / COLS);
               return <rect key={i} x={gx + c * cell + 1} y={gy + r * cell + 1} width={cell - 3} height={cell - 3} rx={2}

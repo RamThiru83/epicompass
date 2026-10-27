@@ -35,7 +35,7 @@ export function ChapterPage({ chapter }: { chapter: Chapter }) {
           </div>
           {core.length === 0 && unit && <section className="panel" aria-labelledby="h-unit" style={{ marginBottom: 16 }}>
             <div className="panel-head"><h2 id="h-unit">What Unit {unit.id} will let you do</h2><span className="aside">Chapters {unit.chapters.join(', ')}</span></div>
-            <p style={{ margin: 0, fontSize: 15, lineHeight: '23px', maxWidth: '72ch' }}>{unit.outcome}</p>
+            <p style={{ margin: 0, fontSize: '1rem', lineHeight: 1.55, maxWidth: '72ch' }}>{unit.outcome}</p>
           </section>}
           <section className="panel" aria-labelledby="h-cards">
             <div className="panel-head"><h2 id="h-cards">Cards</h2><span className="aside">{done} of {core.length} complete{chapter.cards.length > core.length ? ` · ${chapter.cards.length - core.length} optional video${chapter.cards.length - core.length > 1 ? 's' : ''}` : ''}</span></div>

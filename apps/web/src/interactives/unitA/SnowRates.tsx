@@ -67,15 +67,15 @@ export function SnowRates({ onReached }: InteractiveProps) {
         <svg viewBox={`0 0 ${fr.W} ${fr.H}`} role="img" aria-label="Cholera deaths per 10,000 houses by water company">
           {ticks.map(tk => <g key={tk}>
             <line x1={fr.l} x2={fr.l + fr.iw} y1={y(tk)} y2={y(tk)} stroke="var(--line)" />
-            <text x={fr.l - 6} y={y(tk) + 4} textAnchor="end" fontSize="11" fill="var(--muted)" fontFamily="var(--mono)">{Math.round(tk)}</text>
+            <text x={fr.l - 6} y={y(tk) + 4} textAnchor="end" fontSize="13" fill="var(--muted)" fontFamily="var(--mono)">{Math.round(tk)}</text>
           </g>)}
-          <text transform={`translate(12,${fr.t + fr.ih / 2}) rotate(-90)`} textAnchor="middle" fontSize="12" fill="var(--fg)">Deaths / 10,000 houses</text>
+          <text transform={`translate(12,${fr.t + fr.ih / 2}) rotate(-90)`} textAnchor="middle" fontSize="14" fill="var(--fg)">Deaths / 10,000 houses</text>
           {bars.map((b, i) => {
             const x = fr.l + i * bw + bw * 0.25, w = bw * 0.5, v = isFinite(b.v) ? b.v : 0;
             return <g key={b.k}>
               <rect x={x} width={w} y={y(v)} height={Math.max(0, y(0) - y(v))} fill={b.fill} />
-              <text x={x + w / 2} y={y(v) - 5} textAnchor="middle" fontSize="11" fill="var(--fg)" fontFamily="var(--mono)">{isFinite(b.v) ? Math.round(b.v) : '–'}</text>
-              <text x={x + w / 2} y={fr.t + fr.ih + 18} textAnchor="middle" fontSize="12" fill="var(--fg)">{b.k}</text>
+              <text x={x + w / 2} y={y(v) - 5} textAnchor="middle" fontSize="13" fill="var(--fg)" fontFamily="var(--mono)">{isFinite(b.v) ? Math.round(b.v) : '–'}</text>
+              <text x={x + w / 2} y={fr.t + fr.ih + 18} textAnchor="middle" fontSize="14" fill="var(--fg)">{b.k}</text>
             </g>;
           })}
         </svg>

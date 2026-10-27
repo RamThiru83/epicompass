@@ -64,9 +64,9 @@ export function InductionTimeline({ onReached }: InteractiveProps) {
           <circle cx={xt(0)} cy={yb} r={6} fill="var(--exp)" />
           <rect x={xt(ind) - 1.5} y={yb - 12} width={3} height={24} fill="var(--fg)" />
           <circle cx={xt(ind + lat)} cy={yb} r={6} fill="var(--unexp)" />
-          <text x={xt(0)} y={t.t - 6} fontSize="11" fill="var(--fg)">exposure</text>
-          <text x={xt(ind / 2)} y={yb + 4} textAnchor="middle" fontSize="11" fill="var(--fg)">induction</text>
-          <text x={Math.min(xt(ind + lat), t.l + t.iw - 4)} y={t.t - 6} textAnchor="end" fontSize="11" fill="var(--fg)">detection</text>
+          <text x={xt(0)} y={t.t - 6} fontSize="13" fill="var(--fg)">exposure</text>
+          <text x={xt(ind / 2)} y={yb + 4} textAnchor="middle" fontSize="13" fill="var(--fg)">induction</text>
+          <text x={Math.min(xt(ind + lat), t.l + t.iw - 4)} y={t.t - 6} textAnchor="end" fontSize="13" fill="var(--fg)">detection</text>
           <XAxis ticks={[0, 5, 10, 15, 20]} x={xt} y={yb + 22} W={t.W} label="Years since exposure" />
         </svg>
       </div>

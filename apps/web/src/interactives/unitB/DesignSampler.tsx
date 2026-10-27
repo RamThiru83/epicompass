@@ -111,11 +111,11 @@ export function DesignSampler({ onReached }: InteractiveProps) {
         <div className="fig">
           <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Estimates with 95% confidence intervals against the true risk ratio">
             <rect x="0" y="0" width={W} height={H} fill="var(--panel)" />
-            {!rows && <text x={L} y={T + 18} fontSize="12" fill="var(--muted)">Run a study to plot its estimate.</text>}
+            {!rows && <text x={L} y={T + 18} fontSize="14" fill="var(--muted)">Run a study to plot its estimate.</text>}
             {ests.map((e, i) => {
               const y = T + i * rowH + rowH / 2;
               return <g key={e.label}>
-                <text x={L - 8} y={y + 4} textAnchor="end" fontSize="12" fill="var(--fg)">{e.label}</text>
+                <text x={L - 8} y={y + 4} textAnchor="end" fontSize="14" fill="var(--fg)">{e.label}</text>
                 <line x1={clampX(e.r.ci.lower)} x2={clampX(e.r.ci.upper)} y1={y} y2={y} stroke={e.tone} strokeWidth="2.5" />
                 <circle cx={clampX(e.r.estimate)} cy={y} r={5} fill={e.tone} />
               </g>;
@@ -123,7 +123,7 @@ export function DesignSampler({ onReached }: InteractiveProps) {
             {repeats.ors.length > 0 && (() => {
               const y = T + ests.length * rowH + rowH / 2;
               return <g>
-                <text x={L - 8} y={y + 4} textAnchor="end" fontSize="12" fill="var(--fg)">{SCHEME_NAME[repeats.scheme]} OR × {repeats.ors.length}</text>
+                <text x={L - 8} y={y + 4} textAnchor="end" fontSize="14" fill="var(--fg)">{SCHEME_NAME[repeats.scheme]} OR × {repeats.ors.length}</text>
                 {repeats.ors.map((o, i) => <circle key={i} cx={clampX(o)} cy={y + ((i % 5) - 2) * 2.5} r={3.5} fill="var(--exp)" opacity={0.6} />)}
               </g>;
             })()}

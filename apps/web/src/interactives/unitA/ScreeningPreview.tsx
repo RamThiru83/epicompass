@@ -76,7 +76,7 @@ export function ScreeningPreview({ onReached, config }: InteractiveProps) {
         <Stat k="…of whom truly have it" v={`${n.tp} of ${positives}`} s={positives ? pct(pv.ppv) : '–'} tone={pv.ppv < 0.5 ? 'warn' : 'ok'} />
         <Stat k="Missed by the test" v={`${n.fn}`} s={`of ${diseased} with the condition`} />
       </div>
-      <div className="ix-panel" style={{ marginBottom: 10, fontSize: 14 }}>
+      <div className="ix-panel" style={{ marginBottom: 10, fontSize: '1rem' }}>
         Of {N.toLocaleString('en-GB')} people, <b>{diseased}</b> have the condition. The test catches <b>{n.tp}</b> of them and misses <b>{n.fn}</b>.{' '}
         The other <b>{healthy}</b> do not have it; the test clears <b>{n.tn}</b> but wrongly flags <b>{n.fp}</b>.{' '}
         So <b>{positives}</b> people test positive, and only <b>{n.tp}</b> of them truly have the condition.

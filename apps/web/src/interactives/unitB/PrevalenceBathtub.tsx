@@ -83,21 +83,21 @@ export function PrevalenceBathtub({ onReached }: InteractiveProps) {
             <rect x={tx - 50} y={14} width={70} height={12} fill="var(--muted)" />
             <rect x={tx + 8} y={14} width={12} height={22} fill="var(--muted)" />
             <rect x={tx + 10} y={36} width={8} height={ty + th - level - 36} fill="var(--exp)" opacity={playing ? 0.9 : 0.25} />
-            <text x={tx - 50} y={10} fontSize="11" fill="var(--fg)">Incidence (inflow)</text>
+            <text x={tx - 50} y={10} fontSize="13" fill="var(--fg)">Incidence (inflow)</text>
             {/* tank */}
             <rect x={tx} y={ty} width={tw} height={th} fill="var(--bg)" stroke="var(--line)" />
             <rect x={tx} y={ty + th - level} width={tw} height={level} fill="var(--exp)" opacity={0.75} />
             <line x1={tx} x2={tx + tw} y1={ty + th - sLevel} y2={ty + th - sLevel} stroke="var(--ok)" strokeDasharray="5 3" strokeWidth="2" />
-            <text x={tx + tw - 4} y={ty + th - sLevel - 4} textAnchor="end" fontSize="11" fill="var(--ok)">steady state</text>
-            <text x={tx + tw / 2} y={ty + th - level / 2 + 4} textAnchor="middle" fontSize="13" fill="var(--fg)" fontFamily="var(--mono)">{pct(current)}</text>
+            <text x={tx + tw - 4} y={ty + th - sLevel - 4} textAnchor="end" fontSize="13" fill="var(--ok)">steady state</text>
+            <text x={tx + tw / 2} y={ty + th - level / 2 + 4} textAnchor="middle" fontSize="14" fill="var(--fg)" fontFamily="var(--mono)">{pct(current)}</text>
             {/* drain */}
             <rect x={tx + tw - 20} y={ty + th} width={12} height={16} fill="var(--muted)" />
             <rect x={tx + tw - 18} y={ty + th + 16} width={8} height={10} fill="var(--unexp)" opacity={current > 0 ? 0.9 : 0.2} />
-            <text x={tx + tw + 4} y={ty + th + 24} fontSize="11" fill="var(--fg)">Recovery or death (1/D)</text>
+            <text x={tx + tw - 26} y={ty + th + 24} textAnchor="end" fontSize="13" fill="var(--fg)">Recovery or death (1/D)</text>
             {/* trajectory */}
             <YAxis ticks={yt} y={Y} x={310} x1={620} fmt={v => pct(v, 0)} />
             <XAxis ticks={[0, MAX_POINTS - 1]} x={X} y={240} W={0} fmt={i => `${Math.round((i * yearsShown) / (MAX_POINTS - 1))} y`} />
-            <text x={465} y={272} textAnchor="middle" fontSize="12" fill="var(--fg)">Time window (most recent {Math.round(yearsShown)} years)</text>
+            <text x={465} y={272} textAnchor="middle" fontSize="14" fill="var(--fg)">Time window (most recent {Math.round(yearsShown)} years)</text>
             <line x1={310} x2={620} y1={Y(steady)} y2={Y(steady)} stroke="var(--ok)" strokeDasharray="5 3" />
             <path d={line} fill="none" stroke="var(--exp)" strokeWidth="2.2" />
           </svg>

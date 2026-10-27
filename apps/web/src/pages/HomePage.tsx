@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { CHAPTERS, UNITS, conceptById, concepts } from '../content';
 import { coreCards } from '../content/types';
+import { useTextSize } from '../store/textSize';
 import { useProgress, dueConcepts, setSettings, resetProgress, isMastered } from '../store/progress';
 import { chapterCompletion } from '../store/gates';
 import { go } from '../App';
@@ -10,6 +11,7 @@ import { cloudEnabled } from '../lib/supabase';
 export function HomePage() {
   const p = useProgress();
   const [confirmReset, setConfirmReset] = useState(false);
+  const [textSize, setTextSize] = useTextSize();
   const acc = useAccount();
   const due = dueConcepts(p);
   const open = CHAPTERS.filter(c => c.cards.length);
@@ -79,7 +81,18 @@ export function HomePage() {
       </div>
 
       <section style={{ marginTop: 48 }} aria-labelledby="h-settings">
-        <h2 id="h-settings" style={{ fontSize: 18, marginBottom: 24 }}>Settings</h2>
+        <h2 id="h-settings" style={{ fontSize: '1.1875rem', marginBottom: 24 }}>Settings</h2>
+        <div className="setrow">
+          <div className="lbl"><h2 id="h-textsize">Text size</h2><p>Applies on this device. Your browser’s own text-size setting also works.</p></div>
+          <div className="panel">
+            <div className="seg" role="radiogroup" aria-labelledby="h-textsize">
+              {(['standard', 'large'] as const).map(v => (
+                <button key={v} type="button" role="radio" aria-checked={textSize === v} className={`btn ${textSize === v ? '' : 'ghost'}`} onClick={() => setTextSize(v)}>
+                  {v === 'standard' ? 'Standard' : 'Large'}
+                </button>))}
+            </div>
+          </div>
+        </div>
         <div className="setrow">
           <div className="lbl"><h2>Unit locks</h2><p>Keep yourself to the course order.</p></div>
           <div className="panel">

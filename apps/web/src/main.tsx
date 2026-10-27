@@ -6,5 +6,8 @@ import '@fontsource/instrument-sans/500.css';
 import '@fontsource/instrument-sans/600.css';
 import '@fontsource/instrument-serif/400.css';
 import './styles.css';
+import { applyTextSize } from './store/textSize';
+
+applyTextSize();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><App /></React.StrictMode>);

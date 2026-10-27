@@ -85,7 +85,7 @@ export function CausalPies({ onReached }: InteractiveProps) {
             {p.map((c, j) => { const st = (2 * Math.PI) / p.length, m = -Math.PI / 2 + (j + 0.5) * st, rr2 = p.length === 1 ? 0 : R * 0.6;
               return <text key={c} x={cx(i) + rr2 * Math.cos(m)} y={78 + rr2 * Math.sin(m) + 5} textAnchor="middle" fontSize="15" fontWeight={600} fill="var(--fg)">{c}</text>; })}
             {sel === i && <circle cx={cx(i)} cy={78} r={R + 4} fill="none" stroke="var(--accent)" strokeWidth={2} />}
-            <text x={cx(i)} y={162} textAnchor="middle" fontSize="12" fill="var(--muted)">Pie {i + 1}{p.length === 0 ? ' (empty)' : ''}</text>
+            <text x={cx(i)} y={162} textAnchor="middle" fontSize="14" fill="var(--muted)">Pie {i + 1}{p.length === 0 ? ' (empty)' : ''}</text>
           </g>)}
         </svg>
       </div>

@@ -88,7 +88,7 @@ export function RiskVsRate({ onReached }: InteractiveProps) {
         <div className="fig">
           <svg viewBox="0 0 640 270" role="img" aria-label="Cohort dots and risk versus rate-times-time chart">
             <rect x="0" y="0" width="640" height="270" fill="var(--panel)" />
-            <text x={gx} y={12} fontSize="12" fill="var(--fg)">Each dot is one person (synthetic)</text>
+            <text x={gx} y={12} fontSize="14" fill="var(--fg)">Each dot is one person (synthetic)</text>
             {eventTime.map((e, i) => {
               const c = i % cols, r = Math.floor(i / cols);
               return <circle key={i} cx={gx + c * cell + cell / 2} cy={gy + r * cell + cell / 2} r={Math.max(1.5, cell * 0.36)}
@@ -96,7 +96,7 @@ export function RiskVsRate({ onReached }: InteractiveProps) {
             })}
             <YAxis ticks={yTicks} y={Y} x={cx0} x1={cx0 + cw} fmt={v => String(v)} />
             <XAxis ticks={[0, 2, 4, 6, 8, 10]} x={X} y={cy0 + ch} W={0} />
-            <text x={cx0 + cw / 2} y={cy0 + ch + 34} textAnchor="middle" fontSize="12" fill="var(--fg)">Years of follow-up</text>
+            <text x={cx0 + cw / 2} y={cy0 + ch + 34} textAnchor="middle" fontSize="14" fill="var(--fg)">Years of follow-up</text>
             <line x1={cx0} x2={cx0 + cw} y1={Y(1)} y2={Y(1)} stroke="var(--muted)" strokeDasharray="4 3" />
             <path d={path('rt')} fill="none" stroke="var(--warn)" strokeWidth="2" strokeDasharray="5 3" />
             <path d={path('risk')} fill="none" stroke="var(--exp)" strokeWidth="2.4" />

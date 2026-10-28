@@ -25,7 +25,7 @@ export function Sidebar({ units, chapters, active, route, open }: { units: Unit[
         <a className="inst-logo" href="https://thsti.res.in" target="_blank" rel="noreferrer" title="BRIC-Translational Health Science and Technology Institute">
           <img src={logoUrl} alt="BRIC, a DBT organisation, and THSTI, Translational Health Science and Technology Institute" />
         </a>
-        <p className="instructor"><span>Course instructor</span>Dr Ramachandran Thiruvengadam</p>
+        <p className="instructor"><span>Course instructor</span>Dr Ramachandran Thiruvengadam, MD, PhD</p>
         <p className="prog">Maternal and Child Health Programme, BRIC-THSTI, Faridabad</p>
       </div>
       <button className="btn ghost ask" onClick={openTutor}>Ask your instructor</button>

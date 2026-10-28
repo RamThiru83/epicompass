@@ -82,7 +82,7 @@ input[type=checkbox] { accent-color: var(--primary); width: 16px; height: 16px; 
 .app { display: grid; grid-template-columns: 272px minmax(0, 1fr); min-height: 100vh; }
 .sidebar { position: sticky; top: 0; height: 100vh; overflow-y: auto; display: flex; flex-direction: column;
   border-right: 1px solid var(--rule); padding: 20px 12px 16px; background: var(--ground); min-width: 0; }
-.brand { display: flex; align-items: center; gap: 10px; padding: 4px 10px 0; margin: 0 0 22px; background: none; border: 0; text-align: left; }
+.brand { display: flex; align-items: center; gap: 10px; padding: 4px 10px 0; margin: 0 0 14px; background: none; border: 0; text-align: left; }
 .brand .mark { width: 26px; height: 26px; flex: none; }
 .brand .name { font-size: 1.125rem; font-weight: 600; letter-spacing: -0.01em; display: block; line-height: 1.176; }
 .brand small { display: block; color: var(--muted); font-size: 0.875rem; line-height: 1.333; }
@@ -100,10 +100,13 @@ input[type=checkbox] { accent-color: var(--primary); width: 16px; height: 16px; 
 .chap .bar { width: 28px; }
 .bar { height: 3px; border-radius: 2px; background: var(--border); overflow: hidden; display: block; }
 .bar i { display: block; height: 100%; background: var(--accent); }
-.side-foot { margin-top: auto; padding: 20px 4px 0; }
 .inst-logo { display: block; background: #FFFFFF; border-radius: 8px; padding: 8px 10px; border: 1px solid var(--rule); }
 .inst-logo img { display: block; width: 100%; height: auto; }
-.side-foot p { margin: 8px 6px 0; font-size: 0.875rem; line-height: 1.333; color: var(--muted); }
+.course-by { margin: 0 0 18px; padding: 0 4px; }
+.course-by p { margin: 0 6px; font-size: 0.875rem; line-height: 1.35; color: var(--muted); }
+.course-by .instructor { margin-top: 10px; color: var(--text); font-weight: 500; }
+.course-by .instructor span { display: block; font-size: 0.8125rem; font-weight: 400; color: var(--muted); }
+.course-by .prog { margin-top: 2px; }
 
 /* phone and tablet: the sidebar folds into a 48px bar and a full-screen sheet */
 .topbar { display: none; }

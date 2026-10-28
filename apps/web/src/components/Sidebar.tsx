@@ -21,6 +21,13 @@ export function Sidebar({ units, chapters, active, route, open }: { units: Unit[
         <img className="mark" src={markUrl} alt="" width={26} height={26} />
         <span><span className="name">EpiCompass</span><small>Epidemiology 101</small></span>
       </button>
+      <div className="course-by">
+        <a className="inst-logo" href="https://thsti.res.in" target="_blank" rel="noreferrer" title="BRIC-Translational Health Science and Technology Institute">
+          <img src={logoUrl} alt="BRIC, a DBT organisation, and THSTI, Translational Health Science and Technology Institute" />
+        </a>
+        <p className="instructor"><span>Course instructor</span>Dr Ramachandran Thiruvengadam</p>
+        <p className="prog">Maternal and Child Health Programme, BRIC-THSTI, Faridabad</p>
+      </div>
       <button className="btn ghost ask" onClick={openTutor}>Ask your instructor</button>
       <nav className="nav-group">
         <button className={`chap plain ${route === 'home' ? 'active' : ''}`} onClick={() => go('#/')} aria-current={route === 'home' ? 'page' : undefined}><span className="t">Home and welcome letter</span></button>
@@ -53,12 +60,6 @@ export function Sidebar({ units, chapters, active, route, open }: { units: Unit[
           </nav>
         );
       })}
-      <div className="side-foot">
-        <a className="inst-logo" href="https://thsti.res.in" target="_blank" rel="noreferrer" title="BRIC-Translational Health Science and Technology Institute">
-          <img src={logoUrl} alt="BRIC, a DBT organisation, and THSTI, Translational Health Science and Technology Institute" />
-        </a>
-        <p>Maternal and Child Health Programme, BRIC-THSTI, Faridabad</p>
-      </div>
     </aside>
   );
 }

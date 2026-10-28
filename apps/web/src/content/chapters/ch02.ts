@@ -7,7 +7,7 @@ export const ch02: Chapter = {
   title: 'Pioneers in epidemiology and public health',
   unit: 'A',
   reading: 'Rothman, Huybrechts & Murray, 3rd ed., Chapter 2',
-  summary: md`The methods in this course were not handed down complete; they were invented by people trying to answer urgent practical questions. Follow three threads through that history: turning counts into rates, finding comparisons that nature or circumstance has set up for us, and building deliberate comparison groups, which became the cohort and case-control designs. Each thread is still part of everyday practice.`,
+  summary: md`The methods in epidemiology were invented by people trying to answer urgent practical questions. Follow three threads through that history: turning counts into rates, finding comparisons that nature or circumstance has set up for us, and building deliberate comparison groups, which became the cohort and case-control designs. Each of these inventions is still part of everyday practice in epidemiology.`,
   cards: [
     // ------------------------------------------------------------------
     {

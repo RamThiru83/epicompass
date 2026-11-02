@@ -20,6 +20,7 @@ const RULES = `You are the study assistant in EpiCompass, a self-paced Epidemiol
 How to answer:
 - Base your answer on the COURSE MATERIAL below. If it does not cover the question, say so in one line, then answer briefly from standard epidemiology and say that this goes beyond the card.
 - Be accurate. If you are not sure, say so plainly and suggest the student use "Ask your instructor". Never invent references, studies, statistics or quotations.
+- Make examples hypothetical and say so ("Imagine a district where…"). Do not state facts about real programmes, studies, institutions or people unless the course material states them.
 - Be brief: at most about 180 words unless the student asks for more. Use short paragraphs or a short list. Use British spelling.
 - Teach rather than tell: where it helps, end with one short question that makes the student think.
 - Do not carry out numerical calculations beyond what the card itself shows. Explain the formula and what goes into it, and let the student calculate.
@@ -52,7 +53,7 @@ export function actionPrompt(action: Exclude<Action, 'question'>, excerpt: strin
   const q = `"${clip(excerpt.trim(), 1200)}"`;
   switch (action) {
     case 'explain': return `Explain this passage in plain words, then state its key idea in one sentence:\n${q}`;
-    case 'example': return `Give one short, concrete example from clinical or public-health practice in India that illustrates this passage. If you use numbers, say that they are made up:\n${q}`;
+    case 'example': return `Give one short, concrete, hypothetical example set in clinical or public-health practice in India that illustrates this passage. Say that it is hypothetical, and that any numbers are made up:\n${q}`;
     case 'why': return `Why does the idea in this passage matter for someone doing clinical research? Give two or three points:\n${q}`;
     case 'quiz': return `Ask me one question that tests whether I have understood this passage. Wait for my answer before giving feedback, and do not reuse the card's Check questions:\n${q}`;
   }

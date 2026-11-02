@@ -81,7 +81,17 @@ export class AssistantError extends Error { constructor(msg: string, public kind
  *  their whole allowance "thinking"), it is retried once with the remaining models. */
 export async function chat(messages: ChatMsg[], onText: (s: string) => void, signal?: AbortSignal): Promise<{ text: string; model: string }> {
   if (!st.key) throw new AssistantError('Not connected', 'auth');
-  const all = st.plan === 'low-cost' ? LOW_COST_MODELS : FREE_MODELS;
+  if (st.plan === 'low-cost') {
+    // Qwen on its own, so the "no data storage" filter can apply; any failure falls back to the free models
+    try { const r = await once(LOW_COST_MODELS, messages, onText, signal); if (r.text.trim()) return r; }
+    catch (e) { if (e instanceof AssistantError && e.kind === 'auth') throw e; if ((e as Error).name === 'AbortError') throw e; }
+    onText('');
+  }
+  return freeChain(messages, onText, signal);
+}
+
+async function freeChain(messages: ChatMsg[], onText: (s: string) => void, signal?: AbortSignal): Promise<{ text: string; model: string }> {
+  const all = FREE_MODELS;
   // OpenRouter accepts at most 3 models per request; a second try uses the ones not tried yet
   const first = all.slice(0, 3);
   const second = all.slice(3);
@@ -101,8 +111,8 @@ async function once(models: string[], messages: ChatMsg[], onText: (s: string) =
       models, messages, stream: true, temperature: 0.3, max_tokens: 3000,
       // keep "thinking" short and out of the reply, so it cannot use up the answer
       reasoning: { effort: 'low', exclude: true },
-      // the paid model can avoid providers that store prompts; the free models are only offered by such providers
-      ...(st.plan === 'low-cost' ? { provider: { data_collection: 'deny' } } : {}),
+      // paid models can avoid providers that store prompts; the free ones are only offered by such providers
+      ...(models.every(m => !m.endsWith(':free')) ? { provider: { data_collection: 'deny' } } : {}),
     }),
   });
   if (!r.ok || !r.body) {

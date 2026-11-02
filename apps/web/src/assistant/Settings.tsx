@@ -8,7 +8,7 @@ import { openAssistant } from './Assistant';
 
 const PLAN_TEXT: Record<ModelPlan, JSX.Element> = {
   'free': <>No payment needed. A free OpenRouter account allows <b>50 questions a day</b> (1,000 a day once the account has ever bought US$10 of credit). The free models are run by providers that may keep questions for a while, so do not type personal information.</>,
-  'low-cost': <>Needs a little credit on your OpenRouter account. A question costs roughly US$0.0002, so US$1 lasts several thousand questions. Questions go only to providers that do not store them.</>,
+  'low-cost': <>Needs a little credit on your OpenRouter account. A question costs roughly US$0.0002, so US$1 lasts several thousand questions. Questions to Qwen go only to providers that do not store them. If Qwen is unavailable or your credit runs out, the assistant switches to the free models for that question.</>,
 };
 
 export function AssistantSettings() {

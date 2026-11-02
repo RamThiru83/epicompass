@@ -17,7 +17,8 @@ const ls = {
 };
 
 interface State { key: string | null; plan: ModelPlan; connecting: boolean; error: string | null }
-let st: State = { key: ls.get(K_KEY), plan: ls.get(K_PLAN) === 'low-cost' ? 'low-cost' : 'free', connecting: false, error: null };
+const chosenPlan = () => { const v = ls.get(K_PLAN); return v === 'low-cost' || v === 'free' ? v : null; };
+let st: State = { key: ls.get(K_KEY), plan: chosenPlan() ?? 'free', connecting: false, error: null };
 const subs = new Set<() => void>();
 const set = (p: Partial<State>) => { st = { ...st, ...p }; subs.forEach(f => f()); };
 export const useOpenRouter = () => useSyncExternalStore(f => { subs.add(f); return () => subs.delete(f); }, () => st);
@@ -25,7 +26,7 @@ export const useOpenRouter = () => useSyncExternalStore(f => { subs.add(f); retu
 export function setPlan(plan: ModelPlan) { ls.set(K_PLAN, plan); set({ plan }); }
 export function disconnect() { ls.set(K_KEY, null); set({ key: null, error: null }); }
 /** Fallback for students who already have a key: paste it instead of connecting. */
-export function pasteKey(key: string) { const k = key.trim(); if (!/^sk-or-/.test(k)) return 'That does not look like an OpenRouter key (it should start with sk-or-).'; ls.set(K_KEY, k); set({ key: k, error: null }); return null; }
+export function pasteKey(key: string) { const k = key.trim(); if (!/^sk-or-/.test(k)) return 'That does not look like an OpenRouter key (it should start with sk-or-).'; ls.set(K_KEY, k); set({ key: k, error: null }); keyInfo(); return null; }
 
 const b64url = (b: ArrayBuffer | Uint8Array) => btoa(String.fromCharCode(...new Uint8Array(b))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 const randomString = (n = 48) => b64url(crypto.getRandomValues(new Uint8Array(n)));
@@ -55,7 +56,7 @@ export async function finishConnect(): Promise<string | null> {
     const r = await fetch(`${API}/auth/keys`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code, code_verifier: saved.verifier, code_challenge_method: 'S256' }) });
     const j = await r.json().catch(() => ({}));
     if (!r.ok || !j.key) throw new Error(j?.error?.message ?? `OpenRouter returned ${r.status}`);
-    ls.set(K_KEY, j.key); set({ key: j.key, connecting: false });
+    ls.set(K_KEY, j.key); set({ key: j.key, connecting: false }); keyInfo();
   } catch (e) {
     set({ connecting: false, error: `Connecting to OpenRouter failed: ${(e as Error).message}. Please try again.` });
   }
@@ -70,6 +71,8 @@ export async function keyInfo(): Promise<KeyInfo | null> {
     const r = await fetch(`${API}/key`, { headers: { Authorization: `Bearer ${st.key}` } });
     if (r.status === 401) { disconnect(); set({ error: 'Your OpenRouter connection has expired or was removed. Please connect again.' }); return null; }
     const d = (await r.json())?.data; if (!d) return null;
+    // No choice made in settings: an account that has bought credit uses Qwen; one that has not uses the free models.
+    if (!chosenPlan()) { const auto: ModelPlan = d.is_free_tier ? 'free' : 'low-cost'; if (auto !== st.plan) set({ plan: auto }); }
     return { freeTier: !!d.is_free_tier, freeLeft: d.free_model_daily_requests?.remaining ?? null, freeLimit: d.free_model_daily_requests?.limit ?? null, creditLeft: d.limit_remaining ?? null };
   } catch { return null; }
 }
@@ -145,3 +148,6 @@ async function once(models: string[], messages: ChatMsg[], onText: (s: string) =
   }
   return { text, model };
 }
+
+// settle the automatic plan as soon as the app loads with a connected key
+if (st.key) keyInfo();

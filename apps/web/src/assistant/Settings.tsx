@@ -48,7 +48,7 @@ export function AssistantSettings() {
       </div>
 
       <div className="setrow">
-        <div className="lbl"><h2 id="h-model">AI model</h2><p>EpiCompass picks the model and switches to a backup if one is busy.</p></div>
+        <div className="lbl"><h2 id="h-model">AI model</h2><p>Chosen automatically: if your OpenRouter account has credit, Qwen3.5 9B; otherwise the free models. Pick one below to override. A backup takes over if a model is busy.</p></div>
         <div className="panel">
           <div role="radiogroup" aria-labelledby="h-model" className="as-plans">
             {(['free', 'low-cost'] as const).map(p => (

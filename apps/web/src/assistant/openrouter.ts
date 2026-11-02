@@ -107,15 +107,18 @@ async function freeChain(messages: ChatMsg[], onText: (s: string) => void, signa
 }
 
 async function once(models: string[], messages: ChatMsg[], onText: (s: string) => void, signal?: AbortSignal): Promise<{ text: string; model: string }> {
+  const paidOnly = models.every(m => !m.endsWith(':free'));
   const r = await fetch(`${API}/chat/completions`, {
     method: 'POST', signal,
     headers: { Authorization: `Bearer ${st.key}`, 'Content-Type': 'application/json', 'HTTP-Referer': callbackUrl(), 'X-OpenRouter-Title': 'EpiCompass', 'X-Title': 'EpiCompass' },
     body: JSON.stringify({
       models, messages, stream: true, temperature: 0.3, max_tokens: 3000,
-      // keep "thinking" short and out of the reply, so it cannot use up the answer
-      reasoning: { effort: 'low', exclude: true },
+      // "Thinking" can use up the whole allowance and leave no answer. Qwen3.5 thinks at length even on low
+      // effort, so it is switched off there (tested: 1.8 s and about US$0.00002 a question); for the free
+      // models it is kept short and out of the reply.
+      reasoning: paidOnly ? { enabled: false } : { effort: 'low', exclude: true },
       // paid models can avoid providers that store prompts; the free ones are only offered by such providers
-      ...(models.every(m => !m.endsWith(':free')) ? { provider: { data_collection: 'deny' } } : {}),
+      ...(paidOnly ? { provider: { data_collection: 'deny' } } : {}),
     }),
   });
   if (!r.ok || !r.body) {

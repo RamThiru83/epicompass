@@ -13,7 +13,7 @@ export const FREE_MODELS = [
   'dots-studio/dots-3-note-preview:free',   // last resort: 4.23/5, 9 of 10; once gave a Practise answer away
 ];
 
-/** For students who add a little credit (US$1 lasts thousands of questions). If Qwen is unavailable or the
+/** For students who add a little credit (about US$0.00005 a question, so US$1 lasts many thousands). If Qwen is unavailable or the
  *  credit runs out, the assistant falls back to the free models, so these students are never worse off. */
 export const LOW_COST_MODELS = [
   'qwen/qwen3.5-9b',

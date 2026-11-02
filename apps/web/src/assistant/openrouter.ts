@@ -81,14 +81,16 @@ export class AssistantError extends Error { constructor(msg: string, public kind
  *  their whole allowance "thinking"), it is retried once with the remaining models. */
 export async function chat(messages: ChatMsg[], onText: (s: string) => void, signal?: AbortSignal): Promise<{ text: string; model: string }> {
   if (!st.key) throw new AssistantError('Not connected', 'auth');
-  let models = st.plan === 'low-cost' ? LOW_COST_MODELS : FREE_MODELS;
-  for (let attempt = 0; ; attempt++) {
-    const r = await once(models, messages, onText, signal);
-    if (r.text.trim() || attempt >= 1) return r;
-    const rest = models.filter(m => m !== r.model && m !== `${r.model}:free`);
-    if (!rest.length || rest.length === models.length && !r.model) return r;
-    models = rest;
-  }
+  const all = st.plan === 'low-cost' ? LOW_COST_MODELS : FREE_MODELS;
+  // OpenRouter accepts at most 3 models per request; a second try uses the ones not tried yet
+  const first = all.slice(0, 3);
+  const second = all.slice(3);
+  let r: { text: string; model: string };
+  try { r = await once(first, messages, onText, signal); }
+  catch (e) { if (e instanceof AssistantError && e.kind === 'busy' && second.length) return once(second, messages, onText, signal); throw e; }
+  if (r.text.trim()) return r;
+  const retry = [...first.filter(m => m !== r.model && m !== `${r.model}:free`), ...second].slice(0, 3);
+  return retry.length ? once(retry, messages, onText, signal) : r;
 }
 
 async function once(models: string[], messages: ChatMsg[], onText: (s: string) => void, signal?: AbortSignal): Promise<{ text: string; model: string }> {

@@ -8,7 +8,7 @@ import { openAssistant } from './Assistant';
 
 const PLAN_TEXT: Record<ModelPlan, JSX.Element> = {
   'free': <>No payment needed. A free OpenRouter account allows <b>50 questions a day</b> (1,000 a day once the account has ever bought US$10 of credit). The free models are run by providers that may keep questions for a while, so do not type personal information.</>,
-  'low-cost': <>Needs a little credit on your OpenRouter account. A question costs about US$0.00005, so US$1 lasts many thousands of questions. Questions to Qwen go only to providers that do not store them. If Qwen is unavailable or your credit runs out, the assistant switches to the free models for that question.</>,
+  'low-cost': <>Needs a little credit on your OpenRouter account. A question costs about US$0.00005, so US$1 lasts many thousands of questions. Questions to Qwen go only to providers that do not store them. If Qwen is unavailable or your credit runs out, Kenny switches to the free models for that question.</>,
 };
 
 export function AssistantSettings() {
@@ -22,15 +22,15 @@ export function AssistantSettings() {
   return (
     <>
       <div className="setrow">
-        <div className="lbl"><h2 id="h-assistant">Study assistant</h2><p>An AI tutor for the card you are on, using your own OpenRouter account.</p></div>
+        <div className="lbl"><h2 id="h-assistant">Kenny, your study assistant</h2><p>An AI tutor for the card you are on, using your own OpenRouter account.</p></div>
         <div className="panel">
           {or.key ? <>
-            <p style={{ marginTop: 0 }}><b>Connected</b> on this device. Open it with the <b>Study assistant</b> button, or select a passage on any card.</p>
-            <div className="actions"><button className="btn" onClick={() => openAssistant()}>Open the assistant</button><button className="btn ghost" onClick={disconnect}>Disconnect</button></div>
+            <p style={{ marginTop: 0 }}><b>Connected</b> on this device. Open Kenny with the <b>Ask Kenny</b> button, or select a passage on any card.</p>
+            <div className="actions"><button className="btn" onClick={() => openAssistant()}>Ask Kenny</button><button className="btn ghost" onClick={disconnect}>Disconnect</button></div>
           </> : <>
             <ol className="as-steps">
               <li>Press <b>Connect OpenRouter</b>. On OpenRouter, sign in or create a free account (Google or email), then approve EpiCompass.</li>
-              <li>You return here with the assistant ready. No payment or card details are needed for the free models.</li>
+              <li>You return here with Kenny ready. No payment or card details are needed for the free models.</li>
               <li>On each new device or browser, connect once more.</li>
             </ol>
             {or.error && <p className="as-err" role="alert">{or.error}</p>}
@@ -43,7 +43,7 @@ export function AssistantSettings() {
               {msg && <p className="hint">{msg}</p>}
             </details>
           </>}
-          <p className="hint" style={{ marginTop: 12 }}>Your key is kept in this browser only. Your questions go straight from this browser to OpenRouter; EpiCompass never sees the key or the conversation. The assistant can make mistakes: the card is the authority, and your instructor is a WhatsApp message away.</p>
+          <p className="hint" style={{ marginTop: 12 }}>Your key is kept in this browser only. Your questions go straight from this browser to OpenRouter; EpiCompass never sees the key or the conversation. Kenny can make mistakes: the card is the authority, and your instructor is a WhatsApp message away.</p>
         </div>
       </div>
 
@@ -66,8 +66,8 @@ export function AssistantSettings() {
         <div className="panel">
           <label className="toggle-row"><input type="checkbox" checked={consent} disabled={busy}
             onChange={async e => { setBusy(true); const err = await setInsightsConsent(e.target.checked); setBusy(false); setMsg(err); }} />
-            <span>Share which cards and passages I ask the study assistant about, so that Dr Ram can see where the course text is unclear.</span></label>
-          <p className="hint">Only the card, the step, the button you pressed and the passage of course text you selected are recorded. Your instructor sees totals for each card and passage, not who asked. What you type and the assistant’s answers are never recorded. Unticking deletes everything recorded so far. This is used only to improve the course, not for research or marks.</p>
+            <span>Share which cards and passages I ask Kenny about, so that Dr Ram can see where the course text is unclear.</span></label>
+          <p className="hint">Only the card, the step, the button you pressed and the passage of course text you selected are recorded. Your instructor sees totals for each card and passage, not who asked. What you type and Kenny’s answers are never recorded. Unticking deletes everything recorded so far. This is used only to improve the course, not for research or marks.</p>
         </div>
       </div>}
     </>

@@ -135,7 +135,7 @@ export function Assistant() {
   let body: JSX.Element;
   if (!or.key) body = (
     <div className="as-setup">
-      <p>The study assistant answers questions about the card you are on, using an AI model on <b>your own OpenRouter account</b>. A free account is enough: it gives 50 questions a day.</p>
+      <p>Kenny, your study assistant, answers questions about the card you are on, using an AI model on <b>your own OpenRouter account</b>. A free account is enough: it gives 50 questions a day.</p>
       <ol>
         <li>Press <b>Connect OpenRouter</b>. Sign in, or create a free account, and approve EpiCompass.</li>
         <li>You come straight back here, ready to ask.</li>
@@ -143,19 +143,19 @@ export function Assistant() {
       {or.error && <p className="as-err" role="alert">{or.error}</p>}
       <div className="as-actions">
         <button className="btn" onClick={() => connect()} disabled={or.connecting}>{or.connecting ? 'Connecting…' : 'Connect OpenRouter'}</button>
-        <button className="textlink" onClick={() => { close(); go('#/progress'); setTimeout(() => document.getElementById('h-assistant')?.scrollIntoView({ block: 'start' }), 300); }}>More about the assistant</button>
+        <button className="textlink" onClick={() => { close(); go('#/progress'); setTimeout(() => document.getElementById('h-assistant')?.scrollIntoView({ block: 'start' }), 300); }}>More about Kenny</button>
       </div>
       <p className="hint">Your key stays in this browser. EpiCompass never sees it or your conversations.</p>
     </div>
   );
   else if (onCheck) body = (
-    <div className="as-setup"><p>The assistant is switched off during <b>Check</b>, so that your answers show what you know. It is available again on the other steps.</p></div>
+    <div className="as-setup"><p>Kenny is switched off during <b>Check</b>, so that your answers show what you know. He is back on the other steps.</p></div>
   );
   else body = (
     <>
       <div className="as-list" ref={list} aria-live="polite">
         {turns.length === 0 && <div className="as-empty">
-          <p>Ask anything about {ctx ? <>“{ctx.card.title}”</> : 'this page'}. Or select a passage on the page and choose <b>Explain this</b>, <b>Give an example</b>, <b>Why does it matter?</b> or <b>Quiz me on this</b>.</p>
+          <p>Hello, I’m Kenny. Ask me anything about {ctx ? <>“{ctx.card.title}”</> : 'this page'}. Or select a passage on the page and choose <b>Explain this</b>, <b>Give an example</b>, <b>Why does it matter?</b> or <b>Quiz me on this</b>.</p>
         </div>}
         {turns.map((t, i) => t.role === 'user'
           ? <div key={i} className="as-msg me">{t.excerpt && <blockquote>{t.excerpt.length > 220 ? t.excerpt.slice(0, 220) + '…' : t.excerpt}</blockquote>}<p>{t.label ?? t.content}</p></div>
@@ -163,7 +163,7 @@ export function Assistant() {
       </div>
       <form className="as-form" onSubmit={submit}>
         {excerpt && <div className="as-chip"><span>About: “{excerpt.length > 90 ? excerpt.slice(0, 90) + '…' : excerpt}”</span><button type="button" aria-label="Remove passage" onClick={() => setExcerpt(null)}>×</button></div>}
-        <textarea ref={input} value={q} rows={2} placeholder="Your question…" aria-label="Your question to the study assistant"
+        <textarea ref={input} value={q} rows={2} placeholder="Your question…" aria-label="Your question to Kenny"
           onChange={e => setQ(e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submit(); } }} />
         <div className="as-actions">
           {busy ? <button type="button" className="btn ghost" onClick={() => abort.current?.abort()}>Stop</button>
@@ -177,16 +177,16 @@ export function Assistant() {
   return (
     <>
       {sel && !onCheck && (
-        <div className="as-selmenu assistant" role="toolbar" aria-label="Ask the study assistant about the selected text" style={{ left: sel.x, top: sel.y }} onMouseDown={e => e.preventDefault()}>
+        <div className="as-selmenu assistant" role="toolbar" aria-label="Ask Kenny about the selected text" style={{ left: sel.x, top: sel.y }} onMouseDown={e => e.preventDefault()}>
           {(Object.keys(ACTION_LABEL) as Exclude<Action, 'question'>[]).map(a => <button key={a} type="button" onClick={() => pick(a)}>{ACTION_LABEL[a]}</button>)}
           <button type="button" onClick={() => pick()}>Ask…</button>
         </div>
       )}
-      {!open && <button ref={fab} className="as-fab" onClick={() => openAssistant()} aria-haspopup="dialog" aria-label="Study assistant"><Sparkle /><span>Study assistant</span></button>}
+      {!open && <button ref={fab} className="as-fab" onClick={() => openAssistant()} aria-haspopup="dialog" aria-label="Ask Kenny, your study assistant"><Sparkle /><span className="fab-text"><b>Ask Kenny</b><small>your study assistant</small></span></button>}
       {open && (
         <div className="assistant as-panel" role="dialog" aria-modal="false" aria-labelledby="as-h" ref={box}>
           <div className="as-head">
-            <div><h2 id="as-h">Study assistant</h2><span className="hint">AI · can make mistakes · the card is the authority</span></div>
+            <div><h2 id="as-h">Kenny</h2><span className="hint">Your study assistant · AI, can make mistakes · the card is the authority</span></div>
             <button className="btn ghost close" onClick={close} aria-label="Close (Esc)">Close</button>
           </div>
           {body}

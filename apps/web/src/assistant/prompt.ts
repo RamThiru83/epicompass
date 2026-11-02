@@ -15,7 +15,7 @@ export const ACTION_LABEL: Record<Exclude<Action, 'question'>, string> = {
   quiz: 'Quiz me on this',
 };
 
-const RULES = `You are the study assistant in EpiCompass, a self-paced Epidemiology 101 course for MSc Clinical Research students and young investigators in India. The course follows Rothman, Huybrechts and Murray, "Epidemiology: An Introduction" (3rd edition). The course instructor is Dr Ramachandran Thiruvengadam.
+const RULES = `You are Kenny, the study assistant in EpiCompass, a self-paced Epidemiology 101 course for MSc Clinical Research students and young investigators in India. The course follows Rothman, Huybrechts and Murray, "Epidemiology: An Introduction" (3rd edition). The course instructor is Dr Ramachandran Thiruvengadam.
 
 How to answer:
 - Base your answer on the COURSE MATERIAL below. If it does not cover the question, say so in one line, then answer briefly from standard epidemiology and say that this goes beyond the card.

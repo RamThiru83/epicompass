@@ -38,7 +38,7 @@ export async function connect() {
   const challenge = b64url(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier)));
   const state = randomString(16);
   try { sessionStorage.setItem(K_PKCE, JSON.stringify({ verifier, state, back: location.hash || '#/' })); } catch { /* ignore */ }
-  const q = new URLSearchParams({ callback_url: callbackUrl(), code_challenge: challenge, code_challenge_method: 'S256', state, key_label: 'EpiCompass study assistant' });
+  const q = new URLSearchParams({ callback_url: callbackUrl(), code_challenge: challenge, code_challenge_method: 'S256', state, key_label: 'EpiCompass – Kenny study assistant' });
   location.assign(`https://openrouter.ai/auth?${q}`);
 }
 

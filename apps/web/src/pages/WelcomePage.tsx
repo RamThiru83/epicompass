@@ -48,8 +48,8 @@ function AssistantPrompt() {
   return (
     <section className="panel join-prompt s12" aria-labelledby="h-as-setup">
       <div>
-        <h2 id="h-as-setup">Set up your study assistant</h2>
-        <p>An AI tutor that explains any passage you select, using a free OpenRouter account of your own. It takes about a minute: connect, sign in or sign up at OpenRouter, approve, and you are back here.</p>
+        <h2 id="h-as-setup">Set up Kenny, your study assistant</h2>
+        <p>Kenny is an AI tutor who explains any passage you select, using a free OpenRouter account of your own. It takes about a minute: connect, sign in or sign up at OpenRouter, approve, and you are back here.</p>
       </div>
       <div className="join-actions">
         <button className="btn ghost" onClick={() => connect()}>Connect OpenRouter</button>

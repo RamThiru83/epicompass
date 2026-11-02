@@ -32,8 +32,8 @@ export function AskInsights({ cohort, consented }: { cohort: string; consented: 
 
   return (
     <div className="section">
-      <h2 className='sec-h'>Where students ask the study assistant for help</h2>
-      <p className="hint">Last {DAYS} days, from the {consented} student{consented === 1 ? '' : 's'} who have agreed to share this. Totals only: you do not see who asked, what they typed or what the assistant replied.</p>
+      <h2 className='sec-h'>Where students ask Kenny for help</h2>
+      <p className="hint">Last {DAYS} days, from the {consented} student{consented === 1 ? '' : 's'} who have agreed to share this. Totals only: you do not see who asked, what they typed or what Kenny replied.</p>
       {err ? <p className="hint">{/assistant_asks|does not exist|schema cache/i.test(err) ? 'Not switched on yet: the database table for this has not been created.' : `Could not load: ${err}`}</p>
         : rows === null ? <p className="hint">Loading…</p>
         : byCard.length === 0 ? <p className="hint">Nothing yet.</p>

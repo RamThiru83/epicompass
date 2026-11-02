@@ -77,26 +77,41 @@ export async function keyInfo(): Promise<KeyInfo | null> {
 export type ChatMsg = { role: 'system' | 'user' | 'assistant'; content: string };
 export class AssistantError extends Error { constructor(msg: string, public kind: 'auth' | 'quota' | 'credit' | 'busy' | 'other') { super(msg); } }
 
-/** Stream a reply. `onText` receives the reply so far. */
+/** Stream a reply. `onText` receives the reply so far. If a model returns nothing (some free models spend
+ *  their whole allowance "thinking"), it is retried once with the remaining models. */
 export async function chat(messages: ChatMsg[], onText: (s: string) => void, signal?: AbortSignal): Promise<{ text: string; model: string }> {
   if (!st.key) throw new AssistantError('Not connected', 'auth');
-  const models = st.plan === 'low-cost' ? LOW_COST_MODELS : FREE_MODELS;
+  let models = st.plan === 'low-cost' ? LOW_COST_MODELS : FREE_MODELS;
+  for (let attempt = 0; ; attempt++) {
+    const r = await once(models, messages, onText, signal);
+    if (r.text.trim() || attempt >= 1) return r;
+    const rest = models.filter(m => m !== r.model && m !== `${r.model}:free`);
+    if (!rest.length || rest.length === models.length && !r.model) return r;
+    models = rest;
+  }
+}
+
+async function once(models: string[], messages: ChatMsg[], onText: (s: string) => void, signal?: AbortSignal): Promise<{ text: string; model: string }> {
   const r = await fetch(`${API}/chat/completions`, {
     method: 'POST', signal,
     headers: { Authorization: `Bearer ${st.key}`, 'Content-Type': 'application/json', 'HTTP-Referer': callbackUrl(), 'X-OpenRouter-Title': 'EpiCompass', 'X-Title': 'EpiCompass' },
     body: JSON.stringify({
-      models, messages, stream: true, temperature: 0.3, max_tokens: 900,
+      models, messages, stream: true, temperature: 0.3, max_tokens: 3000,
+      // keep "thinking" short and out of the reply, so it cannot use up the answer
+      reasoning: { effort: 'low', exclude: true },
       // the paid model can avoid providers that store prompts; the free models are only offered by such providers
       ...(st.plan === 'low-cost' ? { provider: { data_collection: 'deny' } } : {}),
     }),
   });
   if (!r.ok || !r.body) {
     const j = await r.json().catch(() => ({}));
-    const m = j?.error?.message ?? '';
+    const m: string = j?.error?.message ?? '';
+    const raw = JSON.stringify(j?.error?.metadata ?? {});
     if (r.status === 401) { disconnect(); throw new AssistantError('Your OpenRouter connection has expired or was removed. Please connect again.', 'auth'); }
+    if (r.status === 429 && /upstream|provider/i.test(m + raw)) throw new AssistantError('The free AI models are busy just now. Please try again in a minute.', 'busy');
     if (r.status === 429) throw new AssistantError('You have reached OpenRouter’s limit for free questions for now (20 a minute, and 50 a day on a free account). Try again later, or tomorrow.', 'quota');
     if (r.status === 402) throw new AssistantError('Your OpenRouter account needs credit for this model. Switch to the free models in My progress and settings, or add credit at openrouter.ai.', 'credit');
-    if (r.status >= 500 || r.status === 503) throw new AssistantError('The AI models are busy just now. Please try again in a minute.', 'busy');
+    if (r.status >= 500) throw new AssistantError('The AI models are busy just now. Please try again in a minute.', 'busy');
     throw new AssistantError(m || `OpenRouter returned an error (${r.status}).`, 'other');
   }
   const reader = r.body.getReader(); const dec = new TextDecoder();
@@ -109,12 +124,11 @@ export async function chat(messages: ChatMsg[], onText: (s: string) => void, sig
       const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1);
       if (!line.startsWith('data:')) continue;
       const data = line.slice(5).trim(); if (data === '[DONE]') continue;
-      try {
-        const j = JSON.parse(data);
-        if (j.error) throw new AssistantError(j.error.message ?? 'The model stopped with an error.', 'other');
-        model = j.model ?? model;
-        const d = j.choices?.[0]?.delta?.content; if (d) { text += d; onText(text); }
-      } catch (e) { if (e instanceof AssistantError) throw e; }
+      let j: any;
+      try { j = JSON.parse(data); } catch { continue; }
+      model = j.model ?? model;
+      if (j.error && !text) throw new AssistantError('The AI model stopped with an error. Please try again in a minute.', 'busy');
+      const d = j.choices?.[0]?.delta?.content; if (d) { text += d; onText(text); }
     }
   }
   return { text, model };

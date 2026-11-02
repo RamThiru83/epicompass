@@ -9,6 +9,7 @@ import { AccountPage } from './pages/AccountPage';
 import { InstructorPage } from './pages/InstructorPage';
 import './store/account';
 import { TutorPanel, openTutor } from './components/TutorPanel';
+import { Assistant } from './assistant/Assistant';
 import { EditBar } from './components/EditBar';
 import markUrl from './assets/epicompass-mark.svg';
 
@@ -53,6 +54,7 @@ export default function App() {
         {route.kind === 'card' && !card && <div className="title-row"><div><h1>Card not found</h1><p className="sub">This card may have been renamed. <a href="#/">Go to the home page</a>.</p></div></div>}
       </div></main>
       <TutorPanel card={card} />
+      <Assistant />
       <EditBar />
     </div>
   );

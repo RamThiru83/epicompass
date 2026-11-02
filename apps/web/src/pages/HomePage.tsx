@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { CHAPTERS, UNITS, conceptById, concepts } from '../content';
 import { coreCards } from '../content/types';
 import { useTextSize } from '../store/textSize';
+import { AssistantSettings } from '../assistant/Settings';
 import { useProgress, dueConcepts, setSettings, resetProgress, isMastered } from '../store/progress';
 import { chapterCompletion } from '../store/gates';
 import { go } from '../App';
@@ -93,6 +94,7 @@ export function HomePage() {
             </div>
           </div>
         </div>
+        <AssistantSettings />
         <div className="setrow">
           <div className="lbl"><h2>Unit locks</h2><p>Keep yourself to the course order.</p></div>
           <div className="panel">

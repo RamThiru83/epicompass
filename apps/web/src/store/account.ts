@@ -11,7 +11,7 @@ import {
   replaceProgress, switchSlot, type Progress,
 } from './progress';
 
-export interface Profile { id: string; full_name: string; email: string; cohort_id: string | null; role: 'student' | 'instructor' }
+export interface Profile { id: string; full_name: string; email: string; cohort_id: string | null; role: 'student' | 'instructor'; insights_consent_at?: string | null }
 export type SyncStatus = 'offline' | 'idle' | 'saving' | 'saved' | 'error';
 interface AccountState { ready: boolean; session: Session | null; profile: Profile | null; cohortName: string | null; sync: SyncStatus; lastSaved?: number }
 
@@ -43,7 +43,7 @@ async function loadUser(session: Session) {
   if (!supabase) return;
   const uid = session.user.id;
   const [{ data: prof }, { data: row }] = await Promise.all([
-    supabase.from('profiles').select('id, full_name, email, cohort_id, role').eq('id', uid).maybeSingle(),
+    supabase.from('profiles').select('*').eq('id', uid).maybeSingle(),
     supabase.from('progress').select('data').eq('user_id', uid).maybeSingle(),
   ]);
   let cohortName: string | null = null;
@@ -71,6 +71,22 @@ if (supabase) {
 }
 
 // ---------------------------------------------------------------- actions
+/** Opt in or out of sharing which passages the student asks the study assistant about. Withdrawing deletes past records. */
+export async function setInsightsConsent(on: boolean): Promise<string | null> {
+  if (!supabase || !st.session || !st.profile) return 'Sign in first.';
+  if (on) {
+    const at = new Date().toISOString();
+    const { error } = await supabase.from('profiles').update({ insights_consent_at: at }).eq('id', st.session.user.id);
+    if (error) return error.message;
+    set({ profile: { ...st.profile, insights_consent_at: at } });
+  } else {
+    const { error } = await supabase.rpc('withdraw_insights_consent');
+    if (error) return error.message;
+    set({ profile: { ...st.profile, insights_consent_at: null } });
+  }
+  return null;
+}
+
 const friendly = (m: string) =>
   /invalid login credentials/i.test(m) ? 'That email and password do not match. Check both, or ask your instructor to reset your password.'
   : /already registered|already exists/i.test(m) ? 'An account with this email already exists. Use "Sign in" instead.'

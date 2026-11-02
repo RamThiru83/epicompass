@@ -8,6 +8,8 @@ import { useAccount } from '../store/account';
 import { useEditing } from '../store/overrides';
 import { go } from '../App';
 import { cloudEnabled } from '../lib/supabase';
+import { useState } from 'react';
+import { useOpenRouter, connect } from '../assistant/openrouter';
 
 function partOfDay(d = new Date()) {
   const h = d.getHours();
@@ -32,6 +34,27 @@ function JoinPrompt({ started }: { started: boolean }) {
       <div className="join-actions">
         <button className="btn ghost" onClick={() => go('#/account/join')}>Join with a code</button>
         <button className="textlink" onClick={() => go('#/account')}>I have an account</button>
+      </div>
+    </section>
+  );
+}
+
+/** After joining: one step to switch on the study assistant. Dismissible; the full instructions are in settings. */
+function AssistantPrompt() {
+  const or = useOpenRouter();
+  const [hidden, setHidden] = useState(() => { try { return localStorage.getItem('epicompass.as.prompt') === 'hidden'; } catch { return false; } });
+  if (or.key || hidden) return null;
+  const hide = () => { setHidden(true); try { localStorage.setItem('epicompass.as.prompt', 'hidden'); } catch { /* ignore */ } };
+  return (
+    <section className="panel join-prompt s12" aria-labelledby="h-as-setup">
+      <div>
+        <h2 id="h-as-setup">Set up your study assistant</h2>
+        <p>An AI tutor that explains any passage you select, using a free OpenRouter account of your own. It takes about a minute: connect, sign in or sign up at OpenRouter, approve, and you are back here.</p>
+      </div>
+      <div className="join-actions">
+        <button className="btn ghost" onClick={() => connect()}>Connect OpenRouter</button>
+        <button className="textlink" onClick={() => go('#/progress')}>How it works</button>
+        <button className="textlink" onClick={hide}>Not now</button>
       </div>
     </section>
   );
@@ -90,6 +113,7 @@ export function WelcomePage() {
 
       <div className="grid">
         {guest && <JoinPrompt started={false} />}
+        {!guest && acc.session && <AssistantPrompt />}
         <article className="sheet letter s8" aria-labelledby="h-letter">
           <h2 id="h-letter" className="letter-title">{WELCOME.title}</h2>
           <EditableMd scope="welcome.intro">{WELCOME.intro}</EditableMd>
@@ -131,6 +155,7 @@ export function WelcomePage() {
 
       <div className="grid">
         {guest && <JoinPrompt started />}
+        {!guest && acc.session && <AssistantPrompt />}
         {due.length > 0 && <section className="panel s12 due" aria-labelledby="h-due">
           <div className="panel-head"><h2 id="h-due">Due for a revisit</h2><span className="aside">A spaced check keeps an idea from fading</span></div>
           <div className="rows">{due.map(d => { const k = cardFor(d); return k && (

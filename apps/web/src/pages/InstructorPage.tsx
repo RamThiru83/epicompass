@@ -11,8 +11,9 @@ import { normalise, dueConcepts, type Progress } from '../store/progress';
 import { CHAPTERS, concepts, cardById } from '../content';
 import { coreCards } from '../content/types';
 import { MASTERY_THRESHOLD } from '@epicompass/epi-core';
+import { AskInsights } from '../assistant/InsightsView';
 
-interface Row { id: string; full_name: string; email: string; cohort_id: string | null; role: string; created_at: string; progress: Progress; updated_at?: string }
+interface Row { id: string; full_name: string; email: string; cohort_id: string | null; role: string; created_at: string; progress: Progress; updated_at?: string; insights_consent_at?: string | null }
 interface Cohort { id: string; name: string; join_code: string; active: boolean }
 
 const ALL_CARDS = CHAPTERS.flatMap(c => coreCards(c));
@@ -45,7 +46,7 @@ export function InstructorPage() {
     if (!supabase) return;
     setLoading(true);
     const [{ data: profs, error: e1 }, { data: prog, error: e2 }, { data: cs, error: e3 }] = await Promise.all([
-      supabase.from('profiles').select('id, full_name, email, cohort_id, role, created_at'),
+      supabase.from('profiles').select('*'),
       supabase.from('progress').select('user_id, data, updated_at'),
       supabase.from('cohorts').select('id, name, join_code, active').order('created_at'),
     ]);
@@ -171,6 +172,8 @@ export function InstructorPage() {
         <div className="t2-wrap"><table className="t2"><thead><tr><th style={{ textAlign: 'left' }}>Question</th><th>Card</th><th>Wrong first time</th></tr></thead>
           <tbody>{hardest.map(h => <tr key={h.id}><td style={{ textAlign: 'left' }}>{questionText(h.id, h.cardId)}</td><td>{cardById(h.cardId)?.title ?? h.cardId}</td><td>{h.wrong} of {h.n} ({Math.round(100 * h.rate)}%)</td></tr>)}</tbody></table></div>
       </div>}
+
+      <AskInsights cohort={cohort} consented={rows.filter(r => r.insights_consent_at && (cohort === 'all' || r.cohort_id === cohort)).length} />
 
       <div className="section" style={{ overflowX: 'auto' }}>
         <h2 className='sec-h'>Published text edits</h2>

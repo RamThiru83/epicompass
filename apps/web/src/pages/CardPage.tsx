@@ -10,6 +10,7 @@ import { INTERACTIVES } from '../interactives/registry';
 import { useProgress, markStep, completeCard, getProgress } from '../store/progress';
 import { go } from '../App';
 import { STEP_LABEL as LABEL, stepsOf, type Step } from '../components/Path';
+import { setPageContext } from '../assistant/context';
 
 /** Steps that are read rather than answered count as done once they have been opened. */
 const DONE_ON_VIEW: Step[] = ['hook', 'explore', 'formalise'];
@@ -28,6 +29,8 @@ export function CardPage({ card, chapter }: { card: Card; chapter: Chapter }) {
     const m = getProgress().mastery;
     before.current = Object.fromEntries(card.concepts.map(c => [c, m[c] ? { pKnown: m[c].pKnown, attempts: m[c].attempts } : undefined]));
   }, [card.id]);
+  useEffect(() => { setPageContext({ card, chapter, step: finished ? 'formalise' : now }); }, [card.id, now, finished]);
+  useEffect(() => () => setPageContext(null), []);
   useEffect(() => { if (DONE_ON_VIEW.includes(now) && !prog?.steps[now] && !card.bonus) markStep(card.id, now); }, [now, card.id]);
 
   const idx = steps.indexOf(now);

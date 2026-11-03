@@ -125,3 +125,14 @@ describe('mastery is reachable', () => {
     }
   });
 });
+
+import { COMPANION } from './companion';
+describe('book companion notes', () => {
+  it('cover every concept taught on a card', () => {
+    const ids = new Set(CHAPTERS.flatMap(c => c.cards).flatMap(c => c.concepts ?? []));
+    for (const id of ids) expect(COMPANION[id], id).toBeDefined();
+  });
+  it('have no page numbers', () => {
+    for (const [id, n] of Object.entries(COMPANION)) expect(JSON.stringify(n), id).not.toMatch(/\b(page|p\.)\s*\d/i);
+  });
+});

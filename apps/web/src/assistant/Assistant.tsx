@@ -68,7 +68,10 @@ export function Assistant() {
     setTurns([...turns, user, { role: 'assistant', content: '' }]);
     setBusy(true);
     logAsk(insights, { card_id: ctx?.card.id ?? `page:${pageKey}`, step: ctx?.step, action, excerpt: user.excerpt });
-    const msgs: ChatMsg[] = [{ role: 'system', content: systemPrompt(ctx, visibleText()) }, ...history.slice(-HISTORY).map(t => ({ role: t.role, content: t.content }))];
+    const followUp = history.some(t => t.role === 'assistant');
+    let notes = '';
+    if (ctx) try { notes = (await import('./booknotes')).bookNotes(ctx.card.concepts ?? [], followUp); } catch { /* answer from the card alone */ }
+    const msgs: ChatMsg[] = [{ role: 'system', content: systemPrompt(ctx, visibleText(), notes) }, ...history.slice(-HISTORY).map(t => ({ role: t.role, content: t.content }))];
     const ac = new AbortController(); abort.current = ac;
     try {
       const r = await chat(msgs, text => setTurns(ts => [...ts.slice(0, -1), { role: 'assistant', content: text }]), ac.signal);

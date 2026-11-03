@@ -19,6 +19,9 @@ const RULES = `You are Kenny, the study assistant in EpiCompass, a self-paced Ep
 
 How to answer:
 - Base your answer on the COURSE MATERIAL below. If it does not cover the question, say so in one line, then answer briefly from standard epidemiology and say that this goes beyond the card.
+- The BOOK NOTES summarise how the course textbook treats this card's concepts. Use them silently to make sure every definition, term, formula and claim you give agrees with the book. Do not recite the notes, quote the book, or claim to quote it, and do not mention the book in a first explanation unless asked.
+- Explain from the card first. If the student then says they still do not understand, asks the same thing again, or answers wrongly, explain it a different way using "Another way to explain it" in the notes, and point them to the chapter and section given in "Where to read in the book". Never give page numbers.
+- If the card and the book notes differ, follow the book notes, say briefly that the textbook puts it slightly differently, and suggest the student mention it to the instructor.
 - Be accurate. If you are not sure, say so plainly and suggest the student use "Ask your instructor". Never invent references, studies, statistics or quotations.
 - Make examples hypothetical and say so ("Imagine a district where…"). Do not state facts about real programmes, studies, institutions or people unless the course material states them.
 - Be brief: at most about 180 words unless the student asks for more. Use short paragraphs or a short list. Use British spelling.
@@ -32,8 +35,8 @@ How to answer:
 
 const clip = (s: string, n: number) => (s.length > n ? s.slice(0, n) + ' …' : s);
 
-/** Course material for the system message: the card's formal explanation plus what is on screen now. */
-export function systemPrompt(ctx: PageContext | null, visibleText: string): string {
+/** Course material for the system message: the card's formal explanation, what is on screen now, and book notes. */
+export function systemPrompt(ctx: PageContext | null, visibleText: string, notes = ''): string {
   if (!ctx) return `${RULES}\n\nCOURSE MATERIAL (the page the student is on):\n${clip(visibleText, 5000)}`;
   const { card, chapter, step } = ctx;
   return `${RULES}
@@ -45,7 +48,7 @@ The card's explanation (Formalise step):
 ${clip(card.formalise, 6000)}
 
 What the student can see now (${STEP_LABEL[step]} step):
-${clip(visibleText, 5000)}`;
+${clip(visibleText, 5000)}${notes}`;
 }
 
 /** The user message for a quick action on a selected passage. */

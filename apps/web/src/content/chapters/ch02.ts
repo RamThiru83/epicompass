@@ -14,16 +14,16 @@ export const ch02: Chapter = {
       id: 'ch02-counting-and-comparing', chapter: 2, order: 1,
       title: 'From counting the dead to comparing rates',
       concepts: ['counts_vs_rates'], minutes: 9,
-      hook: md`Scutari Barrack Hospital, near Istanbul, in the winter of 1855. In the barrack hospital, Florence Nightingale sits with ledgers of admissions and burials. Army officials point out that more soldiers die in the hospital in winter simply because more soldiers are sent there. She is not satisfied with totals. She divides each month's deaths by the average number of men in the hospital that month and converts the result to an annual figure, then sorts the deaths by cause: wounds, or diseases such as cholera and dysentery that clean water and drains could prevent. The pattern she finds will reshape military hospitals.`,
-      formalise: md`Two centuries earlier, a London shopkeeper, John Graunt, had shown that the weekly lists of burials kept by parishes could be tabulated to reveal regularities: more boys than girls born each year, heavy mortality in early childhood, and seasonal surges of plague. His insight was that individual deaths are unpredictable, but **populations** behave with regularity that can be measured.
+      hook: md`The Crimean War, 1854. At the request of Britain's Secretary of War, Florence Nightingale travels to the front with a team of trained volunteer nurses. In the military hospitals she finds that poor food and hygiene, a shortage of medicines and plain neglect are killing more soldiers than battle wounds. She brings in better sewage and ventilation, and death rates fall. Then she does something unusual for a nurse of her time: she sets out to prove, with carefully collected numbers and a diagram of her own invention, what had been killing the army.`,
+      formalise: md`Two centuries earlier, John Graunt, a London haberdasher whom the book calls the world's first epidemiologist and demographer, saw how much could be learnt by compiling data that already existed: the weekly **Bills of Mortality**, parish lists of christenings and deaths by cause. Among his findings: more boys than girls are born; London's population was growing through migration rather than births; disease trends over time, allowing for the size of the population; and the first actuarial (life) table. He even estimated that about a fifth of plague deaths had been recorded under other causes, and corrected for it. Using already-collected data in this way is still a large part of epidemiology.
 
-Nightingale took the next step. A count of deaths says little until you know **how many people could have died**. Dividing by the population at risk turns a count into a rate:
+A count of deaths says little until you know **how many people could have died**, and for how long. Dividing by the time people spent at risk turns a count into a rate:
 
-$$\text{mortality rate} = \frac{\text{deaths in a period}}{\text{average population at risk} \times \text{length of period}}$$
+$$\text{mortality rate} = \frac{\text{deaths in a period}}{\text{total time at risk, summed over people}}$$
 
-With synthetic numbers: a hospital ward averages 2,000 men in January with 120 deaths, and 500 men in June with 45 deaths. January has more deaths, but expressed per 1,000 men per month the figures are 60 and 90; June is worse.
+[[Person-time]] adds up the time each person spent at risk (Chapter 4). When the number of people is fairly steady, it is close to the average number at risk multiplied by the length of the period, which is how this example is worked. With synthetic numbers: a hospital ward averages 2,000 men in January with 120 deaths, and 500 men in June with 45 deaths. January has more deaths, but expressed per 1,000 men per month the figures are 60 and 90; June is worse.
 
-Nightingale also understood that a rate is persuasive only if it is presented clearly. Her polar-area diagrams showed, at a glance, that preventable infection killed far more soldiers than battle wounds.
+Nightingale understood that numbers persuade only if they are presented clearly. Her polar-area diagram (the "coxcomb") showed each month's deaths by cause, with area proportional to deaths: deaths from preventable or mitigable infectious ("zymotic") diseases far outnumbered those from wounds. Her later reports reformed the medical care of soldiers, and she went on to campaign for sanitation in rural India.
 
 The lesson for us: before comparing any two groups, ask what the denominators are and whether they cover the same span of time. Earlier still, writings attributed to Hippocrates had urged physicians to consider the air, water and way of life of a place; counting and rates allowed such ideas to be tested.
 
@@ -40,10 +40,10 @@ The lesson for us: before comparing any two groups, ask what the denominators ar
         },
         {
           id: 'ch02-counting-and-comparing-q2', concept: 'counts_vs_rates',
-          prompt: md`What was the main insight that made Graunt's tables useful?`,
+          prompt: md`Which of these describes Graunt's contribution?`,
           options: [
-            { text: 'He could predict which individual Londoner would die next.', correct: false, feedback: 'The opposite: individual deaths are unpredictable. The regularity appears only in aggregate.' },
-            { text: 'Deaths aggregated over a population show stable, measurable patterns.', correct: true, feedback: 'Yes. Regularity at the population level is the foundation of epidemiology.' },
+            { text: 'He predicted which individual Londoners would die from plague.', correct: false, feedback: 'Graunt worked with totals for the population, not predictions for individuals.' },
+            { text: 'He showed how much could be learnt by compiling and analysing data that had already been collected for another purpose.', correct: true, feedback: 'Yes. The Bills of Mortality were kept to monitor plague; Graunt turned them into findings about births, deaths and population, a tradition epidemiologists still follow.' },
             { text: 'He proved that plague was spread by contaminated water.', correct: false, feedback: 'Graunt described patterns of mortality; he did not establish the mode of transmission of plague.' },
           ],
         },
@@ -80,30 +80,32 @@ As you watch, ask what Nightingale's denominators were and whether the months sh
       id: 'ch02-snow-natural-experiment', chapter: 2, order: 3,
       title: 'Snow and the natural experiment',
       concepts: ['natural_experiment', 'counts_vs_rates'], minutes: 14,
-      hook: md`South London, 1854. Cholera is back. John Snow, an anaesthetist, believes the disease spreads through water fouled with sewage, not through bad air as most of his colleagues think. He learns that two private companies pipe water to the same districts: one draws from the Thames downstream of the city's sewage outflows, the other has recently moved its intake upstream. Their mains run side by side down the same streets, and a household's supplier was often chosen by a landlord years earlier. Snow walks door to door asking one question: which company supplies this house?`,
+      hook: md`South London, 1854. Cholera is back. John Snow, an anaesthetist, believes the disease spreads through water fouled with sewage, not through bad air as most of his colleagues think. He learns that two private companies pipe water to the same districts: one draws from the Thames downstream of the city's sewage outflows, the other has recently moved its intake upstream. Their mains run side by side down the same streets, and a household's supplier was often chosen by a landlord years earlier. Snow and his colleagues visit every house where a cholera death has been reported, asking one question: which company supplies this house? The number of houses each company supplies comes from records the companies have returned to Parliament.`,
       explore: {
         interactive: 'snow-rates',
-        prompt: md`Compare the raw death counts for Company S and Company L with the rates per 10,000 houses, and note how the number of houses supplied changes the picture. Edit any cell, for example by giving Company L the same number of houses as Company S, and watch the death rates respond, along with the two comparison tiles: how many times higher Company S's rate is, and how many extra deaths per 10,000 houses it carries; use 'Reset to cited figures' to return. Finally, ask yourself what else might differ between houses served by the two companies, such as poverty or district.`,
+        prompt: md`The table opens with Snow's own figures for the first four weeks of the epidemic. Compare the raw death counts for Company S and Company L with the deaths per 10,000 houses, and note how the number of houses supplied changes the picture. Edit any cell, for example by giving Company L the same number of houses as Company S, and watch the risks respond, along with the two comparison tiles: how many times higher Company S's risk is, and how many extra deaths per 10,000 houses it carries; use 'Reset to Snow's figures' to return. Finally, ask yourself what else might differ between houses served by the two companies, such as poverty or district.`,
       },
-      formalise: md`Snow could not assign water supplies, but circumstance had done it for him. A **natural experiment** is a situation in which exposure is allocated by events that are unrelated to the other causes of the outcome, so the comparison resembles a randomised trial.
+      formalise: md`Snow could not assign water supplies, but circumstance had done it for him. A **natural experiment** is not really an experiment, because the investigator assigns nothing: it is a **cohort study** in which circumstance has allocated the exposure in a way that imitates an experiment, ideally independently of the other causes of the outcome. The closer the groups are to what random assignment would have produced, the more convincing it is.
 
 What made the water-company comparison persuasive:
 
 - **Intermixed exposure.** Houses on both supplies stood side by side, shared the same air, the same streets, and similar levels of poverty, so many potential confounders were balanced.
 - **Exposure not chosen for health reasons.** The supplier had often been fixed long before, sometimes without the occupants knowing which company served them.
-- **A rate, not a count.** Snow divided deaths by the number of houses served, a practical stand-in for the population at risk.
+- **A proportion, not a count.** Snow divided deaths by the number of houses served, a practical stand-in for the population at risk.
 
 With deaths $D$ and houses $H$ for each supplier:
 
-$$\text{rate}_j = \frac{D_j}{H_j} \times 10{,}000 \qquad \text{times higher} = \frac{\text{rate}_{\text{polluted}}}{\text{rate}_{\text{clean}}}$$
+$$\text{risk}_j = \frac{D_j}{H_j} \times 10{,}000 \qquad \text{times higher} = \frac{\text{risk}_{\text{polluted}}}{\text{risk}_{\text{clean}}}$$
 
-Chapter 4 gives this second quantity its proper name, the [[rate ratio]].
+Each figure is the proportion of houses (or, later, people) with a fatal attack over the period, so the book calls it a **risk** of fatal cholera, and the comparison a [[risk ratio]] (Chapter 4).
 
-A ratio well above 1 in a comparison where other differences are small points to the water as a cause. Snow's estimate was imprecise in places (houses are not people, and some households were misclassified) but the size and consistency of the contrast made chance and confounding implausible explanations.
+In the first four weeks of the epidemic, Snow counted 286 deaths in the 40,046 houses supplied by the Southwark and Vauxhall Company and 14 in the 26,107 houses supplied by the Lambeth Company: about 71 against 5 per 10,000 houses, which he reported as fourteen times higher. For the whole 1854 outbreak, using the population served as the denominator, the risks were 0.0161 against 0.0027, about six times higher.
 
-Later, Wade Hampton Frost in the United States would champion Snow's reasoning and show how following groups over time (for example, by birth cohort) clarifies trends that cross-sectional snapshots obscure.
+A ratio well above 1 in a comparison where other differences are small points to the water as a cause. Snow's work was not flawless: his first analysis included all houses supplied by each company, not only those in the districts where both companies competed, and he corrected this in a later publication (Chapter 5).
 
-**Common mistake:** assuming that any "before and after" or "here and there" comparison is a natural experiment; it qualifies only if exposure was allocated independently of other causes of the outcome.`,
+Snow's reasoning later shaped Wade Hampton Frost, the first professor of epidemiology (at Johns Hopkins), whose tuberculosis studies showed how analysing death rates by **birth cohort** clarifies trends, a method the Norwegian physician Kristian Andvord had introduced about ten years before.
+
+**Common mistake:** assuming that any "before and after" or "here and there" comparison is a natural experiment, or that a natural experiment is a true experiment. It is a cohort study, and it is convincing only if exposure was allocated independently of other causes of the outcome.`,
       practise: { template: 'ch02-snow-rate-ratio', count: 2 },
       checks: [
         {
@@ -148,7 +150,7 @@ Later, Wade Hampton Frost in the United States would champion Snow's reasoning a
       formalise: md`**What the explanation keeps, in simpler words.**
 
 - Snow suspected the **water**, not the "bad air" most people blamed. A clear hypothesis tells you which clues to look for.
-- Marking where the sick people lived showed a **cluster** around one pump on Broad Street: counting cases by place.
+- Counting where the sick people lived pointed to one pump on Broad Street: counting cases by **place**.
 - Waste from a leaky pit seeping into the pump's well is the **mechanism** that made the water idea believable.
 - Neighbouring houses supplied by two water companies, one dirtier and one cleaner, gave a **natural experiment**: two groups alike in most ways except the water they drank, set up by circumstance rather than by the investigator.
 
@@ -162,19 +164,19 @@ The video's catchphrase sums it up: *follow the clues to find the cause.*`,
       id: 'ch02-comparison-groups', chapter: 2, order: 5,
       title: 'Inventing the comparison group: cohorts, cases, controls and society',
       concepts: ['comparison_group', 'social_determinants'], minutes: 14,
-      hook: md`London, 1926. Janet Lane-Claypon, a physician and statistician, is studying breast cancer. Interviewing women with the disease about their pregnancies and breastfeeding would tell her little on its own: how would she know whether those histories were unusual? So she also interviews a comparable group of women without breast cancer and compares the two. Twenty-five years later, two research teams on either side of the Atlantic will use the same logic to ask whether people with lung cancer smoked more than people without it.`,
+      hook: md`London, 1926. Janet Lane-Claypon, a public-health leader, is studying what raises the risk of breast cancer. She interviews 500 women with the disease, from hospitals in London and Glasgow, about their reproductive histories. On its own that would tell her little: how would she know whether those histories were unusual? So she interviews an equal number of women without breast cancer and compares the two. In 1950, research teams on either side of the Atlantic will use the same logic to ask whether people with lung cancer smoked more than people without it.`,
       formalise: md`Every causal question is a comparison: what happened to people with a characteristic, **compared with** what would have happened without it. The twentieth century turned that idea into two study designs.
 
 | Design | Starting point | Early example |
 |---|---|---|
 | **Cohort** | People grouped by exposure, followed for outcomes | Lane-Claypon's earlier comparison of weight gain in breastfed and bottle-fed infants; later, large cohorts of doctors and volunteers followed for smoking-related deaths |
-| **Case-control** | People with the disease and a comparison group without it, compared for past exposure | Lane-Claypon's breast cancer study; around 1950, the smoking and lung cancer studies of Wynder and Graham in the United States and Doll and Hill in Britain |
+| **Case-control** | People with the disease and a comparison group without it, compared for past exposure | Lane-Claypon's 1926 breast cancer study (which linked age at first pregnancy, age at menopause, number of children and surgically induced menopause to risk); in 1950, the smoking and lung cancer studies of Wynder and Graham in the United States and Doll and Hill in Britain |
 
-Around 1950, case-control studies on smoking were followed by cohort studies (Doll and Hill among British doctors; Hammond and Horn among American volunteers). Agreement between designs with **different weaknesses** was a large part of why the evidence became convincing.
+The 1950 case-control studies on smoking were followed by cohort studies: Doll and Hill among British doctors, and Hammond and Horn among American men. Case-control methods were then less widely understood than following people forward, so the cohort studies were undertaken partly to give stronger evidence; Hammond and Horn found an association with lung cancer about as strong as the case-control studies had. Even so, critics went on arguing for years that confounding could explain the findings, and in the United States the debate was settled only by the Surgeon General's advisory committee report of 1964.
 
-The comparison group is only useful if it represents what the cases' or exposed group's experience would have been otherwise; choosing it is the central design decision in both designs (Chapter 5).
+Choosing the comparison group is the central design decision. In a cohort study, the unexposed group should show what the exposed group's experience would have been without the exposure. In a case-control study, the controls do a different job: they show how the exposure is distributed in the population that gave rise to the cases, so they must be sampled independently of exposure (Chapter 5).
 
-Epidemiology has also always had a social strand. Mortality has been tied to poverty, housing and working conditions since the earliest tabulations, and **social epidemiology** studies how factors such as income, education, occupation, gender and social discrimination shape health. These factors can be causes in their own right, and they are often powerful confounders of other comparisons.
+Epidemiology has also always had a social strand: Farr pressed for sanitary reform, Nightingale worked to improve care for the poor, and Lane-Claypon worried in 1912 that social class might confound her comparison of infant feeding methods. **Social epidemiology** studies how factors such as poverty, education, discrimination, segregation, inequalities and particular social policies affect health and social justice. These factors are causes in their own right, and, as Lane-Claypon saw, they can also confound other comparisons.
 
 **Common mistake:** describing a series of patients with a disease and their exposures without any comparison group, and then drawing causal conclusions.`,
       checks: [
@@ -189,11 +191,11 @@ Epidemiology has also always had a social strand. Mortality has been tied to pov
         },
         {
           id: 'ch02-comparison-groups-q2', concept: 'comparison_group',
-          prompt: md`Why did agreement between the early case-control and cohort studies of smoking strengthen the conclusion?`,
+          prompt: md`After their 1950 case-control study, why did Doll and Hill set up a cohort study of British doctors?`,
           options: [
-            { text: 'Because the two designs have different potential biases, so a shared result is less likely to be explained by any single bias.', correct: true, feedback: 'Yes. Consistency across designs with different weaknesses is more informative than repetition of one design.' },
-            { text: 'Because cohort studies are always unbiased, and they confirmed the case-control results.', correct: false, feedback: 'Cohort studies have their own biases, such as loss to follow-up and confounding.' },
-            { text: 'Because combining two designs doubles the sample size, making the result significant.', correct: false, feedback: 'Precision helps, but the key gain was robustness to different sources of bias.' },
+            { text: 'Case-control methods were less widely understood at the time, so following people from smoking to disease could give evidence that more people would accept.', correct: true, feedback: 'Yes. The cohort study was undertaken to give stronger evidence, and the American cohort of Hammond and Horn found an association about as strong as the case-control studies.' },
+            { text: 'Cohort studies cannot be confounded, so they settled the question at once.', correct: false, feedback: 'Cohort studies can be confounded too. Critics went on arguing that confounding explained the findings until the 1964 Surgeon General’s report.' },
+            { text: 'Case-control studies cannot produce any measure of association between smoking and lung cancer.', correct: false, feedback: 'They can (Chapters 4 and 5 show how). The issue in 1950 was how familiar and trusted the method was.' },
           ],
         },
         {
@@ -220,14 +222,14 @@ Epidemiology has also always had a social strand. Mortality has been tied to pov
           options: [
             { text: 'As a sign that income, housing, education and access to care shape health, so the gradient itself is worth explaining and acting on.', correct: true, feedback: 'Correct. Social conditions can be causes in their own right, often sitting upstream of many individual risk factors.' },
             { text: 'As irrelevant to epidemiology, because only individual behaviours cause disease.', correct: false, feedback: 'Social epidemiology studies exactly these population patterns; they are not reducible to individual choices.' },
-            { text: 'As probably due to chance, because ward boundaries are arbitrary.', correct: false, feedback: 'A threefold gradient across a whole city is unlikely to be chance, and similar gradients are seen almost everywhere they are measured.' },
+            { text: 'As probably due to chance, because ward boundaries are arbitrary.', correct: false, feedback: 'A threefold gradient across a whole city is unlikely to be chance. Large social gaps in health are well documented: the chair of the WHO Commission on Social Determinants of Health pointed to decades of difference in life expectancy between countries and within them.' },
           ],
         },
         {
           id: 'ch02-comparison-groups-q6', concept: 'social_determinants',
           prompt: md`Two villages have similar smoking rates, but tuberculosis is twice as common in the poorer village. Which explanation fits a social-determinants view?`,
           options: [
-            { text: 'Tuberculosis is mainly genetic, so the villages must differ in ancestry.', correct: false, feedback: 'Genetic susceptibility plays a small part; it cannot explain large differences linked to poverty.' },
+            { text: 'Tuberculosis is mainly genetic, so the villages must differ in ancestry.', correct: false, feedback: 'Tuberculosis, like nearly all disease, has both genetic and environmental component causes, so asking what share is "genetic" is misleading (Chapter 3). Ancestry is unlikely to differ much between neighbouring villages; living conditions linked to poverty plainly do.' },
             { text: 'The difference cannot be real, because smoking rates are the same.', correct: false, feedback: 'Smoking is only one of many causes. Equal smoking rates say nothing about the other component causes.' },
             { text: 'Crowded housing and poor nutrition, both linked to poverty, increase exposure to infection and susceptibility to disease.', correct: true, feedback: 'Correct. Poverty acts through living conditions that raise both exposure and vulnerability.' },
           ],

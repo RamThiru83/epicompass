@@ -14,19 +14,21 @@ export const ch03: Chapter = {
       id: 'ch03-causal-pies', chapter: 3, order: 1,
       title: 'The causal pie: sufficient and component causes',
       concepts: ['sufficient_cause', 'component_cause'], minutes: 16,
-      hook: md`In a slum resettlement colony in Delhi, a TB programme officer notices that almost every adult has been exposed to *Mycobacterium tuberculosis* at some point, yet only a small fraction ever develop active disease. Those who do are more often undernourished, living with HIV, or have poorly controlled diabetes; a few have none of these. A student asks: "So what is the cause of TB here: the bacillus, malnutrition, HIV or diabetes?" The officer replies that the question has more than one right answer.`,
+      hook: md`In a slum resettlement colony in Delhi, a TB programme officer notices that most adults have been infected with *Mycobacterium tuberculosis* at some point, yet only a small fraction ever develop active disease. Those who do are more often undernourished, living with HIV, or have poorly controlled diabetes; a few have none of these. A student asks: "So what is the cause of TB here: the bacillus, malnutrition, HIV or diabetes?" The officer replies that the question has more than one right answer.`,
       explore: {
         interactive: 'causal-pies',
         prompt: md`Select a pie and toggle components A to E and U to build at least two different pies that each complete a case, treating A as the cause of interest and the rest as its partners. Move the 'Prevalence of B' slider to 0% and see which pies can no longer be completed, then raise it again. Watch the case count, the risks with and without A, and the strength of A (the risk with A divided by the risk without A).`,
       },
-      formalise: md`A **sufficient cause** is a complete set of minimal conditions that, together, inevitably produce the disease. Draw it as a pie; each slice is a **component cause**.
+      formalise: md`A **sufficient cause** is a complete causal mechanism: a set of conditions that, acting together, produce the disease. Draw it as a pie; each slice is a **component cause**.
 
 - Most components are neither necessary nor sufficient alone; they matter only alongside the other slices of the same pie.
 - A disease can have **several different sufficient causes**: TB in one person may come from the pie {bacillus, HIV, unknown factors U₁}; in another from {bacillus, undernutrition, U₂}.
-- A component that appears in **every** pie is a **necessary cause**. Exposure to the bacillus is necessary for TB; that follows partly from how the disease is defined.
-- Most pies include **unknown components**, which is why some people with every known risk factor stay well and some with none fall ill.
+- A component that appears in **every** pie is a **necessary cause**. Infection with the bacillus is necessary for TB.
+- Pies usually include components that have not been identified (Chapter 11 labels them U), which is why some people with every known risk factor stay well and some with none fall ill.
 
 The model has a direct public-health message: **blocking any one component prevents every case that would have arisen from pies containing it**. Treating HIV prevents the TB cases that needed HIV, even though HIV is not necessary for TB and even though the bacillus is still present.
+
+Whether a condition counts as a cause also depends on what it is compared with. Chewing tobacco causes mouth cancer compared with using no tobacco; compared with smoking, it prevents some cases.
 
 The model is conceptual: we rarely know the full content of any pie. Its value is in disciplining how we talk about causes, not in drawing exact diagrams for real diseases.
 
@@ -34,9 +36,9 @@ The model is conceptual: we rarely know the full content of any pie. Its value i
       checks: [
         {
           id: 'ch03-causal-pies-q1', concept: 'component_cause',
-          prompt: md`Exposure to *M. tuberculosis* appears in every sufficient cause of TB. What does that make it?`,
+          prompt: md`Infection with *M. tuberculosis* appears in every sufficient cause of TB. What does that make it?`,
           options: [
-            { text: 'A sufficient cause', correct: false, feedback: 'Exposure alone does not produce TB in most people, so it is not sufficient by itself.' },
+            { text: 'A sufficient cause', correct: false, feedback: 'Infection alone does not produce active TB in most people, so it is not sufficient by itself.' },
             { text: 'A necessary cause', correct: true, feedback: 'Correct. A component present in every pie is necessary: no case can occur without it.' },
             { text: 'The only real cause; the others are risk factors', correct: false, feedback: 'All slices of a completed pie are causes. HIV and undernutrition are causes of the cases they help complete.' },
           ],
@@ -94,21 +96,23 @@ The model is conceptual: we rarely know the full content of any pie. Its value i
       title: 'Multicausality: genetic or environmental?',
       concepts: ['multicausality'], minutes: 9,
       hook: md`At a newborn screening clinic in Chandigarh, a mother is told that her baby has phenylketonuria, an inherited inability to break down phenylalanine. The paediatrician explains that, on a carefully restricted diet, her child can grow up with normal intelligence. The mother asks, "Then is it a genetic disease, or is it caused by food?" A junior resident starts to say "mostly genetic", then hesitates.`,
-      formalise: md`In the causal pie model, the intellectual disability of untreated phenylketonuria needs at least two components: the **genetic variants** and **dietary phenylalanine**. Remove either and the pie cannot be completed. So every case is caused by the genes **and** by the diet.
+      formalise: md`In the causal pie model, the cognitive delay (intellectual disability) of untreated phenylketonuria needs at least two components: the **genetic variants** and **dietary phenylalanine**. Remove either and the pie cannot be completed. So every case is caused by the genes **and** by the diet.
 
 This leads to a counterintuitive but important result: it makes no sense to say a disease is "80% genetic and 20% environmental" in the causal sense. If both components are in every pie:
 
 - removing the genetic factor would prevent 100% of cases,
 - removing the dietary factor would also prevent 100% of cases.
 
-The fractions of disease **attributable** to each component therefore add up to more than 100%. There is no fixed pool of causation to share out. (Chapter 4 makes this precise with the [[attributable fraction]].)
+The fractions of disease **attributable** to each component therefore add up to more than 100%. There is no fixed pool of causation to share out. (Chapter 4 defines the [[attributable fraction]], the measure behind such shares.)
 
 Two practical consequences:
 
 1. Calling a disease "genetic" does not mean it cannot be prevented by changing the environment, and calling it "environmental" does not mean genes are irrelevant.
 2. How large a role a factor seems to play depends on how common its partner components are in the population studied (next card).
 
-Statistical "heritability" estimates answer a different question: how much of the **variation** in a trait in one population tracks genetic variation. That is not the same as the proportion of cases caused by genes.
+"Heritable" is not the same as "genetic". Culture, wealth, education and discrimination also pass from one generation to the next, so a factor that runs in families may not be genetic at all.
+
+Beyond the book: statistical "heritability" estimates answer yet another question, how much of the **variation** in a trait in one population tracks genetic variation. That is not the same as the proportion of cases caused by genes.
 
 **Common mistake:** splitting causation into shares that must add to 100%, which leads people to underrate preventable causes of "genetic" diseases.`,
       checks: [
@@ -151,20 +155,22 @@ Statistical "heritability" estimates answer a different question: how much of th
         interactive: 'causal-pies',
         prompt: md`Select Pie 1 and make it A, B and U, treating A as the susceptibility, B as its partner and U as an unknown component. Move the 'Prevalence of B' slider from low to high, and watch the risk with A, the risk without A and the strength of A (the risk with A divided by the risk without A). Use 'New random sample' to check the pattern is not chance. Notice that the pie itself never changes; only how common the partner component is.`,
       },
-      formalise: md`**Strength** is how much a factor raises risk: the risk among people with the factor divided by the risk among people without it, a comparison Chapter 4 calls the [[risk ratio]]. In the pie model, a component looks strong when its **complementary components** (the other slices of its pies) are common, and weak when they are rare.
+      formalise: md`**Strength** is used in two related ways. Comparing risks, it is how much a factor raises risk: the risk among people with the factor divided by the risk among people without it, a comparison Chapter 4 calls the [[risk ratio]]. The book's own definition looks at the whole population: a **strong cause** is a component that takes part in a large proportion of the cases of a disease, a **weak cause** one that takes part in a small proportion. Either way, strength depends on how common the other causes are. In the pie model, a component looks strong when its **complementary components** (the other slices of its pies) are common, and weak when they are rare.
 
 In the village, the pie {G6PD deficiency, primaquine, U} is identical before and after the campaign. Before, almost nobody took primaquine, so G6PD deficiency rarely completed a pie and seemed a weak cause. During the campaign, the complement became common and G6PD deficiency suddenly seemed strong. Strength is therefore a property of the **population**, not a biological constant of the factor.
 
-Two components in the **same** pie **interact**: each needs the other to produce disease through that pie. Here G6PD deficiency and primaquine interact. Biological interaction in this sense means a joint effect that differs from what the separate effects would predict. With synthetic risks of haemolysis:
+Strength can also shift through causes in *other* pies. Smoking takes part in most lung cancer cases and radon in few; if smoking were eliminated, radon would take part in a much larger share of the cases that remained, and would look stronger, though nothing about radon had changed.
+
+Two components in the **same** pie **interact**: each needs the other to produce disease through that pie. Here G6PD deficiency and primaquine interact. Components of the same pie interact even if they act years apart. In the book's terms (Chapter 11), biological interaction shows up as a joint effect that departs from **additivity** of each factor's [[risk difference]]: the extra risk with both factors is not the sum of the extra risks from each alone. With synthetic risks of haemolysis:
 
 |  | No primaquine | Primaquine |
 |---|---|---|
 | G6PD normal | 0.1% | 0.2% |
 | G6PD deficient | 0.2% | 10% |
 
-The joint risk is far above what the two separate effects would suggest. Chapter 11 shows how to measure interaction; for now, the key idea is that interaction describes how components share pies.
+Each factor alone adds 0.1 percentage points to the baseline of 0.1%. If their effects simply added, the risk with both would be 0.1 + 0.1 + 0.1 = 0.3%; it is 10%. Chapter 11 shows how to measure interaction, and why departures on other scales, such as a multiplied [[risk ratio]], are a different, scale-dependent idea; for now, the key idea is that interaction describes how components share pies.
 
-**Strength is not importance**: a weak cause that is very common can account for more cases than a strong cause that is rare.
+**The two senses of strength can disagree.** A factor with a small [[risk ratio]] but a very common exposure can take part in more cases than one with a large [[risk ratio]] and a rare exposure: weak by its [[risk ratio]], yet strong in the book's population sense.
 
 **Common mistake:** quoting a [[risk ratio]] from one population as if it were a fixed biological property of the exposure.`,
       checks: [
@@ -174,7 +180,7 @@ The joint risk is far above what the two separate effects would suggest. Chapter
           options: [
             { text: 'The enzyme deficiency became more severe in the population.', correct: false, feedback: 'Nothing about the deficiency changed. What changed was how common its partner component was.' },
             { text: 'Its complementary component, primaquine, became common.', correct: true, feedback: 'Correct. A cause looks strong when its complements are prevalent.' },
-            { text: 'More G6PD-deficient men were born into the village.', correct: false, feedback: 'The prevalence of the deficiency affects how many cases it accounts for, not how strong it appears per exposed person.' },
+            { text: 'More G6PD-deficient men were born into the village.', correct: false, feedback: 'More deficient men would raise the number of cases the deficiency takes part in, but not its [[risk ratio]]. What changed during the campaign was how common its partner component, primaquine, became.' },
           ],
         },
         {
@@ -182,7 +188,7 @@ The joint risk is far above what the two separate effects would suggest. Chapter
           prompt: md`In the pie model, when do two component causes interact?`,
           options: [
             { text: 'When both are associated with the exposure of interest.', correct: false, feedback: 'That describes potential confounders, not interaction.' },
-            { text: 'When they appear together in the same sufficient cause.', correct: true, feedback: 'Yes. Each needs the other to complete that pie, so their joint effect differs from what their separate effects predict.' },
+            { text: 'When they appear together in the same sufficient cause.', correct: true, feedback: 'Yes. Each needs the other to complete that pie, so their joint effect departs from the sum of their separate effects.' },
             { text: 'When one causes the other.', correct: false, feedback: 'That makes one an intermediate on the path of the other, which is a different relation.' },
             { text: 'When both are strong causes on their own.', correct: false, feedback: 'Strength alone says nothing about whether they share pies.' },
           ],
@@ -191,8 +197,8 @@ The joint risk is far above what the two separate effects would suggest. Chapter
           id: 'ch03-strength-interaction-q3', concept: 'strength_of_cause',
           prompt: md`Factor X multiplies risk by 1.3 (a [[risk ratio]] of 1.3) and affects 60% of the population. Factor Y multiplies risk by 8 and affects 0.1%. Which statement is best?`,
           options: [
-            { text: 'Y is the more important cause because its effect is stronger.', correct: false, feedback: 'Strength per exposed person is not the same as public-health importance; Y is very rare.' },
-            { text: 'X may account for more cases, because a weak but common cause can matter more than a strong but rare one.', correct: true, feedback: 'Correct. The burden of disease depends on both strength and how common the exposure is.' },
+            { text: 'Y is the more important cause because its [[risk ratio]] is larger.', correct: false, feedback: 'A large [[risk ratio]] per exposed person is not the same as taking part in many cases; Y is very rare.' },
+            { text: 'X may take part in more cases: weak by its [[risk ratio]], but possibly the stronger cause in the book’s population sense.', correct: true, feedback: 'Correct. How many cases a factor takes part in depends on both its [[risk ratio]] and how common the exposure is; the book defines a strong cause by that share of cases.' },
             { text: 'X is not a real cause because it raises risk only slightly.', correct: false, feedback: 'A cause that raises risk only slightly can still be genuine; its complementary causes may simply be uncommon.' },
           ],
         },
@@ -210,7 +216,7 @@ The joint risk is far above what the two separate effects would suggest. Chapter
           prompt: md`Which feature of the synthetic table shows that G6PD deficiency and primaquine interact?`,
           options: [
             { text: 'Each factor on its own raises the risk from 0.1% to 0.2%.', correct: false, feedback: 'Those are the separate effects. Interaction is about how the joint effect compares with them.' },
-            { text: 'The risk with both factors, 10%, is far higher than their separate effects would predict.', correct: true, feedback: 'Correct. A joint effect that departs from what the separate effects predict is the signature of interaction.' },
+            { text: 'The risk with both factors, 10%, is far higher than the 0.3% expected if their separate effects simply added.', correct: true, feedback: 'Correct. A joint effect that departs from additivity of the separate [[risk difference]] values is the signature of biological interaction.' },
             { text: 'The risk with neither factor is only 0.1%.', correct: false, feedback: 'The baseline risk is the reference point, not evidence of interaction.' },
           ],
         },
@@ -239,11 +245,13 @@ The joint risk is far above what the two separate effects would suggest. Chapter
 
 - The **induction time** for a component is the interval from when it acts to when the disease process begins (pie completion). Each component in a pie has its own induction time; for the final component it is zero.
 - The **latent period** runs from disease initiation to its detection. Better screening shortens it; it says nothing about causation.
-- What we can observe is the **empirical induction period**: from exposure to diagnosis, the sum of the two.
+- In practice we usually observe only the time from exposure to diagnosis, the sum of the two, and the two parts can be hard to separate.
 
 $$\text{exposure} \xrightarrow{\text{induction}} \text{initiation} \xrightarrow{\text{latency}} \text{detection}$$
 
 Induction time is not a property of a disease alone; it belongs to a component **within** a particular pie. Asbestos may act decades before mesothelioma begins; a final trigger may act days before.
+
+A factor that only shortens the induction time (a **catalyst**) is still a cause, and one that postpones onset is preventive. Because the disease process has not yet begun during the induction period, prevention is still possible then.
 
 Why it matters for study design:
 
@@ -288,13 +296,13 @@ Why it matters for study design:
       title: 'Testing causal ideas and generalising results',
       concepts: ['scientific_inference'], minutes: 10,
       hook: md`A randomised trial in three Delhi hospitals shows that a new antihypertensive regimen reduces strokes in urban adults aged 40 to 70. At a district meeting in Bihar, a physician objects: "The trial had no rural patients and no one over 70. It isn't representative, so it doesn't apply to us." Another replies that the trial was never meant to be a sample of India. Who is right, and how should the evidence be used?`,
-      formalise: md`**How causal claims are tested.** We can never prove a causal hypothesis by piling up observations that agree with it; a single well-made observation that contradicts it can be more informative. Good inference proposes a hypothesis, works out what it predicts, and seeks evidence that could show it to be wrong. Hypotheses that survive serious attempts at refutation earn provisional acceptance.
+      formalise: md`**How causal claims are tested.** We can never prove a causal hypothesis by piling up observations that agree with it; a single well-made observation that contradicts it can be more informative. Good inference proposes a hypothesis, works out what it predicts, and seeks evidence that could show it to be wrong. Hypotheses that survive serious attempts at refutation earn provisional acceptance. Refutation is not certain either: a study that seems to refute a hypothesis may itself contain an unrecognised bias. Some philosophers of science, such as Kuhn, have also argued that what counts as accepted knowledge depends partly on the scientific community.
 
-Lists of causal considerations (strength, consistency, temporality, dose-response and others) are useful prompts for thought, but they are **not a checklist** that can certify causation. Only temporality is required: the cause must precede the effect. Each of the others has exceptions; weak associations can be causal, and strong ones can be confounded.
+**Hill's list** (strength, consistency, specificity, temporality, biologic gradient, plausibility, coherence, experimental evidence and analogy) is the best known set of causal considerations. Hill offered them as "standards" to think about, not as criteria. They are useful prompts, but they are **not a checklist** that can certify causation. Only temporality is required: the cause must precede the effect, although the sequence can be hard to establish. Each of the others has exceptions; weak associations can be causal, and strong ones can be confounded.
 
-**Generalising results.** A study population is chosen to give a **valid** answer: comparable groups, accurate measurement, good follow-up. Statistical representativeness of a wider population is not the goal. A trial restricted to adults aged 40 to 70 may give a cleaner answer than one including everyone.
+**Generalising results.** A study population is chosen to give a **valid** answer: comparable groups, accurate measurement, good follow-up. For causal research, statistical representativeness of a wider population is not the goal. A trial restricted to adults aged 40 to 70 may give a cleaner answer than one including everyone. (Representativeness does matter when the aim is to describe one particular population, for example to estimate how many people in a state need dialysis.)
 
-Generalisation is a **scientific** judgement, not a sampling exercise. Ask whether the biology and the conditions that determine the effect differ in the new setting:
+Generalisation is a **scientific** judgement, not a sampling exercise: it means building a theory, grounded in the underlying biology, that tells us what to expect in people who were not studied. Ask whether the biology and the conditions that determine the effect differ in the new setting:
 
 - Is there reason to think the drug acts differently in rural patients? (Diet, salt intake and adherence might matter.)
 - Is there reason to expect a different effect in people over 70? (Altered drug handling, more comorbidity.)
@@ -307,10 +315,10 @@ If the answer is no, the result can reasonably be applied; if yes, the specific 
           id: 'ch03-scientific-inference-q1', concept: 'scientific_inference',
           prompt: md`Which of the usual causal considerations is necessary for a causal relation?`,
           options: [
-            { text: 'A strong association', correct: false, feedback: 'Many real causes have modest associations, for example passive smoking and heart disease.' },
-            { text: 'A dose-response relation', correct: false, feedback: 'Some causes have thresholds or non-monotonic effects; absence of a gradient does not rule out causation.' },
+            { text: 'A strong association', correct: false, feedback: 'Many real causes have modest associations: smoking only about doubles the risk of a heart attack.' },
+            { text: 'A biologic gradient (dose-response relation)', correct: false, feedback: 'Some causes have thresholds or non-monotonic effects; absence of a gradient does not rule out causation.' },
             { text: 'The cause preceding the effect', correct: true, feedback: 'Correct. Temporality is the only consideration without exceptions.' },
-            { text: 'Consistency across studies', correct: false, feedback: 'Effects can differ across populations because complementary causes differ, so inconsistency does not rule out causation.' },
+            { text: 'Consistency across studies', correct: false, feedback: 'Causal relations can have exceptions that are understood only later, and several studies can share the same bias, so consistency is neither required for causation nor proof of it.' },
           ],
         },
         {
@@ -327,7 +335,7 @@ If the answer is no, the result can reasonably be applied; if yes, the specific 
           prompt: md`A hypothesis predicts that a vitamin prevents a cancer. Twenty observational studies agree. A large, well-conducted trial finds no effect. What does sound inference suggest?`,
           options: [
             { text: 'Twenty studies outweigh one, so accept the hypothesis.', correct: false, feedback: 'Agreeing observations can share the same bias. A strong test that could have refuted the hypothesis deserves serious weight.' },
-            { text: 'Take the trial seriously as a test that could refute the hypothesis, and look for biases shared by the observational studies.', correct: true, feedback: 'Correct. Inference advances by severe tests, not by counting agreeing results.' },
+            { text: 'Take the trial seriously as a test that could refute the hypothesis, and look for biases shared by the observational studies.', correct: true, feedback: 'Correct. Inference advances by severe tests, not by counting agreeing results. The trial could also be biased, so refutation is not certain either: look for problems in both.' },
             { text: 'Disregard the trial because it contradicts most of the evidence.', correct: false, feedback: 'Discarding contradicting evidence is the opposite of testing a hypothesis.' },
           ],
         },

@@ -39,7 +39,7 @@ export const CONCEPTS: Concept[] = [
   { id: 'cohort_study', chapter: 5, title: 'Cohort study (including experiments)', prerequisites: ['risk', 'incidence_rate'], confusableWith: ['natural_experiment', 'case_control_study'] },
   { id: 'closed_open_cohort', chapter: 5, title: 'Closed and open cohorts; prospective and retrospective timing', prerequisites: ['cohort_study', 'person_time'], confusableWith: ['person_time'] },
   { id: 'case_control_study', chapter: 5, title: 'Case-control study', prerequisites: ['cohort_study', 'odds_ratio'], confusableWith: ['cohort_study', 'cross_sectional'] },
-  { id: 'source_population', chapter: 5, title: 'Source population (study base)', prerequisites: ['case_control_study', 'population_at_risk'], confusableWith: ['population_at_risk', 'comparison_group'] },
+  { id: 'source_population', chapter: 5, title: 'Source population', prerequisites: ['case_control_study', 'population_at_risk'], confusableWith: ['population_at_risk', 'comparison_group'] },
   { id: 'control_sampling', chapter: 5, title: 'Control sampling: cumulative, density, case-cohort', prerequisites: ['source_population', 'risk_rate_relation'] },
   { id: 'nested_case_control', chapter: 5, title: 'Nested case-control study', prerequisites: ['control_sampling'], confusableWith: ['case_crossover'] },
   { id: 'case_crossover', chapter: 5, title: 'Case-crossover design', prerequisites: ['case_control_study', 'induction_time'], confusableWith: ['nested_case_control'] },

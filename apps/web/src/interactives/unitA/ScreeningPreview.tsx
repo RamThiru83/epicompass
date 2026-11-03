@@ -95,7 +95,7 @@ export function ScreeningPreview({ onReached, config }: InteractiveProps) {
         <span><Swatch k="tn" />does not have it, test negative ({n.tn})</span>
       </div>
       <div className="note">
-        Solid dots tested positive; hollow dots tested negative. Sensitivity and specificity describe the test. Whether a positive result can be trusted also depends on how common the condition is: when it is rare, false alarms from the many healthy people can outnumber the true cases. (Chapter 12 adds the <Preview term="negative predictive value" />, cut-offs and how tests are evaluated.)
+        Solid dots tested positive; hollow dots tested negative. Sensitivity and specificity describe the test. Whether a positive result can be trusted also depends on how common the condition is: when it is rare, false alarms from the many healthy people can outnumber the true cases. (Chapter 12 adds the <Preview term="negative predictive value" /> and how tests are evaluated against a gold standard.)
       </div>
       {reached && <div className="reached">{target === 'accuracy'
         ? 'Sensitivity changes how many cases are missed; specificity changes how many false alarms there are.'

@@ -15,13 +15,13 @@ export const ch04: Chapter = {
       title: 'Risk: the probability of becoming a case',
       concepts: ['risk'], minutes: 10,
       hook: md`On a Saturday in a Haryana village, 240 guests eat lunch at a wedding. By Monday, 72 of them have watery diarrhoea and vomiting; 3 of those die despite treatment at the community health centre. The block medical officer must report the outbreak to the district surveillance unit by evening. The form asks for an "attack rate" and a "case fatality rate". Neither, it turns out, is actually a rate.`,
-      formalise: md`**Risk** (also called incidence proportion or cumulative incidence) is the proportion of people at risk at the start of a period who develop the outcome during that period:
+      formalise: md`**Risk** (also called the **incidence proportion**, or average risk) is the proportion of people at risk at the start of a period who develop the outcome during that period:
 
 $$R = \frac{\text{new cases during the period}}{\text{people at risk at the start}}$$
 
 - Risk is a probability: it has no units and lies between 0 and 1.
 - It is meaningless without a **time window**: "the 30-day risk of surgical-site infection", "the lifetime risk of breast cancer".
-- Calculating it directly requires that everyone is followed for the whole period (a closed population with no losses). If people drop out or die of other causes, you need person-time methods (next cards).
+- Calculating it directly requires that everyone is followed for the whole period (a closed population with no losses). If people drop out or die of other causes, you can estimate incidence rates and convert them to risks (next cards), or use a **life table**, which counts people lost from an interval as at risk for half of it.
 
 Two outbreak measures are really risks:
 
@@ -30,9 +30,9 @@ Two outbreak measures are really risks:
 | Attack rate | 72 ill / 240 who ate | 0.30 (30%) |
 | Case fatality "rate" | 3 deaths / 72 cases | 0.042 (4.2%) |
 
-The names are historical; both are proportions over the duration of the outbreak or illness. Notice too that everyday speech uses "risk" loosely, for example "risk factor" or "at risk"; in this course **risk** always means this proportion.
+The names are historical; both are proportions, not rates. Neither usually states its time period: for an attack rate the period is implied by the biology of the outbreak and is usually short, but a case-fatality "rate" for a long-lasting disease is hard to interpret without one, and it sometimes counts every death among patients, not only deaths from the disease. Notice too that everyday speech uses "risk" loosely, for example "risk factor" or "at risk"; in this course **risk** always means this proportion.
 
-**Rounding.** Report two or three significant digits (0.042, not 0.04166667). Extra digits imply a precision the data do not have; round only at the end of a calculation.
+**Rounding.** The book argues that no fixed rule (a set number of decimal places, or of significant digits) works for every result. Report as many digits as the precision of the data justifies (0.042, not 0.04166667), never round intermediate values, round only at the final step, and round a final 5 to the nearest even digit rather than always up.
 
 **Common mistake:** quoting a risk without stating the period over which it applies.`,
       practise: { template: 'ch04-risk', count: 2 },
@@ -93,8 +93,10 @@ Key points:
 
 - A person stops contributing person-time once they become a case (for a first-occurrence outcome), leave, or die.
 - A rate has units of $1/\text{time}$. It is not a probability and can exceed 1 (for example 1.5 colds per person-year).
-- Person-time can come from many people observed briefly or a few observed for long; a rate assumes these are interchangeable, which is reasonable only if the rate is roughly constant over the period.
-- The **rate ratio** compares two rates, $\text{IR} = I_1/I_0$; it is the natural measure in open cohorts.
+- For outcomes that can recur and where every episode is counted (such as colds), a person goes on contributing person-time after recovering.
+- Person-time can come from many people observed briefly or a few observed for long; a rate treats a unit of time the same whatever its source.
+- A rate is an instantaneous measure, like the speed of a car: "60 km per hour" does not require driving for an hour, and the time unit (per year, per month) is arbitrary. In a steady state, $1/I$ is the average waiting time until the event.
+- The **incidence rate ratio** compares two rates, $\mathrm{IRR} = I_1/I_0$. Rates are used because they handle people leaving follow-up or dying of other causes.
 
 **Common mistake:** dividing cases by the number of people ever enrolled, which ignores how long each person was actually at risk.`,
       practise: { template: 'ch04-rate', count: 2 },
@@ -139,11 +141,15 @@ Key points:
         interactive: 'risk-vs-rate',
         prompt: md`Set the hazard per year to 0.2 or more and the follow-up to at least 5 years, then press Play, or Step 1 year, until the clock reaches year 5. At each year compare 'Rate × t (naive)' with the observed risk and with '1 − exp(−rate × t)'. Then lower the hazard to 0.05 and repeat; for how many years does the naive product stay close to the risk?`,
       },
-      formalise: md`If the incidence rate $I$ is constant and nothing else removes people from the population at risk, the risk over time $t$ is
+      formalise: md`The simplest conversion (the book's Equation 4.1) is
+
+$$R \approx I \times t$$
+
+It assumes a constant rate, and it works well while the risk it gives is below about 20%. Check the ranges: a rate times a time can exceed 1, but a risk cannot. As $I t$ grows, the product overestimates, because people who have already become cases leave the pool at risk. With a constant rate the number still unaffected follows **exponential decay**, so the exact risk is
 
 $$R(t) = 1 - e^{-I t}$$
 
-When $I t$ is small (below about 0.1), $R(t) \approx I \times t$. As $I t$ grows, the approximation overestimates, because people who have already become cases leave the pool at risk; the risk curve bends and can never exceed 1.
+(the book describes this curve but does not write out the formula).
 
 | Rate (per person-year) | Years | $I \times t$ | $1 - e^{-It}$ |
 |---|---|---|---|
@@ -153,11 +159,9 @@ When $I t$ is small (below about 0.1), $R(t) \approx I \times t$. As $I t$ grows
 
 So the woman's ten-year risk is about 39%, not 50%.
 
-If the rate changes over time, add up rate × duration for each interval and use the sum:
+If the rate changes over time, the book uses a **life table**: split follow-up into intervals short enough for the rate to be roughly constant, find the probability of staying free of disease in each interval, multiply these probabilities together, and subtract the product from 1. (Equivalently, beyond the book: $R = 1 - \exp(-\sum_k I_k \Delta t_k)$.)
 
-$$R = 1 - \exp\Big(-\sum_k I_k \Delta t_k\Big)$$
-
-Both formulas assume **no competing risks**: nobody is removed by death from other causes. Over long horizons in older people, competing deaths make the true risk of a specific disease lower still.
+These conversions assume **no competing risks**: nobody is removed by death from other causes. Over long horizons in older people, competing deaths make the true risk of a specific disease lower still.
 
 **Common mistake:** multiplying a rate by a long time span and reporting the product as a risk, sometimes getting values above 100%.`,
       practise: { template: 'ch04-risk-from-rate', count: 2 },
@@ -201,17 +205,17 @@ Both formulas assume **no competing risks**: nobody is removed by death from oth
         interactive: 'prevalence-bathtub',
         prompt: md`Keep the incidence rate fixed, increase the mean duration, and press Play to watch the prevalence rise towards the steady-state level. Then tick 'A treatment shortens duration' and watch the level fall to a new steady state. Finally, find two quite different pairs of incidence and duration that give the same steady-state prevalence.`,
       },
-      formalise: md`**Prevalence** is the proportion of a population that has the condition at a point in time (point prevalence) or during a short interval (period prevalence):
+      formalise: md`**Prevalence** is the proportion of a population that has the condition at a point in time:
 
 $$P = \frac{\text{existing cases}}{\text{total population}}$$
 
 Unlike risk and rate, prevalence counts **existing**, not new, cases. It is set by two flows: how fast new cases arrive (incidence) and how long they stay (duration, which ends with cure, death or migration).
 
-In a **steady state** (stable population, constant incidence and duration):
+In a **steady state** (incidence rate and duration of the condition both stable):
 
 $$\frac{P}{1 - P} = I \times \bar{D}$$
 
-where $I$ is the incidence rate among people free of the condition and $\bar{D}$ is the mean duration. When prevalence is low, $P \approx I \times \bar{D}$.
+where $I$ is the incidence rate and $\bar{D}$ is the mean duration. The left side is the **prevalence odds**, and the relation is exact for it; when prevalence is low, the odds are close to the proportion, so $P \approx I \times \bar{D}$. The formula does not apply to prevalence within an age group, because people move into and out of age groups as they age.
 
 | Incidence (per 1,000 PY) | Mean duration (years) | $I \bar{D}$ (prevalence odds) | Prevalence |
 |---|---|---|---|
@@ -219,7 +223,7 @@ where $I$ is the incidence rate among people free of the condition and $\bar{D}$
 | 10 | 15 | 0.15 | 13% |
 | 30 | 5 | 0.15 | 13% |
 
-Better treatment that prolongs survival raises prevalence without any change in incidence. Prevalence is ideal for planning services (how many people need insulin today?) but awkward for studying causes: a factor associated with prevalence might cause the disease, or might simply prolong it.
+Better treatment that prolongs survival raises prevalence without any change in incidence. Prevalence is ideal for planning services (how many people need insulin today?) but awkward for studying causes: a factor associated with prevalence might cause the disease, or might simply prolong it. It is still used in causal research where onset is hard to date, such as birth defects (counted at birth) or diseases with a gradual onset.
 
 **Common mistake:** reading a rise in prevalence as a rise in incidence, without asking whether duration has changed.`,
       practise: { template: 'ch04-prevalence-incidence', count: 2 },
@@ -230,7 +234,7 @@ Better treatment that prolongs survival raises prevalence without any change in 
           options: [
             { text: 'The registry undercounted new cases.', correct: false, feedback: 'Possible, but the scenario offers a simpler explanation consistent with both observations.' },
             { text: 'People with diabetes are living longer, so average duration increased.', correct: true, feedback: 'Correct. With incidence fixed, longer duration raises prevalence.' },
-            { text: 'Prevalence and incidence are unrelated measures.', correct: false, feedback: 'They are linked through duration: prevalence odds ≈ incidence × duration in a steady state.' },
+            { text: 'Prevalence and incidence are unrelated measures.', correct: false, feedback: 'They are linked through duration: in a steady state, prevalence odds = incidence rate × duration.' },
           ],
         },
         {
@@ -239,7 +243,7 @@ Better treatment that prolongs survival raises prevalence without any change in 
           options: [
             { text: 'Because the variant might instead affect survival with the condition, raising its prevalence among cases.', correct: true, feedback: 'Yes. Prevalence studies mix factors that cause disease with factors that prolong it.' },
             { text: 'Because surveys can never measure genes.', correct: false, feedback: 'Genes can be measured in surveys; the issue is interpreting prevalent cases.' },
-            { text: 'Because prevalence is always lower than incidence.', correct: false, feedback: 'Prevalence can be much higher than annual incidence for long-lasting conditions.' },
+            { text: 'Because prevalence is always lower than incidence.', correct: false, feedback: 'Prevalence and incidence are different kinds of measure (a proportion and a rate), so one cannot be "always lower" than the other; for long-lasting conditions the share of people affected can far exceed the share who become new cases in a year.' },
           ],
         },
         {
@@ -267,22 +271,24 @@ Better treatment that prolongs survival raises prevalence without any change in 
 
 $$\mathrm{RR} = \frac{R_1}{R_0} \qquad \mathrm{RD} = R_1 - R_0$$
 
-With incidence rates, the same logic gives the **rate ratio** $\mathrm{IR} = I_1/I_0$ and the **rate difference** $\mathrm{ID} = I_1 - I_0$.
+With incidence rates, the same logic gives the **incidence rate ratio** $\mathrm{IRR} = I_1/I_0$ and the **incidence rate difference** $\mathrm{IRD} = I_1 - I_0$. A risk difference lies between −1 and +1 and has no units; a rate difference has the units of a rate. Older texts call differences the "attributable risk" or "attributable rate"; prefer "risk ratio" and "rate ratio" to the vaguer "relative risk".
 
 For the Faridabad cohort: $R_1 = 40/400 = 0.10$ and $R_0 = 25/500 = 0.050$.
 
 | Measure | Value | Reading |
 |---|---|---|
 | RR | 2.0 | Anaemic women had twice the risk |
-| RD | 0.050 | 5 extra haemorrhages per 100 anaemic women |
+| RD | 0.050 | 5 extra haemorrhages per 100 anaemic women, if the groups are otherwise comparable |
 
-**Relative measures** (ratios) describe the strength of an association and are the usual currency of causal research. A ratio of 1 means no association; RR = 1.6 means 60% higher risk; RR = 0.7 means 30% lower.
+**Relative measures** (ratios) express the effect in proportion to the risk without the exposure. Strictly, the **relative effect** is $\mathrm{RR} - 1$ (the book's Equation 4.5): RR = 1.6 means a 60% higher risk; RR = 0.7 means 30% lower; a ratio of 1 means no association.
 
-**Absolute measures** (differences) describe the public-health impact: how many cases are added or avoided. The same RR of 2 implies an RD of 0.05 when $R_0 = 0.05$ but only 0.0005 when $R_0 = 0.0005$.
+**Absolute measures** (differences) describe the public-health impact: how many cases are added or avoided, which is what decisions about public health should rest on. The same RR of 2 implies an RD of 0.05 when $R_0 = 0.05$ but only 0.0005 when $R_0 = 0.0005$.
+
+**Risk ratio and rate ratio.** While risks stay small (below about 20%), the risk ratio is nearly equal to the rate ratio; the book calls the rate ratio an "instantaneous risk ratio". Over longer periods they diverge, because a risk cannot exceed 1: the risk ratio can never be larger than $1/R_0$. If $R_0$ is 0.44, for example, the RR cannot exceed 2.3, while the rate ratio has no such ceiling.
 
 Every estimate from a study also carries uncertainty. Chapters 7 and 8 show how to express it with a [[confidence interval]]; for now, concentrate on choosing and computing the right measure.
 
-Report two or three significant digits (RR 2.0, not 2.000).
+Report only the digits the data justify (RR 2.0, not 2.000).
 
 **Common mistake:** reporting only a relative measure, which can make a tiny absolute benefit look impressive.`,
       practise: { template: 'ch04-risk-ratio-difference', count: 2 },
@@ -374,10 +380,10 @@ For the surgical audit:
 
 Two properties:
 
-1. The OR is always **further from 1** than the RR (unless both equal 1).
-2. When the outcome is **rare** in both groups (risk below about 10%), $1 - R$ is close to 1 and the OR approximates the RR.
+1. When risks are calculated from cohort data, the OR is further from 1 than the RR (unless both equal 1); the gap grows as the outcome becomes common. (This is a mathematical property; the book makes the related point in Chapter 5.)
+2. When the outcome is **rare** in both groups (risk below about 10%, Chapter 5), $1 - R$ is close to 1 and the OR approximates the RR.
 
-Why bother with odds? In a case-control study (Chapter 5), you can estimate an odds ratio but not risks, and with appropriate control sampling the OR estimates a risk ratio or rate ratio directly. Logistic regression (Chapter 10) also produces odds ratios.
+Why bother with odds? In a case-control study (Chapter 5), you can estimate an odds ratio but not risks, and with appropriate control sampling the OR estimates a risk ratio or rate ratio directly. Odds ratios are also often reported because of the statistical model the analysts chose: logistic regression (Chapter 10) produces them.
 
 **Common mistake:** describing an odds ratio as "times as likely" when the outcome is common, which exaggerates the effect.`,
       checks: [
@@ -416,9 +422,9 @@ Why bother with odds? In a case-control study (Chapter 5), you can estimate an o
       title: 'Causal effects and the counterfactual ideal',
       concepts: ['counterfactual'], minutes: 11,
       hook: md`A woman with severe pre-eclampsia at a Kolkata teaching hospital receives magnesium sulfate and does not have a seizure. Her family thanks the doctors for preventing the fit. A medical student asks the registrar whether the drug really made the difference for this woman. The registrar answers honestly: "We'll never know for her. We would need to see what would have happened to the same woman, on the same day, without the drug."`,
-      formalise: md`The **causal effect** of an exposure on a person is the difference between the outcome they experience with the exposure and the outcome they **would have** experienced, at the same time and under the same conditions, without it. One of those outcomes is always unobserved: it is **counterfactual**.
+      formalise: md`The ideal comparison is a thought experiment: the **same** people, over the **same** period, once exposed and once unexposed. Only one of those experiences can happen; the other is **counterfactual**. For a single person the question can never be answered, and epidemiology does not try to attribute causation in individuals: it measures effects in groups.
 
-For a population, the causal risk ratio compares:
+For a group, the ideal causal risk ratio compares:
 
 $$\mathrm{RR}_{\text{causal}} = \frac{\text{risk in the exposed}}{\text{risk the same exposed people would have had if unexposed}}$$
 
@@ -428,9 +434,9 @@ We can never see the denominator. Every study therefore uses a **substitute**: a
 |---|---|
 | Exposed people, unexposed (impossible) | A different group, unexposed |
 
-The observed **measure of association** equals the **causal effect** only if the substitute's risk equals the counterfactual risk. When it does not, the difference is **confounding**: the substitute group differs from the exposed in other causes of the outcome. Randomisation makes good substitutes likely; observational studies must argue for them.
+The observed **measure of association** equals the **causal effect** only if the substitute's risk equals the counterfactual risk. Chapter 4 calls this **comparability**; a poor substitute can either hide a real effect or create an apparent one. Later chapters (6 and 9) name the problem **confounding**: the substitute group differs from the exposed in other causes of the outcome. Randomisation makes good substitutes likely; observational studies must argue for them. Even a crossover study, in which the same people are observed with and without the exposure, uses different time periods, so it is not the ideal either.
 
-Interpreting relative measures follows from this. An RR of 3 for a causal exposure means that, among the exposed, risk is three times what it would otherwise have been; it does not mean that every exposed person had their risk tripled, because effects can vary between individuals.
+An RR of 3 for a causal exposure describes the exposed **group**: its risk is three times what it would otherwise have been, a relative effect of $3 - 1 = 2$ (200% higher). It is not a statement about each person; an individual either gets the disease or does not.
 
 **Common mistake:** treating an observed association as a causal effect without asking whether the comparison group is a fair substitute for the exposed group's counterfactual experience.`,
       checks: [
@@ -456,7 +462,7 @@ Interpreting relative measures follows from this. An RR of 3 for a causal exposu
           id: 'ch04-counterfactual-q3', concept: 'counterfactual',
           prompt: md`A causal RR of 3 is estimated for an exposure. Which interpretation is correct?`,
           options: [
-            { text: 'Every exposed person has exactly three times their unexposed risk.', correct: false, feedback: 'The RR is an average over a group; individual effects can vary widely.' },
+            { text: 'Every exposed person has exactly three times their unexposed risk.', correct: false, feedback: 'The RR describes the exposed group as a whole, not each person in it.' },
             { text: 'Among the exposed, the risk is three times what it would have been without exposure.', correct: true, feedback: 'Correct. It describes the group as a whole.' },
             { text: 'Exposure causes three cases for every unexposed case.', correct: false, feedback: 'That confuses a ratio with counts of cases; numbers of cases depend on the absolute risks.' },
           ],
@@ -495,7 +501,7 @@ The video's catchphrase sums it up: *ask what would happen without it.*`,
         interactive: 'attributable-fraction',
         prompt: md`Set the risk ratio to 2.5 and the exposure prevalence to 50%, and read the attributable fraction among the exposed and the population attributable fraction. Vary each of the three sliders in turn: which one changes the fraction among the exposed, and which changes only the population fraction? Then push the risk ratio above 3 and watch the attributable cases in the icon array grow; note that the slider cannot go below 1.`,
       },
-      formalise: md`If an exposure is a cause and the RR is unconfounded, the **attributable fraction among the exposed** is the share of exposed cases that would not have occurred without the exposure:
+      formalise: md`If an exposure is a cause and the RR is unconfounded, the **attributable fraction among the exposed** (older texts: attributable risk percent) is the share of exposed cases that would not have occurred without the exposure:
 
 $$\mathrm{AF}_e = \frac{R_1 - R_0}{R_1} = \frac{\mathrm{RR} - 1}{\mathrm{RR}}$$
 
@@ -503,14 +509,16 @@ The **population attributable fraction** is the share of **all** cases that woul
 
 $$\mathrm{AF}_p = p_c \times \frac{\mathrm{RR} - 1}{\mathrm{RR}}$$
 
+If the exposure has several levels, add the fraction for each level weighted by the proportion of cases at that level (the book's Equation 4.7). A rate ratio can stand in for the risk ratio when the two are similar.
+
 For the district: $\mathrm{AF}_e = (2.5 - 1)/2.5 = 0.60$, and $\mathrm{AF}_p = 0.50 \times 0.60 = 0.30$. Switching every home to gas would be expected to prevent about 30% of childhood pneumonia, and 60% of cases among children in solid-fuel homes.
 
 Things to keep in mind:
 
 - The fractions are causal claims; they assume the RR is unbiased. A confounded RR gives a misleading fraction.
-- Fractions for different causes of the same disease can **add to more than 100%**, because each case has several component causes and removing any one prevents it (Chapter 3).
-- For a **preventive** exposure (RR below 1), use the **prevented fraction**, $1 - \mathrm{RR}$, among the exposed.
-- When you know the exposure prevalence in the population ($p_e$) rather than among cases, an equivalent formula is $\mathrm{AF}_p = \frac{p_e(\mathrm{RR}-1)}{p_e(\mathrm{RR}-1) + 1}$.
+- Fractions for different causes of the same disease can **add to more than 100%**, because each case has several component causes and removing any one prevents it (the point Chapter 3 makes about genes and environment).
+- When an exposure causes disease at some levels and prevents it at others, a single net fraction mixes caused and prevented cases and is hard to interpret.
+- Beyond the book: for a **preventive** exposure (RR below 1), the **prevented fraction** among the exposed is $1 - \mathrm{RR}$; and when you know the exposure prevalence in the population ($p_e$) rather than among cases, an equivalent formula is $\mathrm{AF}_p = \frac{p_e(\mathrm{RR}-1)}{p_e(\mathrm{RR}-1) + 1}$.
 
 **Common mistake:** plugging the proportion of the **population** that is exposed into the formula that needs the proportion of **cases** that are exposed.`,
       practise: { template: 'ch04-attributable-fraction', count: 2 },

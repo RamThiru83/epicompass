@@ -105,7 +105,7 @@ export function TwoByTwo({ onReached, config }: InteractiveProps) {
           {type === 'cc' && 'Odds ratio = (a × d) ÷ (b × c)'}
         </p> : <p className="hint mono">
           {type === 'risk' && 'RR = (a/N₁)/(b/N₀); SE[ln RR] = √(1/a − 1/N₁ + 1/b − 1/N₀)'}
-          {type === 'rate' && 'IR = (a/PT₁)/(b/PT₀); SE[ln IR] = √(1/a + 1/b)'}
+          {type === 'rate' && 'IRR = (a/PT₁)/(b/PT₀); SE[ln IRR] = √(1/a + 1/b)'}
           {type === 'cc' && 'OR = ad/bc; SE[ln OR] = √(1/a + 1/b + 1/c + 1/d)'}
         </p>}
       </div>

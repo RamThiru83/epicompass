@@ -22,17 +22,17 @@ export const ch05: Chapter = {
       },
       formalise: md`In a **cohort study**, people are classified by exposure and followed over time to see who develops the outcome. Occurrence (risk or rate) is measured in each exposure group and compared.
 
-A **randomised trial** is a cohort study in which the investigator assigns exposure. Randomisation makes the groups comparable in both known and unknown causes of the outcome, on average. A **natural experiment** sits in between: circumstance assigns exposure in a way that may resemble randomisation. In a non-experimental cohort, people's own circumstances determine exposure, so confounding must be addressed in design or analysis.
+A **randomised trial** is a cohort study in which the investigator assigns exposure. Randomisation makes the groups comparable in both known and unknown causes of the outcome, on average. A **natural experiment** is not an experiment: it is a non-experimental cohort study in which circumstance has assigned exposure in a way that imitates randomisation (Snow's water companies, Chapter 2). In any non-experimental cohort, people's own circumstances determine exposure, so confounding must be addressed in design or analysis.
 
 Design steps that matter in every cohort:
 
 1. **Define the study population and who is at risk at entry.** Exclude people who already have the outcome (for first occurrence) or who cannot develop it.
-2. **Define exposure and when it counts.** If an exposure needs an induction time, the person-time immediately after exposure may not yet be "exposed" person-time in a meaningful sense; set a lag in advance.
+2. **Define exposure and when it counts.** If an exposure needs an induction time, the person-time immediately after exposure may not yet be "exposed" person-time in a meaningful sense. The induction time is usually unknown, so analyse under several assumed induction times (or estimate it), and decide how to treat the time inside the induction period: set it aside, or count it as unexposed.
 3. **Count events consistently.** Decide whether you count first events only, and use the same diagnostic criteria in all groups.
 4. **Choose the measure.** If everyone is followed for the whole period, risks can be measured; otherwise use person-time and rates.
 5. **Trace everyone.** Losses to follow-up that differ by exposure and outcome bias the comparison.
 
-$$\mathrm{IR} = \frac{a / \mathrm{PT}_1}{b / \mathrm{PT}_0}$$
+$$\mathrm{IRR} = \frac{I_1}{I_0} = \frac{a / \mathrm{PT}_1}{b / \mathrm{PT}_0}$$
 
 The two Assam proposals are both cohort studies; one is experimental. Their key difference is how exposure is assigned, and therefore how well confounding is controlled.
 
@@ -51,7 +51,7 @@ The two Assam proposals are both cohort studies; one is experimental. Their key 
           id: 'ch05-cohort-studies-q2', concept: 'cohort_study',
           prompt: md`In a cohort study of an occupational solvent and leukaemia, the team believes at least five years must pass before the solvent could cause disease. How should person-time in the first five years after first exposure be handled?`,
           options: [
-            { text: 'Count it as exposed person-time from day one.', correct: false, feedback: 'Cases arising in that window cannot have been caused by the exposure, so counting the time as exposed dilutes the effect.' },
+            { text: 'Count it as exposed person-time from day one.', correct: false, feedback: 'If the team’s assumption about induction time is right, cases arising in that window cannot have been caused by the exposure, so counting the time as exposed dilutes the effect. (The assumption may be wrong, so it is wise to try several.)' },
             { text: 'Treat it separately or as not yet exposed, by lagging exposure by five years.', correct: true, feedback: 'Yes. Lagging exposure reflects the induction time and avoids diluting the estimate.' },
             { text: 'Exclude the whole cohort from analysis.', correct: false, feedback: 'Only the irrelevant window needs special handling; the later person-time is informative.' },
           ],
@@ -78,16 +78,16 @@ The two Assam proposals are both cohort studies; one is experimental. Their key 
 | | Closed (fixed) cohort | Open (dynamic) cohort |
 |---|---|---|
 | Membership | Defined at one starting event; nobody joins later | People enter and leave over time |
-| Typical example | A birth cohort; trial participants | Residents of a district; employees over decades |
+| Typical example | Trial participants; the Framingham Heart Study | Residents of a district; employees over decades |
 | Natural measure | Risk, if follow-up is complete | Incidence rate, using person-time |
 
-Even a closed cohort becomes "open at the exit" when people are lost or die of other causes; then person-time and rates are the safer approach.
+A closed cohort only shrinks over time, as people develop the disease, die of other causes or are lost. When those losses are substantial, person-time and rates handle them better than risks.
 
-**Prospective versus retrospective** describes timing relative to the investigator, not the direction of reasoning. In a **prospective** cohort, the outcomes have not yet occurred when the study begins. In a **retrospective** (historical) cohort, exposure and outcome have already happened and are reconstructed from records. Both follow people from exposure to outcome; a retrospective cohort is not a case-control study.
+**Prospective versus retrospective** describes timing relative to the investigator, not the direction of reasoning. In a **prospective** cohort, exposure is recorded at the start of follow-up and the time at risk runs alongside the study, so outcomes have not yet occurred when exposure is measured. In a **retrospective** cohort, the outcomes have already happened. One kind is the **historical** cohort, built entirely from records made at the time; in another kind, exposure information is collected after the outcomes are known, which raises the risk that knowledge of the outcome colours it. Both follow people from exposure to outcome; a retrospective cohort is not a case-control study.
 
 Retrospective cohorts are fast and cheap when good records exist; their weakness is that exposure data were collected for other purposes and may be incomplete. Prospective cohorts can measure exposure exactly as needed, but take time.
 
-**Eligibility over time.** In open cohorts, a person can move between exposure categories (a worker moves from office to factory floor) or become eligible only after a qualifying event. Person-time is assigned to the category the person is in at each moment, so one person can contribute time to several categories.
+**Eligibility over time.** In any cohort, a person can move between exposure categories (a worker moves from office to factory floor) or become eligible only after a qualifying event. Person-time is assigned to the category the person is in at each moment, so one person can contribute time to several categories.
 
 **Common mistake:** labelling any study that uses past records as "case-control"; the design is defined by how subjects are selected, not when the data were collected.`,
       checks: [
@@ -133,8 +133,8 @@ Retrospective cohorts are fast and cheap when good records exist; their weakness
       },
       formalise: md`A **case-control study** is an efficient way to study the experience of a population without following all of it. Think of it as a cohort study with sampling:
 
-1. Identify the **source population** (study base): the people, over a period of time, in whom the cases arose.
-2. Take all (or a random sample of) the **cases** arising from it.
+1. Identify the **source population**: the people, over a period of time, in whom the cases arose. (Other texts call it the study base.)
+2. Take all the **cases** arising from it (or a representative sample of them).
 3. Take **controls** as a sample of the same source population, to estimate how exposure is distributed in it.
 
 The **exposure odds** among controls estimate the ratio of exposed to unexposed person-time (or people) in the source population. Comparing cases with controls gives
@@ -158,7 +158,7 @@ Controls are **not** meant to be "healthy" or "typical"; they are meant to repre
           options: [
             { text: 'They should be free of all chronic disease.', correct: false, feedback: 'Health is not the criterion. Requiring perfect health can distort the exposure distribution.' },
             { text: 'They should be people who would have been admitted to this hospital as cases had they developed oesophageal cancer.', correct: true, feedback: 'Correct. Controls must represent the source population that produced the cases.' },
-            { text: 'They should be matched to cases on tea drinking.', correct: false, feedback: 'Matching on the exposure would make the OR equal 1 by design.' },
+            { text: 'They should be matched to cases on tea drinking.', correct: false, feedback: 'Controls must be selected independently of exposure. Choosing them to resemble the cases on tea drinking would force their exposure to match the cases’ and hide any association. (Chapter 7 covers matching.)' },
             { text: 'They should be a random sample of India.', correct: false, feedback: 'A national sample would not represent the population served by this hospital.' },
           ],
         },
@@ -214,28 +214,28 @@ Controls are **not** meant to be "healthy" or "typical"; they are meant to repre
 
 | Sampling scheme | Controls are drawn from | OR estimates | Rare-disease assumption needed? |
 |---|---|---|---|
-| **Cumulative** | People still free of disease at the end of the risk period | Risk odds ratio | Yes, to approximate the RR |
-| **Density (risk-set)** | People at risk at the moment each case occurs | Rate ratio | No |
+| **Cumulative** | People still free of disease at the end of the risk period | The odds ratio of the underlying cohort | Yes, to approximate the RR |
+| **Density** | People sampled in proportion to their time at risk, for example those at risk at the moment each case occurs (risk-set sampling) | Rate ratio | No |
 | **Case-cohort** | The whole cohort at baseline, regardless of later status | Risk ratio | No |
 
 Why density sampling works: sampling controls in proportion to person-time means the control series estimates the ratio of exposed to unexposed person-time, so
 
-$$\frac{a/b}{c/d} \approx \frac{a/\mathrm{PT}_1}{b/\mathrm{PT}_0} = \mathrm{IR}$$
+$$\frac{a/b}{c/d} \approx \frac{a/\mathrm{PT}_1}{b/\mathrm{PT}_0} = \mathrm{IRR}$$
 
 Two consequences surprise people:
 
 - In density sampling, a person selected as a control early can **later become a case**, and should be kept in both roles.
 - In case-cohort sampling, some members of the baseline sample will become cases; again, they are kept. A single subcohort can serve as controls for several different outcomes.
 
-When the outcome is rare, all three designs give similar odds ratios. When it is common (preterm birth affects perhaps 10–15% of pregnancies), the choice matters: cumulative sampling produces an OR further from 1 than the risk ratio.
+When the outcome is rare, all three designs give similar odds ratios. When it is common (preterm birth affects perhaps 10–15% of pregnancies), the choice matters: cumulative sampling can greatly overestimate the risk ratio.
 
-**Common mistake:** insisting that controls must never develop the disease; under density and case-cohort sampling, excluding future cases biases the estimate.`,
+**Common mistake:** insisting that controls must never develop the disease. Under density and case-cohort sampling, excluding future cases biases the estimate in principle, although with an uncommon disease the effect in practice is small.`,
       checks: [
         {
           id: 'ch05-control-sampling-q1', concept: 'control_sampling',
           prompt: md`Controls are selected, for each preterm birth, from women still pregnant at the same gestational age. What does the odds ratio estimate?`,
           options: [
-            { text: 'The risk odds ratio, which approximates the risk ratio only if preterm birth is rare', correct: false, feedback: 'That describes cumulative sampling at the end of follow-up.' },
+            { text: 'The odds ratio of the cohort, which approximates the risk ratio only if preterm birth is rare', correct: false, feedback: 'That describes cumulative sampling at the end of follow-up.' },
             { text: 'The rate ratio, without any rare-disease assumption', correct: true, feedback: 'Correct. This is density (risk-set) sampling.' },
             { text: 'The prevalence odds ratio', correct: false, feedback: 'Prevalence odds ratios come from cross-sectional data, not from sampling incident cases.' },
           ],
@@ -266,18 +266,18 @@ When the outcome is rare, all three designs give similar odds ratios. When it is
       title: 'Nested case-control and case-crossover designs',
       concepts: ['nested_case_control', 'case_crossover'], minutes: 15,
       hook: md`Two questions arrive at a research unit in Bengaluru on the same morning. A cardiologist asks whether an episode of heavy physical exertion can trigger a heart attack within the following hour. A neurologist with a large epilepsy cohort and stored blood samples asks whether a genetic marker predicts sudden unexpected death. Both want a case-control approach, but the right comparison is very different for each.`,
-      formalise: md`**Nested case-control study.** When a cohort already exists, with exposure information or stored samples, cases are all those who develop the outcome during follow-up, and controls are sampled from the cohort (usually by risk-set sampling). It keeps the validity of the cohort, because the source population is fully defined and exposure was recorded before the outcome, while measuring expensive exposures only in a fraction of members. The epilepsy question suits this design: analyse stored samples from all deaths and from a few matched members at risk at each death.
+      formalise: md`**Nested case-control study.** When a cohort already exists, with exposure information or stored samples, cases are all those who develop the outcome during follow-up, and controls are sampled from the cohort. How they are sampled (for example, from those at risk when each case occurs) decides whether the odds ratio estimates a rate ratio or a risk ratio. The advantages the book stresses are **efficiency**, because expensive exposures are measured in only a fraction of members, and a fully defined source population, so the controls can be checked against the whole cohort. A further advantage, beyond the book: exposure recorded or samples stored before the outcome cannot be coloured by it. The epilepsy question suits this design: analyse stored samples from all deaths and from a sample of members at risk at each death.
 
-**Case-crossover study.** Each case serves as their **own control**. For a brief exposure with a short induction time, compare exposure in a **hazard window** just before the event with exposure in one or more **control windows** at earlier times in the same person:
+**Case-crossover study.** Each case serves as their **own control**. For a brief exposure with a short induction time, compare whether the person was exposed in a short **time window** just before the event with how often they are usually exposed:
 
-| Window | Heavy exertion in that hour? |
+| Period | Information needed |
 |---|---|
-| Hazard window (hour before the heart attack) | Yes / No |
-| Control windows (same hour on previous days) | Yes / No |
+| Time window (the hour before the heart attack) | Was there heavy exertion in that hour? |
+| The person's usual experience (for example, over the past year) | How often do they exert themselves heavily, converted into exposed and unexposed hours? |
 
-Because each person is compared with themselves, fixed characteristics such as sex, genes and chronic disease cannot confound. The design suits **transient exposures** with **immediate effects**: exertion and myocardial infarction, alcohol and injury, mobile-phone use and road crashes.
+Each case is matched to themselves and analysed with matched methods, so characteristics that do not change over the period, such as sex and genes, are held constant. The design suits **transient exposures** with **immediate effects** on diseases of **abrupt onset**: exertion and myocardial infarction, alcohol and injury, mobile-phone use and road crashes.
 
-Requirements: the exposure must vary over time within a person, its effect must be short-lived, and the control windows must represent the person's usual exposure pattern (trends over time can bias the comparison).
+Requirements: the disease must start abruptly, the exposure must vary over time within a person, its effect must be short-lived, the time window must be short compared with the usual gap between exposures, and the comparison information must represent the person's usual exposure pattern (trends over time can bias the comparison).
 
 **Common mistake:** applying a case-crossover design to an exposure that is constant or that acts only after a long induction time, where self-comparison cannot work.`,
       checks: [
@@ -287,7 +287,7 @@ Requirements: the exposure must vary over time within a person, its effect must 
           options: [
             { text: 'Whether a gene variant increases the risk of epilepsy', correct: false, feedback: 'A gene does not change over time within a person, so there is nothing to compare across windows.' },
             { text: 'Whether binge drinking triggers injuries within the next six hours', correct: true, feedback: 'Correct. A transient exposure with an immediate effect is ideal.' },
-            { text: 'Whether childhood undernutrition causes adult diabetes', correct: false, feedback: 'The induction time is decades long; hazard and control windows cannot capture it.' },
+            { text: 'Whether childhood undernutrition causes adult diabetes', correct: false, feedback: 'The induction time is decades long; a short time window just before diagnosis cannot capture it.' },
           ],
         },
         {
@@ -295,16 +295,16 @@ Requirements: the exposure must vary over time within a person, its effect must 
           prompt: md`What is the main advantage of a nested case-control study over analysing the full cohort?`,
           options: [
             { text: 'It removes all confounding.', correct: false, feedback: 'Nesting does not by itself control confounding; it is an efficiency device.' },
-            { text: 'It gives nearly the same information while measuring costly exposures in only a fraction of cohort members.', correct: true, feedback: 'Yes. Efficiency with little loss of validity is the point.' },
+            { text: 'It measures costly exposures in only a fraction of cohort members, with only a small loss of precision if there are several controls per case.', correct: true, feedback: 'Yes. Sampling always costs some precision compared with the full cohort, but with four or five controls per case the loss is small.' },
             { text: 'It can estimate absolute risks without knowing cohort size.', correct: false, feedback: 'Absolute risks need the full cohort; the nested sample gives ratio measures.' },
           ],
         },
         {
           id: 'ch05-nested-case-crossover-q3', concept: 'case_crossover',
-          prompt: md`Why can fixed characteristics such as sex or genotype not confound a case-crossover comparison?`,
+          prompt: md`Why do fixed characteristics such as sex or genotype not distort a case-crossover comparison?`,
           options: [
             { text: 'Because the design uses a very large sample.', correct: false, feedback: 'Sample size does not remove confounding.' },
-            { text: 'Because each person is compared with themselves, so fixed characteristics are identical in hazard and control windows.', correct: true, feedback: 'Correct. Self-matching removes confounding by anything that does not change between windows.' },
+            { text: 'Because each person is compared with themselves, so fixed characteristics are identical in hazard and control windows.', correct: true, feedback: 'Correct. Self-matching holds constant anything that does not change over the period studied.' },
             { text: 'Because those characteristics are adjusted for in regression.', correct: false, feedback: 'No adjustment is needed; the design itself controls them.' },
           ],
         },
@@ -319,7 +319,7 @@ Requirements: the exposure must vary over time within a person, its effect must 
         },
         {
           id: 'ch05-nested-case-crossover-q5', concept: 'nested_case_control',
-          prompt: md`Why is exposure information in a nested case-control study protected from recall bias?`,
+          prompt: md`In the epilepsy cohort, the genetic marker is measured in blood stored at enrolment. Why is this exposure information protected from recall bias?`,
           options: [
             { text: 'Because cases and controls are interviewed by the same person.', correct: false, feedback: 'A single interviewer does not stop cases remembering differently from controls.' },
             { text: 'Because the exposure was recorded, or the samples stored, before the outcome occurred.', correct: true, feedback: 'Correct. Nobody is asked to remember anything after the outcome, so the outcome cannot colour the exposure data.' },
@@ -328,10 +328,10 @@ Requirements: the exposure must vary over time within a person, its effect must 
         },
         {
           id: 'ch05-nested-case-crossover-q6', concept: 'case_crossover',
-          prompt: md`In a case-crossover study of heavy exertion and heart attack, which control window is most appropriate?`,
+          prompt: md`In a case-crossover study of heavy exertion and heart attack, what is the best comparison for the hour before the attack?`,
           options: [
-            { text: 'The same hour of the day on several previous days for the same person.', correct: true, feedback: 'Correct. These windows reflect the person’s usual pattern of exertion at that time of day.' },
-            { text: 'The hour after the heart attack.', correct: false, feedback: 'Exertion after the event cannot have caused it, and is changed by the event itself.' },
+            { text: 'How often the same person usually exerted themselves heavily over the previous year.', correct: true, feedback: 'Correct. The person’s usual frequency of exertion shows how likely they were to be exerting themselves in any given hour.' },
+            { text: 'The hour after the heart attack.', correct: false, feedback: 'A heart attack changes how much a person exerts themselves, so time after the event does not show their usual pattern. (Time after an event can be used only when the disease cannot affect the exposure, such as air pollution.)' },
             { text: 'The hour before a heart attack in a different person.', correct: false, feedback: 'The design compares each person with themselves; using someone else loses the self-matching.' },
           ],
         },
@@ -343,9 +343,9 @@ Requirements: the exposure must vary over time within a person, its effect must 
       title: 'Cross-sectional versus longitudinal studies',
       concepts: ['cross_sectional'], minutes: 10,
       hook: md`A state nutrition survey visits 6,000 households in a single season. It measures haemoglobin in women aged 15 to 49 and asks about diet, including tea with meals. Anaemia is more common among women who drink tea with meals. A health officer drafts a circular telling women to stop drinking tea at lunch. A faculty member asks two questions: which came first, and would anaemic women be more likely to change how much tea they drink?`,
-      formalise: md`A **cross-sectional study** measures exposure and outcome at the **same time** in a population. It estimates **prevalence**, and associations are usually summarised as a prevalence ratio or prevalence odds ratio.
+      formalise: md`A **cross-sectional study** measures exposure and outcome at the **same time** in a population. It estimates **prevalence**; associations can be summarised as a prevalence ratio or prevalence odds ratio.
 
-A **longitudinal study** (cohort or case-control) has a time dimension: it relates exposure at one time to the occurrence of new cases later.
+A **longitudinal study** has a time dimension: it relates information from two or more points in time, such as exposure at one time and new cases later. Every cohort study is longitudinal, and so are most case-control studies.
 
 Cross-sectional studies are valuable for:
 
@@ -362,9 +362,9 @@ They are weak for causal questions for two reasons:
 |---|---|---|
 | Measures | Prevalence | Risk or rate of new cases |
 | Time order of exposure and outcome | Often unclear | Built into design |
-| Speed and cost | Fast, cheap | Slower, costlier |
+| Speed and cost | Usually quicker and cheaper | Usually slower and costlier |
 
-A case-control study is not cross-sectional: it samples on outcome and asks about past exposure, ideally among **new** cases. Using prevalent cases in a case-control study reintroduces the duration problem.
+A case-control study usually samples **new** cases and asks about past exposure. Cross-sectional data can be used for a case-control study, with prevalent cases and current exposure information, but that brings back the duration problem.
 
 **Common mistake:** drawing causal conclusions from a cross-sectional association when the outcome could have altered the exposure.`,
       checks: [
@@ -402,12 +402,12 @@ A case-control study is not cross-sectional: it samples on outcome and asks abou
       id: 'ch05-response-comparison', chapter: 5, order: 7,
       title: 'Response rates, and choosing between cohort and case-control',
       concepts: ['response_rate', 'case_control_study', 'cohort_study'], minutes: 15,
-      hook: md`A thesis committee in Puducherry reviews two proposals. The first is a cohort of 5,000 adults to study salt intake and stroke; a pilot achieved only a 45% response to the baseline invitation, and one member says the study is therefore worthless. The second is a case-control study of a rare childhood leukaemia and parental occupational exposures. A second member asks why the leukaemia study is not a cohort study, since cohorts are "always better".`,
-      formalise: md`**Response rates.** A low response rate is a warning, not a verdict. What matters is whether non-response distorts the **comparison**:
+      hook: md`A thesis committee in Puducherry reviews two proposals. The first is a cohort of 5,000 adults to study salt intake and stroke; a pilot recruited only 45% of the adults invited, and one member says the study is therefore worthless. The second is a case-control study of a rare childhood leukaemia and parental occupational exposures. A second member asks why the leukaemia study is not a cohort study, since cohorts are "always better".`,
+      formalise: md`**Response rates.** In the book's terms, the **response** in a cohort study is the proportion of participants whose outcome is known (successful tracing); in a case-control study it is the proportion with exposure information. There is no absolute threshold, but a response below about 70–75% tends to attract scepticism. A low response is a warning, not a verdict. What matters is whether the missing data distort the **comparison**:
 
-- In a **cohort study**, people who decline at baseline are not compared at all. A low response affects mainly how far the results generalise to other people, which (Chapter 3) is a scientific judgement. Validity is threatened mainly if participation depends on both exposure and future outcome, which is hard because outcomes have not yet occurred. **Losses after enrolment** are a bigger threat.
-- In a **case-control study**, both exposure and outcome have already occurred when people are asked to take part. If exposed controls respond less than unexposed controls, the odds ratio is biased. Response rates here deserve close scrutiny.
-- In a **prevalence survey**, non-response directly distorts the estimate if responders differ in the outcome.
+- In a **cohort study**, the proportion of invited people who agree to take part (**recruitment**) is not a response rate. Volunteering causes bias only if it is linked to both exposure and the risk of disease, which is unlikely because disease has not yet occurred. Low recruitment matters for generalisation only if participants are a subgroup in which the exposure–disease relation differs, which (Chapter 3) is a scientific judgement. **Failure to trace people after enrolment** is the bigger threat.
+- In a **case-control study**, both exposure and outcome have already occurred when people are asked to take part. If exposed controls respond less than unexposed controls, the odds ratio is biased. Response here deserves close scrutiny, though it matters less when participants cannot know their own exposure (for example, a laboratory measurement).
+- Beyond the book: in a **prevalence survey**, non-response directly distorts the estimate if responders differ in the outcome.
 
 **Choosing a design.**
 
@@ -415,13 +415,12 @@ A case-control study is not cross-sectional: it samples on outcome and asks abou
 |---|---|---|
 | Rare outcome | Inefficient; huge numbers needed | Efficient |
 | Rare exposure | Efficient (enrol by exposure) | Inefficient |
-| Long induction time | Long follow-up (unless retrospective) | Fast |
-| Several outcomes | Natural | One outcome per study (except case-cohort) |
+| Long induction time | Long follow-up (unless retrospective) | Can look back over the induction time |
+| Several outcomes | Natural | Usually one, but the case series can include several diseases (and case-cohort designs share one subcohort) |
 | Several exposures | Possible | Natural |
 | Absolute risks or rates | Yes | Not without extra information |
-| Time order of exposure and outcome | Clear | Must be reconstructed |
 
-Neither design is inherently "better". A well-chosen case-control study is a cohort study sampled efficiently; a badly run cohort study is no more valid than a badly run case-control study.
+Both designs can be prospective or retrospective, and validity problems can affect either. Neither design is inherently "better". A well-chosen case-control study is a cohort study sampled efficiently; a badly run cohort study is no more valid than a badly run case-control study.
 
 **Common mistake:** rejecting a study solely for its response rate, or assuming a cohort design is always more valid than a case-control design.`,
       checks: [
@@ -454,11 +453,11 @@ Neither design is inherently "better". A well-chosen case-control study is a coh
         },
         {
           id: 'ch05-response-comparison-q4', concept: 'response_rate',
-          prompt: md`The salt and stroke cohort achieved a 45% response at baseline. What does this mainly affect?`,
+          prompt: md`The salt and stroke cohort recruited only 45% of the adults invited. What does this mainly affect?`,
           options: [
             { text: 'The validity of comparing high-salt and low-salt groups among participants.', correct: false, feedback: 'Participation was decided before any stroke occurred, so the comparison among participants is relatively protected.' },
-            { text: 'How far the results can be generalised to other people.', correct: true, feedback: 'Correct. Low baseline response in a cohort mainly raises a question of generalisation, which is a scientific judgement.' },
-            { text: 'It makes the study worthless.', correct: false, feedback: 'A low response rate is a warning to examine, not a verdict.' },
+            { text: 'How far the results can be generalised to other people.', correct: true, feedback: 'Correct. Recruitment is not a response rate. A low recruitment proportion in a cohort mainly raises a question of generalisation, and only if participants differ in how salt affects stroke.' },
+            { text: 'It makes the study worthless.', correct: false, feedback: 'Low recruitment is a warning to examine, not a verdict.' },
           ],
         },
         {

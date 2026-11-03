@@ -37,7 +37,7 @@ export const TEMPLATES: ExerciseTemplate[] = [
         `Houses supplied by ${sources[1]}, which drew water from the polluted stretch of river, numbered ${p.housesA.toLocaleString('en-GB')} and recorded ${p.deathsA} cholera deaths. ` +
         `Houses supplied by ${sources[0]}, which drew cleaner water, numbered ${p.housesB.toLocaleString('en-GB')} and recorded ${p.deathsB} deaths. ` +
         `The two companies' pipes ran down the same streets, so neighbouring houses often had different suppliers. ` +
-        `Calculate the death rate per 10,000 houses for each supplier and the ratio of the two rates (polluted over cleaner).`;
+        `Calculate the deaths per 10,000 houses (the risk of a fatal attack) for each supplier and the risk ratio (polluted over cleaner).`;
     },
     solve: p => {
       const t = { a: p.deathsA, b: p.deathsB, pt1: p.housesA, pt0: p.housesB };
@@ -50,17 +50,17 @@ export const TEMPLATES: ExerciseTemplate[] = [
     answerFields: [
       { key: 'rateA', label: 'Deaths per 10,000 houses, polluted supply', tolerance: 0.02, format: 'dec2' },
       { key: 'rateB', label: 'Deaths per 10,000 houses, cleaner supply', tolerance: 0.02, format: 'dec2' },
-      { key: 'ratio', label: 'Ratio of rates (polluted / cleaner)', tolerance: 0.02, format: 'dec2' },
+      { key: 'ratio', label: 'Risk ratio (polluted / cleaner)', tolerance: 0.02, format: 'dec2' },
     ],
     hints: [
       'Divide each death count by the number of houses served, then scale to 10,000 houses.',
-      'The ratio compares the two scaled rates; the scaling factor cancels, so you can use the unscaled values too.',
+      'The risk ratio compares the two scaled figures; the scaling factor cancels, so you can use the unscaled values too.',
     ],
     solution: md`**Polluted supply:** $\dfrac{{deathsA}}{{housesA}} \times 10{,}000 = {rateA}$ deaths per 10,000 houses.
 
 **Cleaner supply:** $\dfrac{{deathsB}}{{housesB}} \times 10{,}000 = {rateB}$ deaths per 10,000 houses.
 
-**Ratio:** $\dfrac{{rateA}}{{rateB}} = {ratio}$.
+**Risk ratio:** $\dfrac{{rateA}}{{rateB}} = {ratio}$.
 
 Comparing raw death counts would mislead because the suppliers served different numbers of houses. Because the pipes were interleaved street by street, households on each supply were otherwise alike, which is what makes this a natural experiment.`,
   },
@@ -167,7 +167,7 @@ A rate has units of $1/\text{time}$; it is not a proportion and can, in principl
 
 **(b)** $R(t) = 1 - e^{-I t} = {riskT}$.
 
-The product $I \times t$ is a good approximation only when it is small (below about 0.1). As people develop the outcome they leave the pool at risk, so the true risk grows more slowly than $I \times t$ and can never exceed 1.`,
+The product $I \times t$ is a good approximation only while the resulting risk is below about 20% (the book's rule of thumb). As people develop the outcome they leave the pool at risk, so the true risk grows more slowly than $I \times t$ and can never exceed 1.`,
   },
 
   // ---------------------------------------------------------------- ch04 prevalence
@@ -348,6 +348,6 @@ Interpretation: among exposed cases, this fraction would not have occurred had t
 
 $$\mathrm{OR} = \frac{a \cdot d}{b \cdot c} = \frac{{a} \times {d}}{{b} \times {c}} = {or}$$
 
-The OR here is the ratio of exposure odds in cases to exposure odds in controls. What it estimates in the source population (a risk ratio, a rate ratio or a risk odds ratio) depends on how controls were sampled.`,
+The OR here is the ratio of exposure odds in cases to exposure odds in controls. What it estimates in the source population (a risk ratio, a rate ratio, or the odds ratio of the underlying cohort) depends on how controls were sampled.`,
   },
 ];

@@ -10,8 +10,8 @@ const PER = 10000;
 const f1 = (x: number) => (isFinite(x) ? x.toFixed(1) : '–');
 
 export function SnowRates({ onReached }: InteractiveProps) {
-  const [s, setS] = useState<Co>({ houses: 40046, deaths: 1263 });
-  const [l, setL] = useState<Co>({ houses: 26107, deaths: 98 });
+  const [s, setS] = useState<Co>({ houses: 40046, deaths: 286 });
+  const [l, setL] = useState<Co>({ houses: 26107, deaths: 14 });
   const [edited, setEdited] = useState(false);
   const reached = useReached(edited, onReached, 'edited the Snow table');
 
@@ -50,16 +50,16 @@ export function SnowRates({ onReached }: InteractiveProps) {
             <td>{cellInput('snow-ld', 'Company L cholera deaths', l.deaths, upd(setL, 'deaths'))}</td></tr>
         </tbody>
       </table>
-      <p className="note">Defaults are the figures as commonly cited for the first 7 weeks of the epidemic. Edit any cell.</p>
+      <p className="note">Defaults are Snow's figures for the first four weeks of the 1854 epidemic, as given in the book (Chapter 5): houses supplied in 1853 and fatal attacks. Edit any cell.</p>
       <div className="actions">
-        <button className="btn ghost" type="button" onClick={() => { setS({ houses: 40046, deaths: 1263 }); setL({ houses: 26107, deaths: 98 }); }}>Reset to cited figures</button>
+        <button className="btn ghost" type="button" onClick={() => { setS({ houses: 40046, deaths: 286 }); setL({ houses: 26107, deaths: 14 }); }}>Reset to Snow's figures</button>
       </div>
     </div>
     <div>
       <div className="stats">
         <Stat k="Deaths / 10,000 houses, S" v={f1(rateS)} tone="exp" />
         <Stat k="Deaths / 10,000 houses, L" v={f1(rateL)} tone="unexp" />
-        <Stat k="Company S ÷ Company L" v={rr ? `${f2(rr.estimate)} times` : '–'} s="how many times higher S's death rate is" />
+        <Stat k="Company S ÷ Company L" v={rr ? `${f2(rr.estimate)} times` : '–'} s="how many times higher S's risk of a fatal attack is" />
         <Stat k="Company S − Company L" v={rd ? f2(rd.estimate * PER) : '–'} s="extra deaths per 10,000 houses" />
       </div>
       {!valid && <div className="note">Each company needs at least one house, and deaths cannot exceed houses.</div>}
@@ -83,7 +83,7 @@ export function SnowRates({ onReached }: InteractiveProps) {
       <div className="note">
         A natural experiment: both companies piped water into the same streets, often to neighbouring houses, so households differed mainly in which intake their water came from, not in who chose it.
       </div>
-      {reached && <div className="reached">Change the numbers and watch how the comparison of rates responds.</div>}
+      {reached && <div className="reached">Change the numbers and watch how the comparison of risks responds.</div>}
     </div>
   </div>;
 }

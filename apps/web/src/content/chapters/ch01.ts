@@ -30,15 +30,15 @@ Synthetic data for the two hospitals:
 | 1,500 g or more | 14 / 700 (2.0%) | 28 / 950 (2.9%) |
 | **All births** | **74 / 1,000 (7.4%)** | **43 / 1,000 (4.3%)** |
 
-Within each birth-weight group the medical college does better, yet overall it looks worse, because 30% of its births are very low birth weight against 5% at the district hospital. A reversal like this is often called Simpson's paradox; it is simply confounding at its most dramatic.
+Within each birth-weight group the medical college does better, yet overall it looks worse, because 30% of its births are very low birth weight against 5% at the district hospital. This is confounding so strong that the comparison flips direction. (Some texts call such a reversal Simpson's paradox; the book simply treats it as confounding.)
 
 A factor can confound when it:
 
-1. is a risk factor for the outcome (low birth weight raises mortality),
+1. is related to the outcome, either as a cause of it or as a marker for a cause, and is not a consequence of the outcome (low birth weight raises mortality),
 2. is associated with the exposure in the population studied (referral concentrates small babies in one hospital), and
 3. is not an effect of the exposure (birth weight is not caused by the choice of hospital after birth).
 
-The simplest remedy is **stratification**: compare like with like within levels of the confounder, then, if the stratum-specific estimates are similar, summarise them. Later chapters show how to pool strata formally.
+The simplest remedy is **stratification**: compare like with like within levels of the confounder, then, if the stratum-specific estimates are similar, summarise them, giving more weight to strata that contain more data. Strata need to be narrow enough: with only two broad birth-weight bands, as here, some confounding by birth weight can remain within each band (**residual confounding**). Later chapters show how to pool strata formally.
 
 **Common mistake:** treating the crude comparison as the "real" answer because it uses all the data; using all the data does not protect against mixing of effects.`,
       checks: [
@@ -56,7 +56,7 @@ The simplest remedy is **stratification**: compare like with like within levels 
           id: 'ch01-confounding-q2', concept: 'confounding',
           prompt: md`The crude comparison favours the district hospital; both stratum-specific comparisons favour the medical college. Which statement is best?`,
           options: [
-            { text: 'The crude result is more trustworthy because it is based on all 2,000 births.', correct: false, feedback: 'Sample size governs random error, not confounding. A large crude comparison can be precisely wrong.' },
+            { text: 'The crude result is more trustworthy because it is based on all 2,000 births.', correct: false, feedback: 'In an observational comparison like this, sample size governs random error, not confounding: a large crude comparison can be precisely wrong. (Randomised trials differ: there, imbalance in confounders arises by chance and shrinks as the trial gets larger.)' },
             { text: 'The stratum-specific comparisons better reflect the effect of the hospital, because each compares babies of similar birth weight.', correct: true, feedback: 'Right. Stratifying holds the confounder roughly constant, so the remaining difference is closer to the effect of the hospital itself.' },
             { text: 'The two results contradict each other, so no conclusion is possible.', correct: false, feedback: 'They do not contradict each other once you see the mechanism: the crude figure mixes the hospital effect with the birth-weight effect.' },
             { text: 'Average the crude and stratified results to get a balanced answer.', correct: false, feedback: 'Averaging a confounded estimate with an unconfounded one simply reintroduces part of the bias.' },
@@ -89,13 +89,15 @@ People are not at risk when they:
 
 - lack the organ involved (men for cervical cancer; women after hysterectomy),
 - already have the condition, if you are counting first occurrences,
-- are immune (for example, after measles infection or effective vaccination).
+- are immune (for example, after measles infection). Vaccination removes someone from the population at risk only if it gave complete immunity, which is usually impossible to know for an individual, so studies must define this carefully.
 
 Writing the measure as
-$$\text{risk} = \frac{\text{new cases}}{\text{people at risk}}$$
-makes the requirement explicit. Including people who cannot become cases inflates the denominator and **dilutes** the measure. The dilution is harmless only if it is the same in every group compared; when the proportion of non-susceptible people differs (more migrant men in one taluk, more hysterectomies in another), comparisons become distorted.
+$$\text{risk} = \frac{\text{new cases during a stated period}}{\text{people at risk at the start of the period}}$$
+makes the requirement explicit. A risk cannot be interpreted unless the period is stated. Including people who cannot become cases inflates the denominator and makes every figure too low. If the share of such people is the same in every group, a ratio comparing the groups is unaffected, but each group's figure, and the difference between them, is still understated. When the proportion of non-susceptible people differs (more migrant men in one taluk, more hysterectomies in another), comparisons become distorted.
 
-The population at risk also changes over time: once someone develops the disease or becomes immune, they stop contributing. Chapter 4 handles this with [[person-time]].
+The population at risk also changes over time. For a first occurrence, a person stops contributing once they develop the disease (or become immune). For conditions that can recur, such as urinary tract infection, people leave the population at risk while ill and rejoin it when they recover. Chapter 4 handles this with [[person-time]].
+
+**Start the comparison from the right place.** Chapter 1 of the book applies the same question to comparisons. A claim that some profession lives unusually long is misleading if people enter that profession only after surviving to middle age: they need to be compared with others who were alive and healthy at the same age. If most people admitted to hospital with an infection were vaccinated, that may simply reflect that most of the population was vaccinated; the comparison must start from vaccination status and ask what share of each group was admitted. And the **average age at death** of a group describes only those who died, not how many died relative to the group's size, so it says nothing about risk.
 
 **Common mistake:** using the whole population as a default denominator without asking who was actually able to experience the outcome.`,
       checks: [
@@ -124,7 +126,16 @@ The population at risk also changes over time: once someone develops the disease
           options: [
             { text: 'All enrolled children, because everyone was exposed in the school.', correct: false, feedback: 'Exposure to the school is not the same as susceptibility. Immune children cannot become cases.' },
             { text: 'Only children with symptoms.', correct: false, feedback: 'Symptomatic children are cases (the numerator), not the full population at risk.' },
-            { text: 'Children without prior measles and without effective vaccination.', correct: true, feedback: 'Correct. Susceptibility, not mere presence, defines who is at risk.' },
+            { text: 'Children who have not had measles and are not immune through vaccination.', correct: true, feedback: 'Correct. Susceptibility, not mere presence, defines who is at risk. In practice it is hard to know whether a vaccine gave complete immunity, so the study has to define this carefully.' },
+          ],
+        },
+        {
+          id: 'ch01-population-at-risk-q4', concept: 'population_at_risk',
+          prompt: md`A report on deaths last year (synthetic figures) notes that people who died while they were medical students had an average age at death of 23, while those who died as retired teachers averaged 79. What does this tell you about which group had the higher risk of dying?`,
+          options: [
+            { text: 'Medical students had the higher risk, because they died younger.', correct: false, feedback: 'Medical students are young, so those who die are young too. A younger age at death does not mean a higher chance of dying.' },
+            { text: 'Nothing: average age at death describes only the people who died, not how many died out of each group.', correct: true, feedback: 'Correct. To compare risk you need the number of deaths relative to the number of people in each group over the same period.' },
+            { text: 'Retired teachers had the lower risk, because they lived longer.', correct: false, feedback: 'Retired teachers are old by definition, so those who die are old. Their age at death reflects who is in the group, not their risk.' },
           ],
         },
       ],
@@ -149,7 +160,7 @@ The population at risk also changes over time: once someone develops the disease
 - **Sensitivity**: of the people who *have* the condition, what share does the test catch?
 - **Specificity**: of the people who *do not have* the condition, what share does the test correctly clear?
 
-Put the clinic's results into counts:
+Put the clinic's results into counts. The laboratory result is the reference, which the book calls the **gold standard**; it is the best available benchmark rather than perfect truth.
 
 |  | Truly anaemic (laboratory) | Not anaemic (laboratory) |
 |---|---|---|
@@ -161,9 +172,9 @@ The meter catches 99 of the 110 anaemic women, a sensitivity of 90%. It correctl
 
 **3. "Agreement" hides the mistakes.** The meter agrees with the laboratory for 99 + 369 = 468 of 500 women, which is 94%. That sounds excellent, but it blends the two kinds of mistake, and it is dominated by the large group of women who are not anaemic. A test that called *everyone* normal would still "agree" with the laboratory for 390 of 500 women (78%) while catching no anaemia at all.
 
-The book also notes a trade-off, which Chapter 12 explains: adjusting a test to catch more true cases usually means more false alarms, and vice versa.
+Chapter 12 also shows a trade-off when tests are combined or repeated: calling someone positive if *either* test is positive catches more true cases but raises more false alarms, while requiring *both* to be positive cuts false alarms but misses more cases.
 
-**Common mistake:** judging a test by a single "accuracy" or "agreement" figure, which can look impressive simply because most people are healthy.`,
+**Common mistake:** judging a test by a single overall "agreement" figure (the share of all results that match the reference), which can look impressive simply because most people are healthy. (The book uses the word "accuracy" for a test's performance as described by sensitivity and specificity together, not for this single figure.)`,
       checks: [
         {
           id: 'ch01-screening-tests-q1', concept: 'sensitivity_specificity',
@@ -181,7 +192,7 @@ The book also notes a trade-off, which Chapter 12 explains: adjusting a test to 
           options: [
             { text: 'Many anaemic women will be sent home as normal.', correct: false, feedback: 'Missing true cases is a problem of low sensitivity.' },
             { text: 'Many women who are not anaemic will be told they are, and sent for unnecessary tests or treatment.', correct: true, feedback: 'Yes. Specificity is about the people without the condition; low specificity means many false alarms among them.' },
-            { text: 'The meter will give different readings for the same woman on different days.', correct: false, feedback: 'That is a problem of reliability (repeatability), a separate property from sensitivity and specificity.' },
+            { text: 'The meter will give different readings for the same woman on different days.', correct: false, feedback: 'That is a problem of repeatability (getting the same result twice), which is separate from sensitivity and specificity.' },
           ],
         },
         {
@@ -206,24 +217,24 @@ The book also notes a trade-off, which Chapter 12 explains: adjusting a test to 
         props: { target: 'prevalence', sens: 95, spec: 95, prev: 20 },
         prompt: md`The test is set to 95% sensitivity and 95% specificity, and 20% of people are infected, as in the hospital clinic. Look at the block of solid dots (everyone who tested positive): most are teal, true infections. Now move **have the condition** down towards 1%, as in the rural block, without touching the test. Watch the solid block fill with orange false alarms, and read how many of the positives truly have the infection.`,
       },
-      formalise: md`A patient with a positive result does not ask "what is the sensitivity?" She asks: **now that my test is positive, how likely is it that I really have the condition?** That share, among everyone who tests positive, is called the **positive predictive value**.
+      formalise: md`A patient with a positive result does not ask "what is the sensitivity?" She asks: **now that my test is positive, how likely is it that I really have the condition?** That share, among everyone who tests positive, is called the **positive predictive value** (the book calls it the **predictive value positive**, PV+).
 
-The easiest way to work it out is to imagine 1,000 people and count. The test is identical in both settings (95% sensitivity, 95% specificity):
+The easiest way to work it out is to imagine 10,000 people and count. The test is identical in both settings (95% sensitivity, 95% specificity):
 
 | | Hospital clinic (20% infected) | Rural block (1% infected) |
 |---|---|---|
-| People infected | 200 | 10 |
-| … of whom test positive | 190 | about 10 |
-| People not infected | 800 | 990 |
-| … of whom test positive (false alarms) | 40 | about 50 |
-| **Everyone testing positive** | **230** | **about 60** |
-| **Share of positives truly infected** | **190 of 230 = 83%** | **10 of 60 = 16%** |
+| People infected | 2,000 | 100 |
+| … of whom test positive | 1,900 | 95 |
+| People not infected | 8,000 | 9,900 |
+| … of whom test positive (false alarms) | 400 | 495 |
+| **Everyone testing positive** | **2,300** | **590** |
+| **Share of positives truly infected** | **1,900 of 2,300 = 83%** | **95 of 590 = 16%** |
 
 Nothing about the test changed. What changed is the **population**: when an infection is rare, the 5% of false alarms comes from a very large group of uninfected people, and those false alarms swamp the handful of true cases.
 
 This is exactly the trap the book describes in its first chapter: common sense says a test that is "95% right" gives positive results you can trust, and common sense is wrong when the condition is uncommon.
 
-Practical consequence: a positive screening result in a low-prevalence setting should be presented as "needs confirmation", not as a diagnosis. Chapter 12 returns to this with the full toolkit: the [[negative predictive value]], how cut-offs are chosen, and how a test should be evaluated.
+Practical consequence: a positive screening result in a low-prevalence setting should be presented as "needs confirmation", not as a diagnosis. Chapter 12 returns to this: the [[negative predictive value]] (the book's predictive value negative, PV−), and how a test is evaluated against a gold standard.
 
 **Common mistake:** treating the sensitivity of a test as the probability that someone who tests positive has the condition.`,
       checks: [
@@ -241,7 +252,7 @@ Practical consequence: a positive screening result in a low-prevalence setting s
           prompt: md`A woman in the rural block tests positive. Using the table on this card, roughly how likely is she to be infected?`,
           options: [
             { text: 'About 95%, the sensitivity.', correct: false, feedback: 'Sensitivity tells you how many infected people test positive. She wants the reverse: how many people who test positive are infected.' },
-            { text: 'About 16%: roughly 10 of the 60 positives are true infections.', correct: true, feedback: 'Correct. Only about 1 positive in 6 is a true infection here, which is why confirmation is essential.' },
+            { text: 'About 16%: 95 of the 590 positives are true infections.', correct: true, feedback: 'Correct. Only about 1 positive in 6 is a true infection here, which is why confirmation is essential.' },
             { text: 'About 1%, the share infected.', correct: false, feedback: 'That was her chance before testing. The positive result raises it, but only to about 16%.' },
           ],
         },
@@ -250,8 +261,8 @@ Practical consequence: a positive screening result in a low-prevalence setting s
           prompt: md`Which figures would you expect to stay roughly the same when the same test is used in the hospital clinic and in the rural block?`,
           options: [
             { text: 'The share of positive results that are true infections', correct: false, feedback: 'That fell from 83% to 16% between the two settings.' },
-            { text: 'Sensitivity and specificity', correct: true, feedback: 'Yes. They describe the test among people who do and do not have the infection, so they do not depend directly on how common it is.' },
-            { text: 'The number of positive results per 1,000 people tested', correct: false, feedback: 'That fell from about 230 to about 60, because far fewer people were infected.' },
+            { text: 'Sensitivity and specificity', correct: true, feedback: 'Yes. They describe the test among people who do and do not have the infection, so in principle they do not depend on how common it is. (In practice they can differ between kinds of patient, for example people with and without symptoms.)' },
+            { text: 'The number of positive results per 1,000 people tested', correct: false, feedback: 'That fell from 230 to 59, because far fewer people were infected.' },
           ],
         },
         {
@@ -260,7 +271,7 @@ Practical consequence: a positive screening result in a low-prevalence setting s
           options: [
             { text: 'It stays at about 16%, because the test has not changed.', correct: false, feedback: 'The test is the same, but the people tested are not. How far a positive can be trusted depends on how common infection is among them.' },
             { text: 'It rises to about 95%, because infection is now common among the people tested.', correct: true, feedback: 'Correct. Among 1,000 such people, 475 of the 500 infected and 25 of the 500 uninfected test positive: 475 of 500 positives are true.' },
-            { text: 'It falls, because people with symptoms are harder to test accurately.', correct: false, feedback: 'Nothing suggests the test performs worse in them. The rise in the share of infected people pushes the predictive value up, not down.' },
+            { text: 'It falls, because people with symptoms are harder to test accurately.', correct: false, feedback: 'Nothing in the scenario suggests the test performs worse in them (though sensitivity and specificity can differ between kinds of patient in practice). The rise in the share of infected people pushes the predictive value up, not down.' },
           ],
         },
       ],

@@ -1,7 +1,8 @@
 /**
  * Study assistant: a floating button that opens a chat about the page, and a small menu that appears when
- * the student selects text ("Explain this", "Give an example", …). Runs on the student's own OpenRouter
- * account; requests go straight from the browser to OpenRouter.
+ * the student selects text ("Explain this", "Give an example", …). Runs on the course's Claude API credit
+ * for signed-in students (course.ts), or on the student's own OpenRouter account if they choose it in
+ * settings or the course credit is unavailable (openrouter.ts).
  */
 import { useEffect, useRef, useState } from 'react';
 import { Markdown } from '../components/Markdown';
@@ -12,6 +13,13 @@ import { useOpenRouter, connect, chat, keyInfo, AssistantError, type ChatMsg, ty
 import { systemPrompt, actionPrompt, questionPrompt, ACTION_LABEL, type Action } from './prompt';
 import { useInsightsOn, logAsk } from './insights';
 import { PLAN_LABEL } from './models';
+import { useCourseKenny, courseChat, questionsLeft, isStruggling } from './course';
+import { useAccount } from '../store/account';
+
+const modelName = (m: string) => {
+  const c = /^claude-(haiku|sonnet|opus)-(\d+)-(\d+)/.exec(m);
+  return c ? `Claude ${c[1][0].toUpperCase()}${c[1].slice(1)} ${c[2]}.${c[3]}` : m.replace(/:free$/, '');
+};
 
 type Turn = { role: 'user' | 'assistant'; content: string; excerpt?: string; label?: string; error?: boolean };
 const HISTORY = 8; // turns of conversation sent back to the model
@@ -28,6 +36,12 @@ const Sparkle = () => <svg viewBox="0 0 20 20" width="18" height="18" aria-hidde
 
 export function Assistant() {
   const or = useOpenRouter();
+  const course = useCourseKenny();
+  const acct = useAccount();
+  // the course account is the default; the student's own OpenRouter account is the backup
+  const onCourse = course.enabled && course.source === 'course' && !!acct.session;
+  const ready = onCourse || !!or.key;
+  const [left, setLeft] = useState<number | null>(null);
   const ctx = usePageContext();
   const insights = useInsightsOn();
   const [open, setOpen] = useState(false);
@@ -49,8 +63,8 @@ export function Assistant() {
   // a new card starts a new conversation
   useEffect(() => { abort.current?.abort(); setTurns([]); setExcerpt(null); }, [pageKey]);
 
-  const refreshInfo = () => { keyInfo().then(setInfo); };
-  useEffect(() => { if (open && or.key) refreshInfo(); }, [open, or.key]);
+  const refreshInfo = () => { if (onCourse) questionsLeft().then(setLeft); else keyInfo().then(setInfo); };
+  useEffect(() => { if (open && ready) refreshInfo(); }, [open, ready, onCourse]);
 
   // keep the newest message in view
   useEffect(() => { list.current?.scrollTo({ top: list.current.scrollHeight }); }, [turns]);
@@ -63,7 +77,7 @@ export function Assistant() {
   }, [open]);
 
   async function send(user: Turn, action: Action) {
-    if (busy || !or.key || onCheck) return;
+    if (busy || !ready || onCheck) return;
     const history = [...turns, user].filter(t => !t.error);
     setTurns([...turns, user, { role: 'assistant', content: '' }]);
     setBusy(true);
@@ -74,13 +88,22 @@ export function Assistant() {
     const msgs: ChatMsg[] = [{ role: 'system', content: systemPrompt(ctx, visibleText(), notes) }, ...history.slice(-HISTORY).map(t => ({ role: t.role, content: t.content }))];
     const ac = new AbortController(); abort.current = ac;
     try {
-      const r = await chat(msgs, text => setTurns(ts => [...ts.slice(0, -1), { role: 'assistant', content: text }]), ac.signal);
+      const show = (text: string) => setTurns(ts => [...ts.slice(0, -1), { role: 'assistant', content: text }]);
+      let r: { text: string; model: string };
+      if (onCourse) {
+        try { const c = await courseChat(msgs, isStruggling(history), show, ac.signal); r = c; if (c.left !== null) setLeft(c.left); }
+        catch (e) {
+          // daily limit reached or course credit unavailable: use the student's own OpenRouter account if connected
+          if (or.key && e instanceof AssistantError && (e.kind === 'quota' || e.kind === 'credit' || e.kind === 'busy')) { show(''); r = await chat(msgs, show, ac.signal); }
+          else throw e;
+        }
+      } else r = await chat(msgs, show, ac.signal);
       setModel(r.model);
       if (!r.text.trim()) setTurns(ts => [...ts.slice(0, -1), { role: 'assistant', content: 'No answer came back. Please try again.', error: true }]);
     } catch (e) {
       if ((e as Error).name === 'AbortError') setTurns(ts => { const last = ts[ts.length - 1]; return last?.content ? ts : ts.slice(0, -2); });
-      else setTurns(ts => [...ts.slice(0, -1), { role: 'assistant', content: e instanceof AssistantError ? e.message : 'Could not reach OpenRouter. Check your internet connection and try again.', error: true }]);
-    } finally { setBusy(false); abort.current = null; refreshInfo(); }
+      else setTurns(ts => [...ts.slice(0, -1), { role: 'assistant', content: e instanceof AssistantError ? e.message : 'Could not reach Kenny. Check your internet connection and try again.', error: true }]);
+    } finally { setBusy(false); abort.current = null; if (!onCourse) refreshInfo(); }
   }
 
   const runAction = (action: Exclude<Action, 'question'>, text: string) =>
@@ -131,12 +154,22 @@ export function Assistant() {
     setQ(''); setExcerpt(null);
   };
 
-  const quota = info && (or.plan === 'free'
+  const quota = onCourse ? (left !== null && course.daily ? `${left} of ${course.daily} questions left today` : 'Course account')
+    : info && (or.plan === 'free'
     ? info.freeLeft !== null && info.freeLimit !== null ? `${info.freeLeft} of ${info.freeLimit} free questions left today` : null
     : info.creditLeft !== null ? `Credit left on this key: US$${info.creditLeft.toFixed(2)}` : null);
 
   let body: JSX.Element;
-  if (!or.key) body = (
+  if (!ready && course.enabled && course.source === 'course') body = (
+    <div className="as-setup">
+      <p>Kenny, your study assistant, answers questions about the card you are on. He runs on the course’s account, so there is nothing to pay or set up: just <b>sign in</b> to EpiCompass.</p>
+      <div className="as-actions">
+        <button className="btn" onClick={() => { close(); go('#/account'); }}>Sign in</button>
+        <button className="textlink" onClick={() => connect()} disabled={or.connecting}>Or use my own OpenRouter account</button>
+      </div>
+    </div>
+  );
+  else if (!ready) body = (
     <div className="as-setup">
       <p>Kenny, your study assistant, answers questions about the card you are on, using an AI model on <b>your own OpenRouter account</b>. A free account is enough: it gives 50 questions a day.</p>
       <ol>
@@ -194,7 +227,7 @@ export function Assistant() {
           </div>
           {body}
           <div className="as-foot">
-            <span>{or.key ? <>{quota ?? PLAN_LABEL[or.plan]}{model && <> · {model.replace(/:free$/, '')}</>}</> : null}</span>
+            <span>{ready ? <>{quota ?? PLAN_LABEL[or.plan]}{model && <> · {modelName(model)}</>}</> : null}</span>
             <button className="textlink" onClick={() => { close(); openTutor(); }}>Ask your instructor</button>
           </div>
         </div>

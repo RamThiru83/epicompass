@@ -10,6 +10,7 @@ import { go } from '../App';
 import { cloudEnabled } from '../lib/supabase';
 import { useState } from 'react';
 import { useOpenRouter, connect } from '../assistant/openrouter';
+import { useCourseKenny } from '../assistant/course';
 
 function partOfDay(d = new Date()) {
   const h = d.getHours();
@@ -42,8 +43,10 @@ function JoinPrompt({ started }: { started: boolean }) {
 /** After joining: one step to switch on the study assistant. Dismissible; the full instructions are in settings. */
 function AssistantPrompt() {
   const or = useOpenRouter();
+  const course = useCourseKenny();
   const [hidden, setHidden] = useState(() => { try { return localStorage.getItem('epicompass.as.prompt') === 'hidden'; } catch { return false; } });
-  if (or.key || hidden) return null;
+  // nothing to set up when Kenny runs on the course account
+  if (or.key || hidden || !course.checked || course.enabled) return null;
   const hide = () => { setHidden(true); try { localStorage.setItem('epicompass.as.prompt', 'hidden'); } catch { /* ignore */ } };
   return (
     <section className="panel join-prompt s12" aria-labelledby="h-as-setup">

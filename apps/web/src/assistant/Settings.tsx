@@ -5,6 +5,7 @@ import { PLAN_LABEL, type ModelPlan } from './models';
 import { useAccount, setInsightsConsent } from '../store/account';
 import { cloudEnabled } from '../lib/supabase';
 import { openAssistant } from './Assistant';
+import { useCourseKenny, setSource } from './course';
 
 const PLAN_TEXT: Record<ModelPlan, JSX.Element> = {
   'free': <>No payment needed. A free OpenRouter account allows <b>50 questions a day</b> (1,000 a day once the account has ever bought US$10 of credit). The free models are run by providers that may keep questions for a while, so do not type personal information.</>,
@@ -18,15 +19,35 @@ export function AssistantSettings() {
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const consent = !!a.profile?.insights_consent_at;
+  const course = useCourseKenny();
+  const useOwn = !course.enabled || course.source === 'openrouter';
 
   return (
     <>
+      {course.enabled && <div className="setrow">
+        <div className="lbl"><h2 id="h-assistant">Kenny, your study assistant</h2><p>An AI tutor for the card you are on.</p></div>
+        <div className="panel">
+          <div role="radiogroup" aria-label="Where Kenny runs" className="as-plans">
+            <label className={`as-plan ${!useOwn ? 'on' : ''}`}>
+              <input type="radio" name="as-source" checked={!useOwn} onChange={() => setSource('course')} />
+              <span><b>Course account</b> (recommended)<br /><span className="hint">Free for you, nothing to set up: just be signed in. Claude Haiku answers your questions; if you are still stuck after an answer, Claude Sonnet, a stronger model, explains it another way. Up to {course.daily ?? 40} questions a day.{!a.session && <> <a href="#/account">Sign in</a> to use it.</>}</span></span>
+            </label>
+            <label className={`as-plan ${useOwn ? 'on' : ''}`}>
+              <input type="radio" name="as-source" checked={useOwn} onChange={() => setSource('openrouter')} />
+              <span><b>My own OpenRouter account</b><br /><span className="hint">A backup, for example if you reach the daily limit. If you have connected it, Kenny also switches to it on his own when the course account is unavailable.</span></span>
+            </label>
+          </div>
+          <p className="hint" style={{ marginTop: 12 }}>On the course account, your questions pass through EpiCompass’s server to Anthropic, the maker of Claude, and back. EpiCompass records only how many questions you ask each day, to apply the limit; never what you ask or what Kenny replies. Kenny can make mistakes: the card is the authority.</p>
+          <div className="actions"><button className="btn" onClick={() => openAssistant()}>Ask Kenny</button></div>
+        </div>
+      </div>}
+
       <div className="setrow">
-        <div className="lbl"><h2 id="h-assistant">Kenny, your study assistant</h2><p>An AI tutor for the card you are on, using your own OpenRouter account.</p></div>
+        <div className="lbl">{course.enabled ? <><h2>Backup: your own OpenRouter account</h2><p>Optional. Connect once so Kenny can carry on if the course account is unavailable.</p></> : <><h2 id="h-assistant">Kenny, your study assistant</h2><p>An AI tutor for the card you are on, using your own OpenRouter account.</p></>}</div>
         <div className="panel">
           {or.key ? <>
             <p style={{ marginTop: 0 }}><b>Connected</b> on this device. Open Kenny with the <b>Ask Kenny</b> button, or select a passage on any card.</p>
-            <div className="actions"><button className="btn" onClick={() => openAssistant()}>Ask Kenny</button><button className="btn ghost" onClick={disconnect}>Disconnect</button></div>
+            <div className="actions">{useOwn && <button className="btn" onClick={() => openAssistant()}>Ask Kenny</button>}<button className="btn ghost" onClick={disconnect}>Disconnect</button></div>
           </> : <>
             <ol className="as-steps">
               <li>Press <b>Connect OpenRouter</b>. On OpenRouter, sign in or create a free account (Google or email), then approve EpiCompass.</li>
@@ -47,8 +68,8 @@ export function AssistantSettings() {
         </div>
       </div>
 
-      <div className="setrow">
-        <div className="lbl"><h2 id="h-model">AI model</h2><p>Chosen automatically: if your OpenRouter account has credit, Qwen3.5 9B; otherwise the free models. Pick one below to override. A backup takes over if a model is busy.</p></div>
+      {(useOwn || or.key) && <div className="setrow">
+        <div className="lbl"><h2 id="h-model">{course.enabled ? 'OpenRouter model' : 'AI model'}</h2><p>Chosen automatically: if your OpenRouter account has credit, Qwen3.5 9B; otherwise the free models. Pick one below to override. A backup takes over if a model is busy.</p></div>
         <div className="panel">
           <div role="radiogroup" aria-labelledby="h-model" className="as-plans">
             {(['free', 'low-cost'] as const).map(p => (
@@ -59,7 +80,7 @@ export function AssistantSettings() {
             ))}
           </div>
         </div>
-      </div>
+      </div>}
 
       {cloudEnabled && a.session && a.profile && 'insights_consent_at' in a.profile && <div className="setrow">
         <div className="lbl"><h2 id="h-insights">Help your instructor improve the course</h2><p>Optional, and you can change your mind at any time.</p></div>

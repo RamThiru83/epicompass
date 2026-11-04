@@ -10,6 +10,8 @@ const DAYS = 90;
 export function AskInsights({ cohort, consented }: { cohort: string; consented: number }) {
   const [rows, setRows] = useState<Ask[] | null>(null);
   const [err, setErr] = useState<string | null>(null);
+  const [use, setUse] = useState<{ questions: number; students: number; cost_usd: number } | null>(null);
+  useEffect(() => { supabase?.rpc('kenny_month_summary').then(({ data }) => { if (Array.isArray(data) && data[0]) setUse(data[0]); }); }, []);
   useEffect(() => {
     if (!supabase) return;
     const since = new Date(Date.now() - DAYS * 864e5).toISOString();
@@ -33,6 +35,7 @@ export function AskInsights({ cohort, consented }: { cohort: string; consented: 
   return (
     <div className="section">
       <h2 className='sec-h'>Where students ask Kenny for help</h2>
+      {use && <p className="hint">Kenny on the course account this month: <b>{Number(use.questions).toLocaleString('en-GB')}</b> questions from {use.students} student{Number(use.students) === 1 ? '' : 's'}, costing US${Number(use.cost_usd).toFixed(2)} of the course’s Claude API credit.</p>}
       <p className="hint">Last {DAYS} days, from the {consented} student{consented === 1 ? '' : 's'} who have agreed to share this. Totals only: you do not see who asked, what they typed or what Kenny replied.</p>
       {err ? <p className="hint">{/assistant_asks|does not exist|schema cache/i.test(err) ? 'Not switched on yet: the database table for this has not been created.' : `Could not load: ${err}`}</p>
         : rows === null ? <p className="hint">Loading…</p>

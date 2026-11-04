@@ -34,7 +34,7 @@
   --border: #2E2E2E; --rule: #232323; --control: #4A4A4A;
   --text: #F4F2F0; --muted: #C6C2BE; --faint: #ADA9A5;
   --primary: #F4F2F0; --on-primary: #111111;
-  --accent: #EC8B78; --accent-soft: #3A2421; --accent-mid: color-mix(in srgb, #EC8B78 45%, #171717);
+  --accent: #DE7973; --accent-soft: #3A1F1D; --accent-mid: color-mix(in srgb, #DE7973 45%, #171717); /* THSTI maroon, lightened for dark backgrounds */
   --positive: #3FC07A; --pill-positive-bg: #172A1D; --pill-positive-ink: #3FC07A;
   --negative: #E5566F; --pill-negative-bg: #2C1A20; --pill-negative-ink: #F08497;
   --pill-warning-bg: #2E2414; --pill-warning-ink: #F0B35E; --notice-border: #5A4520;
@@ -45,7 +45,7 @@
   --border: #2E2E2E; --rule: #232323; --control: #4A4A4A;
   --text: #F4F2F0; --muted: #C6C2BE; --faint: #ADA9A5;
   --primary: #F4F2F0; --on-primary: #111111;
-  --accent: #EC8B78; --accent-soft: #3A2421; --accent-mid: color-mix(in srgb, #EC8B78 45%, #171717);
+  --accent: #DE7973; --accent-soft: #3A1F1D; --accent-mid: color-mix(in srgb, #DE7973 45%, #171717); /* THSTI maroon, lightened for dark backgrounds */
   --positive: #3FC07A; --pill-positive-bg: #172A1D; --pill-positive-ink: #3FC07A;
   --negative: #E5566F; --pill-negative-bg: #2C1A20; --pill-negative-ink: #F08497;
   --pill-warning-bg: #2E2414; --pill-warning-ink: #F0B35E; --notice-border: #5A4520;
@@ -83,6 +83,12 @@ input[type=checkbox] { accent-color: var(--primary); width: 16px; height: 16px; 
 .sidebar { position: sticky; top: 0; height: 100vh; overflow-y: auto; display: flex; flex-direction: column;
   border-right: 1px solid var(--rule); padding: 20px 12px 16px; background: var(--ground); min-width: 0; }
 .brand { display: flex; align-items: center; gap: 10px; padding: 4px 10px 0; margin: 0 0 14px; background: none; border: 0; text-align: left; }
+.brandrow { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.brandrow .brand { min-width: 0; }
+.theme-toggle { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; margin: 0 6px 0 0; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); color: var(--muted); cursor: pointer; }
+.theme-toggle:hover { color: var(--text); background: var(--raised); }
+.theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sidebar.open .brandrow { justify-content: flex-end; margin-bottom: 8px; }
 .brand .mark { width: 26px; height: 26px; flex: none; }
 .brand .name { font-size: 1.125rem; font-weight: 600; letter-spacing: -0.01em; display: block; line-height: 1.176; }
 .brand small { display: block; color: var(--muted); font-size: 0.875rem; line-height: 1.333; }

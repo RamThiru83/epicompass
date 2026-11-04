@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { CHAPTERS, UNITS, conceptById, concepts } from '../content';
 import { coreCards } from '../content/types';
 import { useTextSize } from '../store/textSize';
+import { useTheme } from '../store/theme';
 import { AssistantSettings } from '../assistant/Settings';
 import { useProgress, dueConcepts, setSettings, resetProgress, isMastered } from '../store/progress';
 import { chapterCompletion } from '../store/gates';
@@ -13,6 +14,7 @@ export function HomePage() {
   const p = useProgress();
   const [confirmReset, setConfirmReset] = useState(false);
   const [textSize, setTextSize] = useTextSize();
+  const th = useTheme();
   const acc = useAccount();
   const due = dueConcepts(p);
   const open = CHAPTERS.filter(c => c.cards.length);
@@ -90,6 +92,17 @@ export function HomePage() {
               {(['standard', 'large'] as const).map(v => (
                 <button key={v} type="button" role="radio" aria-checked={textSize === v} className={`btn ${textSize === v ? '' : 'ghost'}`} onClick={() => setTextSize(v)}>
                   {v === 'standard' ? 'Standard' : 'Large'}
+                </button>))}
+            </div>
+          </div>
+        </div>
+        <div className="setrow">
+          <div className="lbl"><h2 id="h-theme">Appearance</h2><p>Light or dark, on this device. <i>Automatic</i> follows your phone’s or computer’s setting. The button beside the course name switches too.</p></div>
+          <div className="panel">
+            <div className="seg" role="radiogroup" aria-labelledby="h-theme">
+              {(['system', 'light', 'dark'] as const).map(v => (
+                <button key={v} type="button" role="radio" aria-checked={th.theme === v} className={`btn ${th.theme === v ? '' : 'ghost'}`} onClick={() => th.set(v)}>
+                  {v === 'system' ? 'Automatic' : v === 'light' ? 'Light' : 'Dark'}
                 </button>))}
             </div>
           </div>

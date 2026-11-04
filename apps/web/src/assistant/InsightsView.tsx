@@ -7,6 +7,47 @@ import { STEP_LABEL } from '../components/Path';
 type Ask = { card_id: string; step: string | null; action: string; excerpt: string | null; cohort_id: string | null; user_id: string; created_at: string };
 const DAYS = 90;
 
+type KennySettings = { enabled: boolean; daily_limit: number; monthly_budget: number; updated_at?: string };
+
+/** Central controls for Kenny on the course's Claude API credit: on/off for every student, daily limit, budget. */
+export function KennyControls() {
+  const [s, setS] = useState<KennySettings | null>(null);
+  const [draft, setDraft] = useState<{ daily: string; budget: string }>({ daily: '', budget: '' });
+  const [msg, setMsg] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  useEffect(() => {
+    supabase?.from('kenny_settings').select('enabled, daily_limit, monthly_budget, updated_at').eq('id', 1).maybeSingle()
+      .then(({ data, error }) => {
+        if (error) { setMsg(/kenny_settings|does not exist|schema cache/i.test(error.message) ? 'Not available yet: the settings table has not been created.' : error.message); return; }
+        if (data) { setS(data as KennySettings); setDraft({ daily: String(data.daily_limit), budget: String(data.monthly_budget) }); }
+      });
+  }, []);
+  async function save(patch: Partial<KennySettings>) {
+    if (!supabase) return;
+    setBusy(true); setMsg(null);
+    const { data, error } = await supabase.from('kenny_settings').update(patch).eq('id', 1).select('enabled, daily_limit, monthly_budget, updated_at').maybeSingle();
+    setBusy(false);
+    if (error || !data) { setMsg(`Could not save: ${error?.message ?? 'not permitted'}`); return; }
+    setS(data as KennySettings); setMsg('Saved. Students’ apps pick this up the next time they open Kenny.');
+  }
+  if (!s) return msg ? <div className="section"><h2 className="sec-h">Kenny on the course account</h2><p className="hint">{msg}</p></div> : null;
+  const daily = Number(draft.daily), budget = Number(draft.budget);
+  const valid = Number.isInteger(daily) && daily >= 1 && daily <= 1000 && budget >= 0 && budget <= 500;
+  return (
+    <div className="section">
+      <h2 className="sec-h">Kenny on the course account</h2>
+      <label className="toggle-row"><input type="checkbox" checked={s.enabled} disabled={busy} onChange={e => save({ enabled: e.target.checked })} />
+        <span><b>{s.enabled ? 'On for all students' : 'Off for all students'}</b>. When off, no student can use the course’s Claude credit; students who have connected their own OpenRouter account can still use Kenny through it.</span></label>
+      <form className="row" style={{ justifyContent: 'flex-start', flexWrap: 'wrap', gap: 12, marginTop: 8 }} onSubmit={e => { e.preventDefault(); if (valid) save({ daily_limit: daily, monthly_budget: budget }); }}>
+        <label>Questions per student per day <input type="number" min={1} max={1000} value={draft.daily} onChange={e => setDraft({ ...draft, daily: e.target.value })} style={{ width: 90 }} /></label>
+        <label>Monthly budget, US$ <input type="number" min={0} max={500} step={10} value={draft.budget} onChange={e => setDraft({ ...draft, budget: e.target.value })} style={{ width: 90 }} /></label>
+        <button className="btn ghost" disabled={busy || !valid || (daily === s.daily_limit && budget === Number(s.monthly_budget))}>Save limits</button>
+      </form>
+      <p className="hint">Kenny stops using the course credit for the rest of the month once the budget is reached (the Team plan gives up to US$500 a month, shared with any other use of the THSTI Console organisation).{msg && <> {msg}</>}</p>
+    </div>
+  );
+}
+
 export function AskInsights({ cohort, consented }: { cohort: string; consented: number }) {
   const [rows, setRows] = useState<Ask[] | null>(null);
   const [err, setErr] = useState<string | null>(null);

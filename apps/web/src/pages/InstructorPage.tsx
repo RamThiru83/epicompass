@@ -11,7 +11,7 @@ import { normalise, dueConcepts, type Progress } from '../store/progress';
 import { CHAPTERS, concepts, cardById } from '../content';
 import { coreCards } from '../content/types';
 import { MASTERY_THRESHOLD } from '@epicompass/epi-core';
-import { AskInsights } from '../assistant/InsightsView';
+import { AskInsights, KennyControls } from '../assistant/InsightsView';
 
 interface Row { id: string; full_name: string; email: string; cohort_id: string | null; role: string; created_at: string; progress: Progress; updated_at?: string; insights_consent_at?: string | null }
 interface Cohort { id: string; name: string; join_code: string; active: boolean }
@@ -173,6 +173,7 @@ export function InstructorPage() {
           <tbody>{hardest.map(h => <tr key={h.id}><td style={{ textAlign: 'left' }}>{questionText(h.id, h.cardId)}</td><td>{cardById(h.cardId)?.title ?? h.cardId}</td><td>{h.wrong} of {h.n} ({Math.round(100 * h.rate)}%)</td></tr>)}</tbody></table></div>
       </div>}
 
+      <KennyControls />
       <AskInsights cohort={cohort} consented={rows.filter(r => r.insights_consent_at && (cohort === 'all' || r.cohort_id === cohort)).length} />
 
       <div className="section" style={{ overflowX: 'auto' }}>

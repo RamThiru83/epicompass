@@ -13,15 +13,16 @@
  *   ANTHROPIC_API_KEY          required; a key from the Claude Console organisation linked to the Team plan
  *   KENNY_MODEL                optional, the everyday model, default claude-haiku-5-5 (medium effort)
  *   KENNY_HELP_MODEL           optional, used when the app says the student is struggling, default claude-sonnet-5-5
- *   KENNY_DAILY_LIMIT          optional, questions per student per day, default 40
- *   KENNY_MONTHLY_BUDGET_USD   optional, stop using the course credit beyond this, default 450
+ *   KENNY_DAILY_LIMIT          optional fallback, questions per student per day, default 150
+ *   KENNY_MONTHLY_BUDGET_USD   optional fallback, stop using the course credit beyond this, default 450
+ * The instructor's switch, daily limit and budget in table kenny_settings (Class dashboard) take precedence.
  */
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
 const ALLOWED_ORIGINS = ['https://ramthiru83.github.io', 'http://localhost:5173', 'http://localhost:4199', 'http://127.0.0.1:4199'];
 const MODEL = Deno.env.get('KENNY_MODEL') || 'claude-haiku-5-5';
 const HELP_MODEL = Deno.env.get('KENNY_HELP_MODEL') || 'claude-sonnet-5-5';
-const DAILY = Number(Deno.env.get('KENNY_DAILY_LIMIT') || 40);
+const DAILY = Number(Deno.env.get('KENNY_DAILY_LIMIT') || 150);
 const BUDGET = Number(Deno.env.get('KENNY_MONTHLY_BUDGET_USD') || 450);
 // US$ per million tokens: input, output, cache read (cache writes cost 1.25 × input)
 const PRICES: Record<string, [number, number, number]> = {
@@ -50,16 +51,23 @@ const json = (req: Request, status: number, body: unknown) =>
 
 type Msg = { role: 'user' | 'assistant'; content: string };
 
+/** The instructor's central controls (kenny_settings); falls back to the secrets if the table is missing. */
+async function settings(): Promise<{ on: boolean; daily: number; budget: number }> {
+  const { data } = await admin.from('kenny_settings').select('enabled, daily_limit, monthly_budget').eq('id', 1).maybeSingle();
+  return data ? { on: !!data.enabled, daily: Number(data.daily_limit), budget: Number(data.monthly_budget) } : { on: true, daily: DAILY, budget: BUDGET };
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors(req) });
   const origin = req.headers.get('Origin');
   if (origin && !ALLOWED_ORIGINS.includes(origin)) return json(req, 403, { error: 'forbidden' });
   const apiKey = Deno.env.get('ANTHROPIC_API_KEY');
 
+  const cfg = await settings();
   // status: is the course credit switched on, and what is the daily limit?
-  if (req.method === 'GET') return json(req, 200, { enabled: !!apiKey, daily: DAILY, model: MODEL, helpModel: HELP_MODEL });
+  if (req.method === 'GET') return json(req, 200, { enabled: !!apiKey && cfg.on, daily: cfg.daily, model: MODEL, helpModel: HELP_MODEL });
   if (req.method !== 'POST') return json(req, 405, { error: 'method' });
-  if (!apiKey) return json(req, 503, { error: 'unavailable', message: 'Kenny on the course account is not switched on yet.' });
+  if (!apiKey || !cfg.on) return json(req, 503, { error: 'unavailable', message: 'Kenny on the course account is switched off at the moment.' });
 
   // who is asking?
   const token = (req.headers.get('Authorization') ?? '').replace(/^Bearer\s+/i, '');
@@ -82,9 +90,9 @@ Deno.serve(async (req) => {
   const price = priceOf(model);
 
   // one question from today's allowance, within the monthly budget
-  const { data: left, error: rErr } = await admin.rpc('kenny_reserve', { uid, daily_limit: DAILY, monthly_budget: BUDGET });
+  const { data: left, error: rErr } = await admin.rpc('kenny_reserve', { uid, daily_limit: cfg.daily, monthly_budget: cfg.budget });
   if (rErr) return json(req, 500, { error: 'other', message: 'Kenny could not check your allowance. Please try again.' });
-  if (left === -1) return json(req, 429, { error: 'quota', message: `You have used today’s ${DAILY} questions on the course account. They renew at midnight (India time).` });
+  if (left === -1) return json(req, 429, { error: 'quota', message: `You have used today’s ${cfg.daily} questions on the course account. They renew at midnight (India time).` });
   if (left === -2) return json(req, 503, { error: 'unavailable', message: 'This month’s course credit for Kenny has been used up.' });
 
   const settle = (cost: number, refund: boolean) => admin.rpc('kenny_settle', { uid, cost, refund });

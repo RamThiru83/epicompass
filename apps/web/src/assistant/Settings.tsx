@@ -30,7 +30,7 @@ export function AssistantSettings() {
           <div role="radiogroup" aria-label="Where Kenny runs" className="as-plans">
             <label className={`as-plan ${!useOwn ? 'on' : ''}`}>
               <input type="radio" name="as-source" checked={!useOwn} onChange={() => setSource('course')} />
-              <span><b>Course account</b> (recommended)<br /><span className="hint">Free for you, nothing to set up: just be signed in. Claude Haiku answers your questions; if you are still stuck after an answer, Claude Sonnet, a stronger model, explains it another way. Up to {course.daily ?? 40} questions a day.{!a.session && <> <a href="#/account">Sign in</a> to use it.</>}</span></span>
+              <span><b>Course account</b> (recommended)<br /><span className="hint">Free for you, nothing to set up: just be signed in. Claude Haiku answers your questions; if you are still stuck after an answer, Claude Sonnet, a stronger model, explains it another way. Up to {course.daily ?? 150} questions a day.{!a.session && <> <a href="#/account">Sign in</a> to use it.</>}</span></span>
             </label>
             <label className={`as-plan ${useOwn ? 'on' : ''}`}>
               <input type="radio" name="as-source" checked={useOwn} onChange={() => setSource('openrouter')} />

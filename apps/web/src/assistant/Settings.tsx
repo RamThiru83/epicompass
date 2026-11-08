@@ -5,12 +5,31 @@ import { PLAN_LABEL, type ModelPlan } from './models';
 import { useAccount, setInsightsConsent } from '../store/account';
 import { cloudEnabled } from '../lib/supabase';
 import { openAssistant } from './Assistant';
-import { useCourseKenny, setSource } from './course';
+import { useCourseKenny, setSource, redeemCode } from './course';
 
 const PLAN_TEXT: Record<ModelPlan, JSX.Element> = {
   'free': <>No payment needed. A free OpenRouter account allows <b>50 questions a day</b> (1,000 a day once the account has ever bought US$10 of credit). The free models are run by providers that may keep questions for a while, so do not type personal information.</>,
   'low-cost': <>Needs a little credit on your OpenRouter account. A question costs about US$0.00005, so US$1 lasts many thousands of questions. Questions to Qwen go only to providers that do not store them. If Qwen is unavailable or your credit runs out, Kenny switches to the free models for that question.</>,
 };
+
+/** For students whose own course code does not include Kenny: unlock it with one that does. */
+function KennyCode() {
+  const [code, setCode] = useState('');
+  const [msg, setMsg] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  return (
+    <div className="setrow">
+      <div className="lbl"><h2 id="h-kenny-code">Kenny on the course account</h2><p>Not included in the course code you joined with.</p></div>
+      <div className="panel">
+        <form className="row" style={{ justifyContent: 'flex-start', flexWrap: 'wrap', gap: 8 }} onSubmit={async e => { e.preventDefault(); setBusy(true); const err = await redeemCode(code); setBusy(false); setMsg(err); if (!err) { setCode(''); setSource('course'); } }}>
+          <input value={code} onChange={e => setCode(e.target.value)} placeholder="Course code" aria-labelledby="h-kenny-code" autoComplete="off" style={{ width: 180 }} />
+          <button className="btn" disabled={busy || !code.trim()}>{busy ? 'Checking…' : 'Unlock Kenny'}</button>
+        </form>
+        <p className="hint">{msg ?? 'Enter your course code: it’s the code that your instructor shared with you. Without one, Kenny runs on your own OpenRouter account below.'}</p>
+      </div>
+    </div>
+  );
+}
 
 export function AssistantSettings() {
   const or = useOpenRouter();
@@ -42,6 +61,7 @@ export function AssistantSettings() {
         </div>
       </div>}
 
+      {course.available && course.eligible === false && <KennyCode />}
       <div className="setrow">
         <div className="lbl">{course.enabled ? <><h2>Backup: your own OpenRouter account</h2><p>Optional. Connect once so Kenny can carry on if the course account is unavailable.</p></> : <><h2 id="h-assistant">Kenny, your study assistant</h2><p>An AI tutor for the card you are on, using your own OpenRouter account.</p></>}</div>
         <div className="panel">

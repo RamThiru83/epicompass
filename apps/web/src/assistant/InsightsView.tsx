@@ -7,6 +7,7 @@ import { STEP_LABEL } from '../components/Path';
 type Ask = { card_id: string; step: string | null; action: string; excerpt: string | null; cohort_id: string | null; user_id: string; created_at: string };
 const DAYS = 90;
 
+type KennyCohort = { id: string; name: string; kenny: boolean; active: boolean };
 type KennySettings = { enabled: boolean; daily_limit: number; monthly_budget: number; updated_at?: string };
 
 /** Central controls for Kenny on the course's Claude API credit: on/off for every student, daily limit, budget. */
@@ -15,7 +16,9 @@ export function KennyControls() {
   const [draft, setDraft] = useState<{ daily: string; budget: string }>({ daily: '', budget: '' });
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [cohorts, setCohorts] = useState<KennyCohort[] | null>(null);
   useEffect(() => {
+    supabase?.from('cohorts').select('id, name, kenny, active').order('created_at').then(({ data, error }) => { if (!error && data) setCohorts(data as KennyCohort[]); });
     supabase?.from('kenny_settings').select('enabled, daily_limit, monthly_budget, updated_at').eq('id', 1).maybeSingle()
       .then(({ data, error }) => {
         if (error) { setMsg(/kenny_settings|does not exist|schema cache/i.test(error.message) ? 'Not available yet: the settings table has not been created.' : error.message); return; }
@@ -30,6 +33,15 @@ export function KennyControls() {
     if (error || !data) { setMsg(`Could not save: ${error?.message ?? 'not permitted'}`); return; }
     setS(data as KennySettings); setMsg('Saved. Students’ apps pick this up the next time they open Kenny.');
   }
+  async function setCohort(id: string, kenny: boolean) {
+    if (!supabase) return;
+    setBusy(true); setMsg(null);
+    const { error } = await supabase.from('cohorts').update({ kenny }).eq('id', id);
+    setBusy(false);
+    if (error) { setMsg(`Could not save: ${error.message}`); return; }
+    setCohorts(cs => cs?.map(c => (c.id === id ? { ...c, kenny } : c)) ?? null);
+    setMsg('Saved. Students’ apps pick this up the next time they sign in or reload.');
+  }
   if (!s) return msg ? <div className="section"><h2 className="sec-h">Kenny on the course account</h2><p className="hint">{msg}</p></div> : null;
   const daily = Number(draft.daily), budget = Number(draft.budget);
   const valid = Number.isInteger(daily) && daily >= 1 && daily <= 1000 && budget >= 0 && budget <= 500;
@@ -37,7 +49,12 @@ export function KennyControls() {
     <div className="section">
       <h2 className="sec-h">Kenny on the course account</h2>
       <label className="toggle-row"><input type="checkbox" checked={s.enabled} disabled={busy} onChange={e => save({ enabled: e.target.checked })} />
-        <span><b>{s.enabled ? 'On for all students' : 'Off for all students'}</b>. When off, no student can use the course’s Claude credit; students who have connected their own OpenRouter account can still use Kenny through it.</span></label>
+        <span><b>{s.enabled ? 'On' : 'Off for all students'}</b>. When off, no student can use the course’s Claude credit; students who have connected their own OpenRouter account can still use Kenny through it.</span></label>
+      {cohorts && <fieldset className="kenny-cohorts" disabled={busy || !s.enabled} style={{ border: 0, padding: 0, margin: '10px 0 0' }}>
+        <legend className="hint" style={{ padding: 0, marginBottom: 6 }}>Course codes whose students may use it (instructors always can):</legend>
+        {cohorts.map(c => <label key={c.id} className="toggle-row"><input type="checkbox" checked={c.kenny} onChange={e => setCohort(c.id, e.target.checked)} />
+          <span>{c.name}{!c.active && <span className="hint"> (code closed)</span>}</span></label>)}
+      </fieldset>}
       <form className="row" style={{ justifyContent: 'flex-start', flexWrap: 'wrap', gap: 12, marginTop: 8 }} onSubmit={e => { e.preventDefault(); if (valid) save({ daily_limit: daily, monthly_budget: budget }); }}>
         <label>Questions per student per day <input type="number" min={1} max={1000} value={draft.daily} onChange={e => setDraft({ ...draft, daily: e.target.value })} style={{ width: 90 }} /></label>
         <label>Monthly budget, US$ <input type="number" min={0} max={500} step={10} value={draft.budget} onChange={e => setDraft({ ...draft, budget: e.target.value })} style={{ width: 90 }} /></label>

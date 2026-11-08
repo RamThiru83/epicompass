@@ -15,22 +15,36 @@ const K_SOURCE = 'epicompass.kenny.source';
 export type Source = 'course' | 'openrouter';
 const readSource = (): Source => { try { return localStorage.getItem(K_SOURCE) === 'openrouter' ? 'openrouter' : 'course'; } catch { return 'course'; } };
 
-interface Status { checked: boolean; enabled: boolean; daily: number | null; source: Source }
-let st: Status = { checked: false, enabled: false, daily: null, source: readSource() };
+// enabled: the course account can be used by this browser's user (for a signed-in student, only if their
+// course code includes Kenny); eligible: false when the signed-in student's course code does not include it.
+interface Status { checked: boolean; enabled: boolean; available: boolean; eligible: boolean | null; daily: number | null; source: Source }
+let st: Status = { checked: false, enabled: false, available: false, eligible: null, daily: null, source: readSource() };
 const subs = new Set<() => void>();
 const set = (p: Partial<Status>) => { st = { ...st, ...p }; subs.forEach(f => f()); };
 export const useCourseKenny = () => useSyncExternalStore(f => { subs.add(f); return () => subs.delete(f); }, () => st);
 
 export function setSource(source: Source) { try { localStorage.setItem(K_SOURCE, source); } catch { /* storage unavailable */ } set({ source }); }
 
-/** Ask the function whether the course credit is switched on. */
+/** Ask the function whether the course credit is switched on, and for whom (signed-in students' course code). */
 export async function checkCourse(): Promise<void> {
-  if (!cloudEnabled) { set({ checked: true, enabled: false }); return; }
+  if (!cloudEnabled || !supabase) { set({ checked: true, enabled: false }); return; }
   try {
-    const r = await fetch(FN, { headers: { apikey: SUPABASE_ANON_KEY } });
+    const token = (await supabase.auth.getSession()).data.session?.access_token;
+    const r = await fetch(FN, { headers: { apikey: SUPABASE_ANON_KEY, ...(token ? { Authorization: `Bearer ${token}` } : {}) } });
     const j = r.ok ? await r.json() : null;
-    set({ checked: true, enabled: !!j?.enabled, daily: j?.daily ?? null });
+    set({ checked: true, enabled: !!j?.enabled, available: !!(j?.available ?? j?.enabled), eligible: typeof j?.eligible === 'boolean' ? j.eligible : null, daily: j?.daily ?? null });
   } catch { set({ checked: true, enabled: false }); }
+}
+
+/** Unlock Kenny on the course account with a course code that includes him. Returns an error message or null. */
+export async function redeemCode(code: string): Promise<string | null> {
+  if (!supabase) return 'Not available offline.';
+  if (!code.trim()) return 'Please enter the course code.';
+  const { data, error } = await supabase.rpc('kenny_redeem', { code: code.trim() });
+  if (error) return /too many/i.test(error.message) ? 'Too many tries today. Please check the code with your instructor and try again tomorrow.' : 'That did not work. Please try again.';
+  if (!data) return 'That code does not include Kenny. Check it with your instructor.';
+  await checkCourse();
+  return null;
 }
 
 /** Questions the signed-in student has left today on the course account. */
@@ -70,8 +84,9 @@ export async function courseChat(messages: ChatMsg[], struggling: boolean, onTex
   });
   if (!r.ok || !r.body) {
     const j = await r.json().catch(() => ({}));
-    const kind = (['auth', 'quota', 'busy'] as const).find(k => k === j?.error) ?? (j?.error === 'unavailable' ? 'credit' : 'other');
+    const kind = (['auth', 'quota', 'busy'] as const).find(k => k === j?.error) ?? (j?.error === 'unavailable' || j?.error === 'cohort' ? 'credit' : 'other');
     if (j?.error === 'unavailable') set({ enabled: false });
+    if (j?.error === 'cohort') set({ enabled: false, eligible: false });
     throw new AssistantError(j?.message ?? `Kenny could not answer (error ${r.status}). Please try again.`, kind);
   }
   const reader = r.body.getReader(); const dec = new TextDecoder();
@@ -93,3 +108,5 @@ export async function courseChat(messages: ChatMsg[], struggling: boolean, onTex
 }
 
 checkCourse();
+// signing in or out changes who may use the course account
+supabase?.auth.onAuthStateChange(ev => { if (ev === 'SIGNED_IN' || ev === 'SIGNED_OUT') checkCourse(); });

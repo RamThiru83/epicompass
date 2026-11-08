@@ -16,6 +16,7 @@
  *   KENNY_DAILY_LIMIT          optional fallback, questions per student per day, default 150
  *   KENNY_MONTHLY_BUDGET_USD   optional fallback, stop using the course credit beyond this, default 450
  * The instructor's switch, daily limit and budget in table kenny_settings (Class dashboard) take precedence.
+ * Only students whose course code (cohort) has Kenny switched on (cohorts.kenny), and instructors, may use it.
  */
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
@@ -57,6 +58,20 @@ async function settings(): Promise<{ on: boolean; daily: number; budget: number 
   return data ? { on: !!data.enabled, daily: Number(data.daily_limit), budget: Number(data.monthly_budget) } : { on: true, daily: DAILY, budget: BUDGET };
 }
 
+/** The signed-in user's id, or null. */
+async function userId(req: Request): Promise<string | null> {
+  const token = (req.headers.get('Authorization') ?? '').replace(/^Bearer\s+/i, '');
+  if (!token || token.startsWith('sb_')) return null;
+  const { data } = await admin.auth.getUser(token);
+  return data?.user?.id ?? null;
+}
+/** Did the student join with a course code that has Kenny switched on (or are they an instructor)? */
+async function eligible(uid: string): Promise<boolean> {
+  const { data, error } = await admin.rpc('kenny_eligible', { uid });
+  return !error && data === true;
+}
+const NOT_ELIGIBLE = 'Kenny on the course account needs a course code that includes him. Enter one in Kenny’s panel, or use Kenny through your own OpenRouter account in My progress and settings.';
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors(req) });
   const origin = req.headers.get('Origin');
@@ -64,16 +79,19 @@ Deno.serve(async (req) => {
   const apiKey = Deno.env.get('ANTHROPIC_API_KEY');
 
   const cfg = await settings();
-  // status: is the course credit switched on, and what is the daily limit?
-  if (req.method === 'GET') return json(req, 200, { enabled: !!apiKey && cfg.on, daily: cfg.daily, model: MODEL, helpModel: HELP_MODEL });
+  // status: is the course credit switched on (for this student, if signed in), and what is the daily limit?
+  if (req.method === 'GET') {
+    const id = await userId(req);
+    const ok = !!apiKey && cfg.on && (id ? await eligible(id) : true);
+    return json(req, 200, { enabled: ok, available: !!apiKey && cfg.on, eligible: id && apiKey && cfg.on ? ok : null, daily: cfg.daily, model: MODEL, helpModel: HELP_MODEL });
+  }
   if (req.method !== 'POST') return json(req, 405, { error: 'method' });
   if (!apiKey || !cfg.on) return json(req, 503, { error: 'unavailable', message: 'Kenny on the course account is switched off at the moment.' });
 
-  // who is asking?
-  const token = (req.headers.get('Authorization') ?? '').replace(/^Bearer\s+/i, '');
-  const { data: u } = token ? await admin.auth.getUser(token) : { data: { user: null } };
-  const uid = u?.user?.id;
+  // who is asking, and did they join with a course code that includes Kenny?
+  const uid = await userId(req);
   if (!uid) return json(req, 401, { error: 'auth', message: 'Please sign in to use Kenny on the course account.' });
+  if (!(await eligible(uid))) return json(req, 403, { error: 'cohort', message: NOT_ELIGIBLE });
 
   // what are they asking? (sizes are capped so the endpoint cannot be used for large jobs)
   let body: { system?: unknown; messages?: unknown; struggling?: unknown };

@@ -13,7 +13,7 @@ import { useOpenRouter, connect, chat, keyInfo, AssistantError, type ChatMsg, ty
 import { systemPrompt, actionPrompt, questionPrompt, ACTION_LABEL, type Action } from './prompt';
 import { useInsightsOn, logAsk } from './insights';
 import { PLAN_LABEL } from './models';
-import { useCourseKenny, courseChat, questionsLeft, isStruggling } from './course';
+import { useCourseKenny, courseChat, questionsLeft, isStruggling, redeemCode, setSource } from './course';
 import { useAccount } from '../store/account';
 
 const modelName = (m: string) => {
@@ -42,6 +42,11 @@ export function Assistant() {
   const onCourse = course.enabled && course.source === 'course' && !!acct.session;
   const ready = onCourse || !!or.key;
   const [left, setLeft] = useState<number | null>(null);
+  // a signed-in student whose course code does not include Kenny is asked for one the first time
+  const needCode = !!acct.session && course.available && course.eligible === false && course.source === 'course';
+  const [code, setCode] = useState('');
+  const [codeMsg, setCodeMsg] = useState<string | null>(null);
+  const [codeBusy, setCodeBusy] = useState(false);
   const ctx = usePageContext();
   const insights = useInsightsOn();
   const [open, setOpen] = useState(false);
@@ -160,7 +165,18 @@ export function Assistant() {
     : info.creditLeft !== null ? `Credit left on this key: US$${info.creditLeft.toFixed(2)}` : null);
 
   let body: JSX.Element;
-  if (!ready && course.enabled && course.source === 'course') body = (
+  if (needCode) body = (
+    <form className="as-setup" onSubmit={async e => { e.preventDefault(); setCodeBusy(true); const err = await redeemCode(code); setCodeBusy(false); setCodeMsg(err); if (!err) setCode(''); }}>
+      <p>To use Kenny on the course’s account, enter your <b>course code</b>. It’s the code that your instructor shared with you.</p>
+      <div className="as-actions" style={{ flexWrap: 'wrap' }}>
+        <input value={code} onChange={e => setCode(e.target.value)} placeholder="Course code" aria-label="Course code" autoComplete="off" autoCapitalize="characters" style={{ width: 180 }} />
+        <button className="btn" type="submit" disabled={codeBusy || !code.trim()}>{codeBusy ? 'Checking…' : 'Unlock Kenny'}</button>
+      </div>
+      {codeMsg && <p className="as-err" role="alert">{codeMsg}</p>}
+      <p className="hint">No code? <button type="button" className="textlink" onClick={() => setSource('openrouter')}>Use my own OpenRouter account instead</button></p>
+    </form>
+  );
+  else if (!ready && course.enabled && course.source === 'course') body = (
     <div className="as-setup">
       <p>Kenny, your study assistant, answers questions about the card you are on. He runs on the course’s account, so there is nothing to pay or set up: just <b>sign in</b> to EpiCompass.</p>
       <div className="as-actions">

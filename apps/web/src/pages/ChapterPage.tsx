@@ -1,7 +1,6 @@
 import type { Chapter } from '../content/types';
 import { coreCards } from '../content/types';
-import { UNITS, conceptById, cardNumber } from '../content';
-import { MasteryMeter, masteryText } from '../components/Mastery';
+import { UNITS, cardNumber } from '../content';
 import { EditableMd } from '../components/EditableMd';
 import { Path, cardState } from '../components/Path';
 import { useProgress } from '../store/progress';
@@ -65,18 +64,6 @@ export function ChapterPage({ chapter }: { chapter: Chapter }) {
               <div><dt>Concepts</dt><dd className="num">{ids.length}</dd></div>
             </dl>
           </section>
-          {ids.length > 0 && <section className="panel" aria-labelledby="h-con">
-            <div className="panel-head"><h2 id="h-con">Concept mastery</h2></div>
-            {ids.map(id => {
-              return (
-                <div className="concept" key={id}>
-                  <div className="top"><span>{conceptById(id)?.title ?? id}</span><span>{masteryText(p.mastery[id])}</span></div>
-                  <MasteryMeter m={p.mastery[id]} />
-                </div>
-              );
-            })}
-            <p className="hint" style={{ marginTop: 10 }}>The tick marks the 85% mastery line. Finishing a card does not by itself mean mastery: the bar rises with each correct first answer, and three in a row usually cross the line. A faint bar means fewer than two answers so far.</p>
-          </section>}
         </aside>}
       </div>
     </div>

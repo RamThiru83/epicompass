@@ -64,15 +64,6 @@ export function CardPage({ card, chapter }: { card: Card; chapter: Chapter }) {
         <p className="hint" style={{ marginTop: 12 }}>Read first: {chapter.reading}</p>
         <p className="hint" style={{ marginTop: 6 }}><a href={`#/ch/${chapter.number}`}>All cards in Chapter {chapter.number}</a></p>
       </section>
-      {card.concepts.length > 0 && <section className="panel" aria-labelledby="h-cc">
-        <div className="panel-head"><h2 id="h-cc">Concepts in this card</h2></div>
-        {card.concepts.map(id => (
-          <div className="concept" key={id}>
-            <div className="top"><span>{conceptById(id)?.title ?? id}</span><span>{masteryText(p.mastery[id])}</span></div>
-            <MasteryMeter m={p.mastery[id]} />
-          </div>
-        ))}
-      </section>}
     </aside>
   );
 

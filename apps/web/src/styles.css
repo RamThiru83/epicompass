@@ -613,3 +613,9 @@ article.letter details.more:not([open]) > summary .letter-title::after { content
 details.advanced-own { margin: 8px 0 0; }
 details.advanced-own > summary { color: var(--muted); text-decoration: underline; text-underline-offset: 3px; align-items: center; }
 details.advanced-own > summary:hover { color: var(--text); }
+/* "Going further": optional history and detail inside a card's explanation, closed by default */
+.prose details.going-further { margin: 20px 0 8px; border: 1px solid var(--border); border-radius: var(--radius-card); background: var(--raised); padding: 0 16px; }
+.prose details.going-further > summary { cursor: pointer; padding: 12px 0; font-weight: 600; color: var(--text); }
+.prose details.going-further[open] > summary { border-bottom: 1px solid var(--rule); margin-bottom: 8px; }
+.prose details.going-further > ul { margin: 0 0 12px; padding-left: 1.2em; }
+.prose details.going-further li { margin: 6px 0; }

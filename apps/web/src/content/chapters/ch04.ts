@@ -260,8 +260,8 @@ Better treatment that prolongs survival raises prevalence without any change in 
     // ------------------------------------------------------------------
     {
       id: 'ch04-ratios-differences', chapter: 4, order: 5,
-      title: 'Comparing groups: ratios and differences',
-      concepts: ['risk_ratio', 'risk_difference', 'rate_ratio'], minutes: 17,
+      title: 'Comparing risks: ratios and differences',
+      concepts: ['risk_ratio', 'risk_difference'], minutes: 12,
       hook: md`In a Faridabad antenatal cohort, 400 women with moderate-to-severe anaemia at booking and 500 women without anaemia are followed to delivery. Postpartum haemorrhage occurs in 40 anaemic and 25 non-anaemic women. The obstetrics department wants a single number to put on a poster for the anaemia programme; the programme manager wants to know how many haemorrhages could be avoided per 1,000 women treated. They are asking for different measures.`,
       explore: {
         interactive: 'measures-calculator',
@@ -271,7 +271,7 @@ Better treatment that prolongs survival raises prevalence without any change in 
 
 $$\mathrm{RR} = \frac{R_1}{R_0} \qquad \mathrm{RD} = R_1 - R_0$$
 
-With incidence rates, the same logic gives the **incidence rate ratio** $\mathrm{IRR} = I_1/I_0$ and the **incidence rate difference** $\mathrm{IRD} = I_1 - I_0$. A risk difference lies between −1 and +1 and has no units; a rate difference has the units of a rate. Older texts call differences the "attributable risk" or "attributable rate"; prefer "risk ratio" and "rate ratio" to the vaguer "relative risk".
+A risk difference lies between −1 and +1 and has no units. Older texts call it the "attributable risk"; prefer "risk ratio" to the vaguer "relative risk". The next card applies the same logic to incidence rates.
 
 For the Faridabad cohort: $R_1 = 40/400 = 0.10$ and $R_0 = 25/500 = 0.050$.
 
@@ -283,8 +283,6 @@ For the Faridabad cohort: $R_1 = 40/400 = 0.10$ and $R_0 = 25/500 = 0.050$.
 **Relative measures** (ratios) express the effect in proportion to the risk without the exposure. Strictly, the **relative effect** is $\mathrm{RR} - 1$ (the book's Equation 4.5): RR = 1.6 means a 60% higher risk; RR = 0.7 means 30% lower; a ratio of 1 means no association.
 
 **Absolute measures** (differences) describe the public-health impact: how many cases are added or avoided, which is what decisions about public health should rest on. The same RR of 2 implies an RD of 0.05 when $R_0 = 0.05$ but only 0.0005 when $R_0 = 0.0005$.
-
-**Risk ratio and rate ratio.** While risks stay small (below about 20%), the risk ratio is nearly equal to the rate ratio; the book calls the rate ratio an "instantaneous risk ratio". Over longer periods they diverge, because a risk cannot exceed 1: the risk ratio can never be larger than $1/R_0$. If $R_0$ is 0.44, for example, the RR cannot exceed 2.3, while the rate ratio has no such ceiling.
 
 Every estimate from a study also carries uncertainty. Chapters 7 and 8 show how to express it with a [[confidence interval]]; for now, concentrate on choosing and computing the right measure.
 
@@ -320,6 +318,31 @@ Report only the digits the data justify (RR 2.0, not 2.000).
             { text: 'Drug B is more effective because it works in lower-risk people.', correct: false, feedback: 'Both have the same relative effect; drug B simply has much less risk to remove.' },
           ],
         },
+      ],
+    },
+    // ------------------------------------------------------------------
+    {
+      id: 'ch04-rate-ratio', chapter: 4, order: 6,
+      title: 'Comparing rates: rate ratio and rate difference',
+      concepts: ['rate_ratio'], minutes: 8,
+      hook: md`A coal mine in Jharkhand has a TB screening programme for its workers (synthetic figures). Workers join and leave throughout the year, so nobody is followed for the same length of time. Over six years, underground miners contribute 4,000 person-years and develop 48 cases of tuberculosis; surface workers contribute 5,000 person-years and develop 15. The mine's doctor wants to compare the two groups fairly, and to say how many extra cases underground work brings each year.`,
+      formalise: md`When follow-up is measured in person-time, compare **incidence rates** $I_1$ (exposed) and $I_0$ (unexposed):
+
+$$\mathrm{IRR} = \frac{I_1}{I_0} \qquad \mathrm{IRD} = I_1 - I_0$$
+
+These are the **incidence rate ratio** and the **incidence rate difference**. For the mine: $I_1 = 48/4{,}000 = 12$ per 1,000 person-years and $I_0 = 15/5{,}000 = 3$ per 1,000 person-years.
+
+| Measure | Value | Reading |
+|---|---|---|
+| IRR | 4.0 | Underground miners develop TB at four times the rate |
+| IRD | 9 per 1,000 person-years | About 9 extra cases for every 1,000 miners working underground for a year, if the groups are otherwise comparable |
+
+The ratio has no units. The difference keeps the units of a rate (cases per person-time), so always state them. Older texts call the difference the "attributable rate".
+
+**Risk ratio and rate ratio.** While risks stay small (below about 20%), the risk ratio is nearly equal to the rate ratio; the book calls the rate ratio an "instantaneous risk ratio". Over longer periods they diverge, because a risk cannot exceed 1: the [[risk ratio]] can never be larger than $1/R_0$. If $R_0$ is 0.44, for example, the risk ratio cannot exceed 2.3, while the rate ratio has no such ceiling.
+
+**Common mistake:** writing a rate difference without its units, or calling a rate ratio a "relative risk" without saying which ratio it is.`,
+      checks: [
         {
           id: 'ch04-ratios-differences-q4', concept: 'rate_ratio',
           prompt: md`In a synthetic mining cohort, tuberculosis occurs at 12 per 1,000 person-years among underground miners and 3 per 1,000 person-years among surface workers. What is the rate ratio?`,
@@ -351,7 +374,7 @@ Report only the digits the data justify (RR 2.0, not 2.000).
     },
     // ------------------------------------------------------------------
     {
-      id: 'ch04-odds-ratio', chapter: 4, order: 6,
+      id: 'ch04-odds-ratio', chapter: 4, order: 7,
       title: 'The odds ratio and when it resembles the risk ratio',
       concepts: ['odds_ratio', 'risk_ratio'], minutes: 11,
       hook: md`A surgical audit at a Jaipur hospital reports that obese patients undergoing open abdominal surgery had "2.7 times the odds" of wound infection compared with non-obese patients. The infection risk was 40% in obese patients and 20% in others. A resident tells the ward round that obese patients are "2.7 times as likely" to get infected. The infection-control nurse frowns: the risks she sees do not look 2.7-fold apart.`,
@@ -418,7 +441,7 @@ Why bother with odds? In a case-control study (Chapter 5), you can estimate an o
     },
     // ------------------------------------------------------------------
     {
-      id: 'ch04-counterfactual', chapter: 4, order: 7,
+      id: 'ch04-counterfactual', chapter: 4, order: 8,
       title: 'Causal effects and the counterfactual ideal',
       concepts: ['counterfactual'], minutes: 11,
       hook: md`A woman with severe pre-eclampsia at a Kolkata teaching hospital receives magnesium sulfate and does not have a seizure. Her family thanks the doctors for preventing the fit. A medical student asks the registrar whether the drug really made the difference for this woman. The registrar answers honestly: "We'll never know for her. We would need to see what would have happened to the same woman, on the same day, without the drug."`,
@@ -471,7 +494,7 @@ An RR of 3 for a causal exposure describes the exposed **group**: its risk is th
     },
     // ------------------------------------------------------------------
     {
-      id: 'ch04-bonus-kids', chapter: 4, order: 8,
+      id: 'ch04-bonus-kids', chapter: 4, order: 9,
       title: 'Teach-back: explaining the counterfactual',
       concepts: [], minutes: 6,
       bonus: { youtubeId: 'bmoZPf17dCE', channel: 'Little Scientists Club', videoTitle: 'How do we know what made something happen? (Ep 19)' },
@@ -493,7 +516,7 @@ The video's catchphrase sums it up: *ask what would happen without it.*`,
     },
     // ------------------------------------------------------------------
     {
-      id: 'ch04-attributable-fraction', chapter: 4, order: 9,
+      id: 'ch04-attributable-fraction', chapter: 4, order: 10,
       title: 'Attributable fraction: how much could be prevented?',
       concepts: ['attributable_fraction'], minutes: 13,
       hook: md`A hill district in Uttarakhand plans to expand a clean-cooking-gas scheme. A study suggests that children in homes using wood or dung for cooking have 2.5 times the risk of pneumonia of children in homes using gas, and half of all childhood pneumonia cases in the district occur in homes using solid fuel. The district collector asks a simple question: if every home switched to gas, what share of childhood pneumonia would disappear?`,

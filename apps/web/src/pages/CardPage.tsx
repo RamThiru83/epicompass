@@ -15,6 +15,9 @@ import { setPageContext } from '../assistant/context';
 /** Steps that are read rather than answered count as done once they have been opened. */
 const DONE_ON_VIEW: Step[] = ['hook', 'explore', 'formalise'];
 
+/** Questions shown in one Check; further questions in the content are kept for revisits. */
+const MAX_CHECKS = 4;
+
 export function CardPage({ card, chapter }: { card: Card; chapter: Chapter }) {
   const p = useProgress();
   const prog = p.cards[card.id];
@@ -24,8 +27,10 @@ export function CardPage({ card, chapter }: { card: Card; chapter: Chapter }) {
   const [finished, setFinished] = useState(false);
   // Mastery when the card was opened, to show what this card changed.
   const before = useRef<Record<string, { pKnown: number; attempts: number } | undefined>>({});
+  // Check shows at most four questions. A card done before is a revisit: its spare questions come first.
+  const [revisit, setRevisit] = useState(!!prog?.completedAt);
   useEffect(() => {
-    setNow(firstOpen); setFinished(false);
+    setNow(firstOpen); setFinished(false); setRevisit(!!getProgress().cards[card.id]?.completedAt);
     const m = getProgress().mastery;
     before.current = Object.fromEntries(card.concepts.map(c => [c, m[c] ? { pKnown: m[c].pKnown, attempts: m[c].attempts } : undefined]));
   }, [card.id]);
@@ -40,13 +45,15 @@ export function CardPage({ card, chapter }: { card: Card; chapter: Chapter }) {
   const tabsRef = useRef<HTMLDivElement>(null);
   const scrollToSteps = () => requestAnimationFrame(() => tabsRef.current?.scrollIntoView({ block: 'nearest' }));
 
-  const siblings = chapter.cards;
+  // core cards in order, then the chapter's optional videos (Extras)
+  const siblings = [...chapter.cards.filter(c => !c.bonus), ...chapter.cards.filter(c => c.bonus)];
   const pos = siblings.findIndex(c => c.id === card.id);
   const nextCard = siblings[pos + 1] ?? CHAPTERS.find(c => c.number === chapter.number + 1 && c.cards.length)?.cards[0];
 
   const Interactive = card.explore ? INTERACTIVES[card.explore.interactive]?.component : undefined;
   const template = card.practise ? templates[card.practise.template] : undefined;
   const allChecksDone = useMemo(() => done('check'), [prog]);
+  const checks = useMemo(() => (revisit ? [...card.checks.slice(MAX_CHECKS), ...card.checks.slice(0, MAX_CHECKS)] : card.checks).slice(0, MAX_CHECKS), [card.id, revisit]);
 
   const unit = UNITS.find(u => u.id === chapter.unit);
   const crumb = `Unit ${chapter.unit}: ${unit?.title ?? ''} · Chapter ${chapter.number} · ${cardLabel(card)}`;
@@ -141,7 +148,7 @@ export function CardPage({ card, chapter }: { card: Card; chapter: Chapter }) {
     explore: card.explore ? `Interactive: ${INTERACTIVES[card.explore.interactive]?.title ?? 'explore the idea'}.` : '',
     formalise: 'The idea stated properly, with its formula.',
     practise: card.practise ? `Solve ${card.practise.count} generated problem${card.practise.count > 1 ? 's' : ''} to continue.` : '',
-    check: `${card.checks.length} question${card.checks.length > 1 ? 's' : ''}. Your first answer to each one updates your mastery.`,
+    check: `${checks.length} question${checks.length > 1 ? 's' : ''}. Your first answer to each one updates your mastery.`,
   };
   const onTabKey = (e: React.KeyboardEvent) => {
     const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : e.key === 'Home' ? -99 : e.key === 'End' ? 99 : 0;
@@ -200,7 +207,7 @@ export function CardPage({ card, chapter }: { card: Card; chapter: Chapter }) {
       </>)}
 
       {now === 'check' && panel(<>
-        <Check cardId={card.id} items={card.checks} onAllAnswered={() => markStep(card.id, 'check')} />
+        <Check key={`${card.id}-${revisit}`} cardId={card.id} items={checks} onAllAnswered={() => markStep(card.id, 'check')} />
         <div className="actions">
           <button className="btn" disabled={!allChecksDone} onClick={() => { completeCard(card.id); setFinished(true); window.scrollTo(0, 0); }}>Complete card</button>
           {!allChecksDone && <span className="hint">Answer every question to complete the card.</span>}

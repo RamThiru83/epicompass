@@ -15,7 +15,7 @@ export const ch02: Chapter = {
       title: 'From counting the dead to comparing rates',
       concepts: ['counts_vs_rates'], minutes: 9,
       hook: md`The Crimean War, 1854. At the request of Britain's Secretary of War, Florence Nightingale travels to the front with a team of trained volunteer nurses. In the military hospitals she finds that poor food and hygiene, a shortage of medicines and plain neglect are killing more soldiers than battle wounds. She brings in better sewage and ventilation, and death rates fall. Then she does something unusual for a nurse of her time: she sets out to prove, with carefully collected numbers and a diagram of her own invention, what had been killing the army.`,
-      formalise: md`Two centuries earlier, John Graunt, a London haberdasher whom the book calls the world's first epidemiologist and demographer, saw how much could be learnt by compiling data that already existed: the weekly **Bills of Mortality**, parish lists of christenings and deaths by cause. Among his findings: more boys than girls are born; London's population was growing through migration rather than births; disease trends over time, allowing for the size of the population; and the first actuarial (life) table. He even estimated that about a fifth of plague deaths had been recorded under other causes, and corrected for it. Using already-collected data in this way is still a large part of epidemiology.
+      formalise: md`Two centuries earlier, John Graunt, a London haberdasher, saw how much could be learnt by compiling data that already existed: the weekly **Bills of Mortality**, parish lists of christenings and deaths by cause. Using already-collected data in this way is still a large part of epidemiology.
 
 A count of deaths says little until you know **how many people could have died**, and for how long. Dividing by the time people spent at risk turns a count into a rate:
 
@@ -23,9 +23,17 @@ $$\text{mortality rate} = \frac{\text{deaths in a period}}{\text{total time at r
 
 [[Person-time]] adds up the time each person spent at risk (Chapter 4). When the number of people is fairly steady, it is close to the average number at risk multiplied by the length of the period, which is how this example is worked. With synthetic numbers: a hospital ward averages 2,000 men in January with 120 deaths, and 500 men in June with 45 deaths. January has more deaths, but expressed per 1,000 men per month the figures are 60 and 90; June is worse.
 
-Nightingale understood that numbers persuade only if they are presented clearly. Her polar-area diagram (the "coxcomb") showed each month's deaths by cause, with area proportional to deaths: deaths from preventable or mitigable infectious ("zymotic") diseases far outnumbered those from wounds. Her later reports reformed the medical care of soldiers, and she went on to campaign for sanitation in rural India.
+Nightingale understood that numbers persuade only if they are presented clearly: her diagrams showed at a glance that preventable disease, not wounds, killed most soldiers.
 
-The lesson for us: before comparing any two groups, ask what the denominators are and whether they cover the same span of time. Earlier still, writings attributed to Hippocrates had urged physicians to consider the air, water and way of life of a place; counting and rates allowed such ideas to be tested.
+The lesson for us: before comparing any two groups, ask what the denominators are and whether they cover the same span of time.
+
+<details class="going-further"><summary>Going further</summary>
+<ul>
+<li><b>Graunt</b> (the book calls him the world's first epidemiologist and demographer) found, among other things, that more boys than girls are born; that London's population grew through migration rather than births; how diseases trended over time, allowing for the size of the population; and he built the first actuarial (life) table. He estimated that about a fifth of plague deaths had been recorded under other causes, and corrected for it.</li>
+<li><b>Nightingale's</b> polar-area diagram (the "coxcomb") showed each month's deaths by cause, with area proportional to deaths: deaths from preventable or mitigable infectious ("zymotic") diseases far outnumbered those from wounds. Her later reports reformed the medical care of soldiers, and she went on to campaign for sanitation in rural India.</li>
+<li>Earlier still, writings attributed to <b>Hippocrates</b> had urged physicians to consider the air, water and way of life of a place; counting and rates allowed such ideas to be tested.</li>
+</ul>
+</details>
 
 **Common mistake:** comparing raw numbers of cases between groups of different size or observed for different lengths of time.`,
       checks: [
@@ -99,11 +107,15 @@ $$\text{risk}_j = \frac{D_j}{H_j} \times 10{,}000 \qquad \text{times higher} = \
 
 Each figure is the proportion of houses (or, later, people) with a fatal attack over the period, so the book calls it a **risk** of fatal cholera, and the comparison a [[risk ratio]] (Chapter 4).
 
-In the first four weeks of the epidemic, Snow counted 286 deaths in the 40,046 houses supplied by the Southwark and Vauxhall Company and 14 in the 26,107 houses supplied by the Lambeth Company: about 71 against 5 per 10,000 houses, which he reported as fourteen times higher. For the whole 1854 outbreak, using the population served as the denominator, the risks were 0.0161 against 0.0027, about six times higher.
+In the first four weeks of the epidemic, Snow found about 71 deaths per 10,000 houses supplied by the Southwark and Vauxhall Company against 5 per 10,000 supplied by the Lambeth Company. A ratio well above 1 in a comparison where other differences are small points to the water as a cause.
 
-A ratio well above 1 in a comparison where other differences are small points to the water as a cause. Snow's work was not flawless: his first analysis included all houses supplied by each company, not only those in the districts where both companies competed, and he corrected this in a later publication (Chapter 5).
-
-Snow's reasoning later shaped Wade Hampton Frost, the first professor of epidemiology (at Johns Hopkins), whose tuberculosis studies showed how analysing death rates by **birth cohort** clarifies trends, a method the Norwegian physician Kristian Andvord had introduced about ten years before.
+<details class="going-further"><summary>Going further</summary>
+<ul>
+<li><b>Snow's figures:</b> 286 deaths in 40,046 houses against 14 in 26,107 houses, which he reported as fourteen times higher. For the whole 1854 outbreak, using the population served as the denominator, the risks were 0.0161 against 0.0027, about six times higher.</li>
+<li><b>A flaw he corrected:</b> his first analysis included all houses supplied by each company, not only those in the districts where both companies competed; he corrected this in a later publication (Chapter 5).</li>
+<li><b>What followed:</b> Snow's reasoning later shaped Wade Hampton Frost, the first professor of epidemiology (at Johns Hopkins), whose tuberculosis studies showed how analysing death rates by birth cohort clarifies trends, a method the Norwegian physician Kristian Andvord had introduced about ten years before.</li>
+</ul>
+</details>
 
 **Common mistake:** assuming that any "before and after" or "here and there" comparison is a natural experiment, or that a natural experiment is a true experiment. It is a cohort study, and it is convincing only if exposure was allocated independently of other causes of the outcome.`,
       practise: { template: 'ch02-snow-rate-ratio', count: 2 },
@@ -170,13 +182,20 @@ The video's catchphrase sums it up: *follow the clues to find the cause.*`,
 | Design | Starting point | Early example |
 |---|---|---|
 | **Cohort** | People grouped by exposure, followed for outcomes | Lane-Claypon's earlier comparison of weight gain in breastfed and bottle-fed infants; later, large cohorts of doctors and volunteers followed for smoking-related deaths |
-| **Case-control** | People with the disease and a comparison group without it, compared for past exposure | Lane-Claypon's 1926 breast cancer study (which linked age at first pregnancy, age at menopause, number of children and surgically induced menopause to risk); in 1950, the smoking and lung cancer studies of Wynder and Graham in the United States and Doll and Hill in Britain |
+| **Case-control** | People with the disease and a comparison group without it, compared for past exposure | Lane-Claypon's 1926 breast cancer study; in 1950, the smoking and lung cancer studies of Wynder and Graham in the United States and Doll and Hill in Britain |
 
 The 1950 case-control studies on smoking were followed by cohort studies: Doll and Hill among British doctors, and Hammond and Horn among American men. Case-control methods were then less widely understood than following people forward, so the cohort studies were undertaken partly to give stronger evidence; Hammond and Horn found an association with lung cancer about as strong as the case-control studies had. Even so, critics went on arguing for years that confounding could explain the findings, and in the United States the debate was settled only by the Surgeon General's advisory committee report of 1964.
 
 Choosing the comparison group is the central design decision. In a cohort study, the unexposed group should show what the exposed group's experience would have been without the exposure. In a case-control study, the controls do a different job: they show how the exposure is distributed in the population that gave rise to the cases, so they must be sampled independently of exposure (Chapter 5).
 
-Epidemiology has also always had a social strand: Farr pressed for sanitary reform, Nightingale worked to improve care for the poor, and Lane-Claypon worried in 1912 that social class might confound her comparison of infant feeding methods. **Social epidemiology** studies how factors such as poverty, education, discrimination, segregation, inequalities and particular social policies affect health and social justice. These factors are causes in their own right, and, as Lane-Claypon saw, they can also confound other comparisons.
+**Social epidemiology** studies how factors such as poverty, education, discrimination, segregation, inequalities and particular social policies affect health and social justice. These factors are causes in their own right, and they can also confound other comparisons.
+
+<details class="going-further"><summary>Going further</summary>
+<ul>
+<li><b>Lane-Claypon's 1926 study</b> linked age at first pregnancy, age at menopause, number of children and surgically induced menopause to the risk of breast cancer.</li>
+<li><b>A long social strand:</b> Farr pressed for sanitary reform, Nightingale worked to improve care for the poor, and Lane-Claypon worried in 1912 that social class might confound her comparison of infant feeding methods.</li>
+</ul>
+</details>
 
 **Common mistake:** describing a series of patients with a disease and their exposures without any comparison group, and then drawing causal conclusions.`,
       checks: [

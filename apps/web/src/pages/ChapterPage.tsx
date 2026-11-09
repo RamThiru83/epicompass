@@ -10,6 +10,18 @@ export function ChapterPage({ chapter }: { chapter: Chapter }) {
   const p = useProgress();
   const unit = UNITS.find(u => u.id === chapter.unit);
   const core = coreCards(chapter);
+  const extras = chapter.cards.filter(k => k.bonus);
+  const row = (c: (typeof chapter.cards)[number]) => {
+    const st = cardState(c, p);
+    return (
+      <button key={c.id} className="cardrow" onClick={() => go(`#/card/${c.id}`)}>
+        <span className="idx">{cardNumber(c) ?? 'Video'}</span>
+        <span><div className="title">{c.title}</div><div className="meta">{c.bonus ? <>{c.minutes} min · video · optional</> : <>{c.minutes} min · {c.concepts.length} concept{c.concepts.length > 1 ? 's' : ''}{c.explore ? ' · interactive' : ''}{c.practise ? ' · practice problems' : ''}</>}</div></span>
+        {c.bonus ? <span /> : <Path card={c} p={p} />}
+        <span className={`state ${st}`}>{st === 'done' ? 'Complete' : st === 'started' ? 'In progress' : c.bonus ? 'Watch' : 'Not started'}</span>
+      </button>
+    );
+  };
   const done = core.filter(k => p.cards[k.id]?.completedAt).length;
   const minutes = core.reduce((s, k) => s + k.minutes, 0);
   const ids = [...new Set(core.flatMap(k => k.concepts))];
@@ -37,22 +49,16 @@ export function ChapterPage({ chapter }: { chapter: Chapter }) {
             <p style={{ margin: 0, fontSize: '1rem', lineHeight: 1.55, maxWidth: '72ch' }}>{unit.outcome}</p>
           </section>}
           <section className="panel" aria-labelledby="h-cards">
-            <div className="panel-head"><h2 id="h-cards">Cards</h2><span className="aside">{done} of {core.length} complete{chapter.cards.length > core.length ? ` · ${chapter.cards.length - core.length} optional video${chapter.cards.length - core.length > 1 ? 's' : ''}` : ''}</span></div>
+            <div className="panel-head"><h2 id="h-cards">Cards</h2><span className="aside">{done} of {core.length} complete</span></div>
             <div className="cardlist">
-              {chapter.cards.map(c => {
-                const st = cardState(c, p);
-                return (
-                  <button key={c.id} className="cardrow" onClick={() => go(`#/card/${c.id}`)}>
-                    <span className="idx">{cardNumber(c) ?? 'Video'}</span>
-                    <span><div className="title">{c.title}</div><div className="meta">{c.bonus ? <>{c.minutes} min · video · optional</> : <>{c.minutes} min · {c.concepts.length} concept{c.concepts.length > 1 ? 's' : ''}{c.explore ? ' · interactive' : ''}{c.practise ? ' · practice problems' : ''}</>}</div></span>
-                    {c.bonus ? <span /> : <Path card={c} p={p} />}
-                    <span className={`state ${st}`}>{st === 'done' ? 'Complete' : st === 'started' ? 'In progress' : c.bonus ? 'Watch' : 'Not started'}</span>
-                  </button>
-                );
-              })}
+              {core.map(row)}
               {chapter.cards.length === 0 && <p className="hint">Cards for this chapter arrive in a later release. Until then, read the chapter in the book.</p>}
             </div>
           </section>
+          {extras.length > 0 && <section className="panel" aria-labelledby="h-extras" style={{ marginTop: 16 }}>
+            <div className="panel-head"><h2 id="h-extras">Extras</h2><span className="aside">Optional videos</span></div>
+            <div className="cardlist">{extras.map(row)}</div>
+          </section>}
         </div>
 
         {core.length > 0 && <aside className="s3" style={{ display: 'grid', gap: 16 }}>

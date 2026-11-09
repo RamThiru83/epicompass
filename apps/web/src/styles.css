@@ -106,9 +106,12 @@ input[type=checkbox] { accent-color: var(--primary); width: 16px; height: 16px; 
 .chap .bar { width: 28px; }
 .bar { height: 3px; border-radius: 2px; background: var(--border); overflow: hidden; display: block; }
 .bar i { display: block; height: 100%; background: var(--accent); }
-.inst-logo { display: block; background: #FFFFFF; border-radius: 8px; padding: 8px 10px; border: 1px solid var(--rule); }
+.inst-logo { display: block; background: #FFFFFF; border-radius: 8px; padding: 6px 10px; border: 1px solid var(--rule); max-width: 200px; }
 .inst-logo img { display: block; width: 100%; height: auto; }
-.course-by { margin: 0 0 18px; padding: 0 4px; }
+.course-by { margin: 0 0 14px; padding: 0 4px; }
+.course-instructor { margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--rule); font-size: 0.875rem; line-height: 1.4; color: var(--text); font-weight: 500; }
+.course-instructor span { display: block; font-weight: 400; color: var(--muted); }
+.course-instructor br { display: none; }
 .course-by p { margin: 0 6px; font-size: 0.875rem; line-height: 1.35; color: var(--muted); }
 .course-by .instructor { margin-top: 10px; color: var(--text); font-weight: 500; }
 .course-by .instructor span { display: block; font-size: 0.8125rem; font-weight: 400; color: var(--muted); }
@@ -607,3 +610,6 @@ article.letter details.more:not([open]) > summary .letter-title::after { content
 .as-fab .fab-text b { font-weight: 600; }
 .as-fab .fab-text small { font-size: 0.8125rem; font-weight: 400; opacity: .8; }
 .as-fab { height: auto; min-height: 48px; padding-top: 6px; padding-bottom: 6px; }
+details.advanced-own { margin: 8px 0 0; }
+details.advanced-own > summary { color: var(--muted); text-decoration: underline; text-underline-offset: 3px; align-items: center; }
+details.advanced-own > summary:hover { color: var(--text); }

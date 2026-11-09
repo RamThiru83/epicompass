@@ -128,7 +128,7 @@ async function once(models: string[], messages: ChatMsg[], onText: (s: string) =
     if (r.status === 401) { disconnect(); throw new AssistantError('Your OpenRouter connection has expired or was removed. Please connect again.', 'auth'); }
     if (r.status === 429 && /upstream|provider/i.test(m + raw)) throw new AssistantError('The free AI models are busy just now. Please try again in a minute.', 'busy');
     if (r.status === 429) throw new AssistantError('You have reached OpenRouter’s limit for free questions for now (20 a minute, and 50 a day on a free account). Try again later, or tomorrow.', 'quota');
-    if (r.status === 402) throw new AssistantError('Your OpenRouter account needs credit for this model. Switch to the free models in My progress and settings, or add credit at openrouter.ai.', 'credit');
+    if (r.status === 402) throw new AssistantError('Your OpenRouter account needs credit for this model. Switch to the free models in Settings, or add credit at openrouter.ai.', 'credit');
     if (r.status >= 500) throw new AssistantError('The AI models are busy just now. Please try again in a minute.', 'busy');
     throw new AssistantError(m || `OpenRouter returned an error (${r.status}).`, 'other');
   }

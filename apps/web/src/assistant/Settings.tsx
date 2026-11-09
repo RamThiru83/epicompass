@@ -62,45 +62,53 @@ export function AssistantSettings() {
       </div>}
 
       {course.available && course.eligible === false && <KennyCode />}
-      <div className="setrow">
-        <div className="lbl">{course.enabled ? <><h2>Backup: your own OpenRouter account</h2><p>Optional. Connect once so Kenny can carry on if the course account is unavailable.</p></> : <><h2 id="h-assistant">Kenny, your study assistant</h2><p>An AI tutor for the card you are on, using your own OpenRouter account.</p></>}</div>
-        <div className="panel">
-          {or.key ? <>
-            <p style={{ marginTop: 0 }}><b>Connected</b> on this device. Open Kenny with the <b>Ask Kenny</b> button, or select a passage on any card.</p>
-            <div className="actions">{useOwn && <button className="btn" onClick={() => openAssistant()}>Ask Kenny</button>}<button className="btn ghost" onClick={disconnect}>Disconnect</button></div>
-          </> : <>
-            <ol className="as-steps">
-              <li>Press <b>Connect OpenRouter</b>. On OpenRouter, sign in or create a free account (Google or email), then approve EpiCompass.</li>
-              <li>You return here with Kenny ready. No payment or card details are needed for the free models.</li>
-              <li>On each new device or browser, connect once more.</li>
-            </ol>
-            {or.error && <p className="as-err" role="alert">{or.error}</p>}
-            <div className="actions"><button className="btn" onClick={() => connect()} disabled={or.connecting}>{or.connecting ? 'Connecting…' : 'Connect OpenRouter'}</button></div>
-            <details className="more"><summary>I already have an OpenRouter key</summary>
-              <form className="row" style={{ justifyContent: 'flex-start', flexWrap: 'wrap' }} onSubmit={e => { e.preventDefault(); const err = pasteKey(paste); setMsg(err); if (!err) setPaste(''); }}>
-                <input type="password" autoComplete="off" placeholder="sk-or-…" value={paste} onChange={e => setPaste(e.target.value)} aria-label="OpenRouter key" style={{ width: 260 }} />
-                <button className="btn ghost">Use this key</button>
-              </form>
-              {msg && <p className="hint">{msg}</p>}
-            </details>
-          </>}
-          <p className="hint" style={{ marginTop: 12 }}>Your key is kept in this browser only. Your questions go straight from this browser to OpenRouter; EpiCompass never sees the key or the conversation. Kenny can make mistakes: the card is the authority, and your instructor is a WhatsApp message away.</p>
-        </div>
-      </div>
-
-      {(useOwn || or.key) && <div className="setrow">
-        <div className="lbl"><h2 id="h-model">{course.enabled ? 'OpenRouter model' : 'AI model'}</h2><p>Chosen automatically: if your OpenRouter account has credit, Qwen3.5 9B; otherwise the free models. Pick one below to override. A backup takes over if a model is busy.</p></div>
-        <div className="panel">
-          <div role="radiogroup" aria-labelledby="h-model" className="as-plans">
-            {(['free', 'low-cost'] as const).map(p => (
-              <label key={p} className={`as-plan ${or.plan === p ? 'on' : ''}`}>
-                <input type="radio" name="as-plan" checked={or.plan === p} onChange={() => setPlan(p)} />
-                <span><b>{PLAN_LABEL[p]}</b>{p === 'free' && ' (recommended)'}<br /><span className="hint">{PLAN_TEXT[p]}</span></span>
-              </label>
-            ))}
+      {(() => {
+        const own = <>
+        <div className="setrow">
+          <div className="lbl">{course.enabled ? <><h2>Backup: your own OpenRouter account</h2><p>Optional. Connect once so Kenny can carry on if the course account is unavailable.</p></> : <><h2 id="h-assistant">Kenny, your study assistant</h2><p>An AI tutor for the card you are on, using your own OpenRouter account.</p></>}</div>
+          <div className="panel">
+            {or.key ? <>
+              <p style={{ marginTop: 0 }}><b>Connected</b> on this device. Open Kenny with the <b>Ask Kenny</b> button, or select a passage on any card.</p>
+              <div className="actions">{useOwn && <button className="btn" onClick={() => openAssistant()}>Ask Kenny</button>}<button className="btn ghost" onClick={disconnect}>Disconnect</button></div>
+            </> : <>
+              <ol className="as-steps">
+                <li>Press <b>Connect OpenRouter</b>. On OpenRouter, sign in or create a free account (Google or email), then approve EpiCompass.</li>
+                <li>You return here with Kenny ready. No payment or card details are needed for the free models.</li>
+                <li>On each new device or browser, connect once more.</li>
+              </ol>
+              {or.error && <p className="as-err" role="alert">{or.error}</p>}
+              <div className="actions"><button className="btn" onClick={() => connect()} disabled={or.connecting}>{or.connecting ? 'Connecting…' : 'Connect OpenRouter'}</button></div>
+              <details className="more"><summary>I already have an OpenRouter key</summary>
+                <form className="row" style={{ justifyContent: 'flex-start', flexWrap: 'wrap' }} onSubmit={e => { e.preventDefault(); const err = pasteKey(paste); setMsg(err); if (!err) setPaste(''); }}>
+                  <input type="password" autoComplete="off" placeholder="sk-or-…" value={paste} onChange={e => setPaste(e.target.value)} aria-label="OpenRouter key" style={{ width: 260 }} />
+                  <button className="btn ghost">Use this key</button>
+                </form>
+                {msg && <p className="hint">{msg}</p>}
+              </details>
+            </>}
+            <p className="hint" style={{ marginTop: 12 }}>Your key is kept in this browser only. Your questions go straight from this browser to OpenRouter; EpiCompass never sees the key or the conversation. Kenny can make mistakes: the card is the authority, and your instructor is a WhatsApp message away.</p>
           </div>
         </div>
-      </div>}
+  
+        {(useOwn || or.key) && <div className="setrow">
+          <div className="lbl"><h2 id="h-model">{course.enabled ? 'OpenRouter model' : 'AI model'}</h2><p>Chosen automatically: if your OpenRouter account has credit, Qwen3.5 9B; otherwise the free models. Pick one below to override. A backup takes over if a model is busy.</p></div>
+          <div className="panel">
+            <div role="radiogroup" aria-labelledby="h-model" className="as-plans">
+              {(['free', 'low-cost'] as const).map(p => (
+                <label key={p} className={`as-plan ${or.plan === p ? 'on' : ''}`}>
+                  <input type="radio" name="as-plan" checked={or.plan === p} onChange={() => setPlan(p)} />
+                  <span><b>{PLAN_LABEL[p]}</b>{p === 'free' && ' (recommended)'}<br /><span className="hint">{PLAN_TEXT[p]}</span></span>
+                </label>
+              ))}
+            </div>
+          </div>
+        </div>}
+        </>;
+        // students on the course account rarely need this, so it is tucked away
+        return course.enabled && course.source === 'course'
+          ? <details className="more advanced-own"><summary>Advanced: use your own OpenRouter account instead</summary>{own}</details>
+          : own;
+      })()}
 
       {cloudEnabled && a.session && a.profile && 'insights_consent_at' in a.profile && <div className="setrow">
         <div className="lbl"><h2 id="h-insights">Help your instructor improve the course</h2><p>Optional, and you can change your mind at any time.</p></div>

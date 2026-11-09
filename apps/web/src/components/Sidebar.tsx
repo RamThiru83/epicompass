@@ -36,13 +36,12 @@ export function Sidebar({ units, chapters, active, route, open }: { units: Unit[
         <a className="inst-logo" href="https://thsti.res.in" target="_blank" rel="noreferrer" title="BRIC-Translational Health Science and Technology Institute">
           <img src={logoUrl} alt="BRIC, a DBT organisation, and THSTI, Translational Health Science and Technology Institute" />
         </a>
-        <p className="instructor"><span>Course instructor</span>Dr Ramachandran Thiruvengadam, MD, PhD</p>
-        <p className="prog">Maternal and Child Health Programme, BRIC-THSTI, Faridabad</p>
       </div>
-      <button className="btn ghost ask" onClick={openTutor}>Ask your instructor</button>
       <nav className="nav-group">
         <button className={`chap plain ${route === 'home' ? 'active' : ''}`} onClick={() => go('#/')} aria-current={route === 'home' ? 'page' : undefined}><span className="t">Home and welcome letter</span></button>
-        <button className={`chap plain ${route === 'progress' ? 'active' : ''}`} onClick={() => go('#/progress')} aria-current={route === 'progress' ? 'page' : undefined}><span className="t">My progress and settings</span></button>
+        <button className={`chap plain ${route === 'progress' ? 'active' : ''}`} onClick={() => go('#/progress')} aria-current={route === 'progress' ? 'page' : undefined}><span className="t">My progress</span></button>
+        <button className={`chap plain ${route === 'settings' ? 'active' : ''}`} onClick={() => go('#/settings')} aria-current={route === 'settings' ? 'page' : undefined}><span className="t">Settings</span></button>
+        <button className="chap plain" onClick={openTutor}><span className="t">Ask your instructor</span></button>
         {cloudEnabled && <button className={`chap plain ${route === 'account' ? 'active' : ''}`} onClick={() => go('#/account')} aria-current={route === 'account' ? 'page' : undefined}>
           <span className="t">{acc.session ? (acc.profile?.full_name ?? 'My account') : 'Sign in or join'}</span>
           {acc.session && <span className={`sync ${acc.sync}`} title={acc.sync === 'error' ? 'Last save failed' : acc.sync === 'saving' ? 'Saving…' : 'Saved to your account'} />}
@@ -52,7 +51,7 @@ export function Sidebar({ units, chapters, active, route, open }: { units: Unit[
       {acc.profile?.role === 'instructor' && <div className="tools" role="group" aria-label="Instructor tools">
         <label className="toggle-row"><input type="checkbox" checked={ed.edit} onChange={e => setEditMode(e.target.checked)} /><span>Edit course text</span></label>
       </div>}
-      {units.map(u => {
+      {units.filter(u => u.chapters.some(n => chapters.find(c => c.number === n)?.cards.length)).map(u => {
         const unlocked = unitUnlocked(p, u, chapters);
         return (
           <nav className="nav-group" key={u.id} aria-label={`Unit ${u.id}: ${u.title}`}>

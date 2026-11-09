@@ -195,7 +195,7 @@ export function Assistant() {
       {or.error && <p className="as-err" role="alert">{or.error}</p>}
       <div className="as-actions">
         <button className="btn" onClick={() => connect()} disabled={or.connecting}>{or.connecting ? 'Connecting…' : 'Connect OpenRouter'}</button>
-        <button className="textlink" onClick={() => { close(); go('#/progress'); setTimeout(() => document.getElementById('h-assistant')?.scrollIntoView({ block: 'start' }), 300); }}>More about Kenny</button>
+        <button className="textlink" onClick={() => { close(); go('#/settings'); setTimeout(() => document.getElementById('h-assistant')?.scrollIntoView({ block: 'start' }), 300); }}>More about Kenny</button>
       </div>
       <p className="hint">Your key stays in this browser. EpiCompass never sees it or your conversations.</p>
     </div>

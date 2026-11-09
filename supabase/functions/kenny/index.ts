@@ -70,7 +70,7 @@ async function eligible(uid: string): Promise<boolean> {
   const { data, error } = await admin.rpc('kenny_eligible', { uid });
   return !error && data === true;
 }
-const NOT_ELIGIBLE = 'Kenny on the course account needs a course code that includes him. Enter one in Kenny’s panel, or use Kenny through your own OpenRouter account in My progress and settings.';
+const NOT_ELIGIBLE = 'Kenny on the course account needs a course code that includes him. Enter one in Kenny’s panel, or use Kenny through your own OpenRouter account in Settings.';
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors(req) });

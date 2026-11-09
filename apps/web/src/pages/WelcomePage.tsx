@@ -1,9 +1,9 @@
 import { WELCOME } from '../content/welcome';
-import { CHAPTERS, UNITS, concepts, conceptById, cardLabel } from '../content';
+import { CHAPTERS, UNITS, conceptById, cardLabel } from '../content';
 import { coreCards } from '../content/types';
 import { EditableMd } from '../components/EditableMd';
 import { Path, STEP_LABEL, stepsOf } from '../components/Path';
-import { useProgress, dueConcepts, isMastered } from '../store/progress';
+import { useProgress, dueConcepts } from '../store/progress';
 import { useAccount } from '../store/account';
 import { useEditing } from '../store/overrides';
 import { go } from '../App';
@@ -56,11 +56,16 @@ function AssistantPrompt() {
       </div>
       <div className="join-actions">
         <button className="btn ghost" onClick={() => connect()}>Connect OpenRouter</button>
-        <button className="textlink" onClick={() => go('#/progress')}>How it works</button>
+        <button className="textlink" onClick={() => go('#/settings')}>How it works</button>
         <button className="textlink" onClick={hide}>Not now</button>
       </div>
     </section>
   );
+}
+
+/** The course instructor, moved here from the side menu. */
+function Instructor() {
+  return <p className="course-instructor"><span>Course instructor</span>Dr Ramachandran Thiruvengadam, MD, PhD<br /><span>Maternal and Child Health Programme, BRIC-THSTI, Faridabad</span></p>;
 }
 
 const HOW = [
@@ -80,8 +85,6 @@ export function WelcomePage() {
   const open = CHAPTERS.filter(c => c.cards.length);
   const all = open.flatMap(c => coreCards(c));
   const doneCards = all.filter(k => p.cards[k.id]?.completedAt).length;
-  const taught = concepts.filter(c => open.some(ch => ch.number === c.chapter));
-  const mastered = taught.filter(c => isMastered(p, c.id)).length;
   const due = dueConcepts(p);
   const started = all.some(k => p.cards[k.id] && (p.cards[k.id].completedAt || Object.values(p.cards[k.id].steps).some(Boolean)));
   const inProgress = all.find(k => !p.cards[k.id]?.completedAt && Object.values(p.cards[k.id]?.steps ?? {}).some(Boolean));
@@ -133,9 +136,10 @@ export function WelcomePage() {
             <div className="kv">
               {UNITS.map(u => {
                 const cs = CHAPTERS.filter(c => u.chapters.includes(c.number)).flatMap(c => coreCards(c));
-                return <div key={u.id}><dt>{u.id}. {u.title}<small>Chapters {u.chapters[0]} to {u.chapters[u.chapters.length - 1]}</small></dt><dd className="num">{cs.length ? `${cs.length} cards` : 'Coming soon'}</dd></div>;
+                return cs.length > 0 && <div key={u.id}><dt>{u.id}. {u.title}<small>Chapters {u.chapters[0]} to {u.chapters[u.chapters.length - 1]}</small></dt><dd className="num">{cs.length} cards</dd></div>;
               })}
             </div>
+            <Instructor />
           </section>
         </aside>
       </div>
@@ -168,12 +172,6 @@ export function WelcomePage() {
             </button>); })}</div>
         </section>}
 
-        <div className="tiles three s12">
-          <div className="tile"><span className="k">Cards completed</span><span className="v">{doneCards} <small>of {all.length}</small></span><span className="c">{all.length - doneCards} to go in chapters 1 to {open.length}</span></div>
-          <div className="tile"><span className="k">Concepts mastered</span><span className="v">{mastered} <small>of {taught.length}</small></span><span className="c">At 85% estimated mastery</span></div>
-          <div className="tile"><span className="k">Revisits due</span><span className="v">{due.length}</span><span className="c">{due.length ? 'Listed above' : 'Nothing due today'}</span></div>
-        </div>
-
         {upNext.length > 0 && <section className="panel s8" aria-labelledby="h-next">
           <div className="panel-head"><h2 id="h-next">After that</h2><span className="aside">{all.length - doneCards} card{all.length - doneCards === 1 ? '' : 's'} to go</span></div>
           <div className="rows">
@@ -192,9 +190,10 @@ export function WelcomePage() {
             {UNITS.map(u => {
               const cs = CHAPTERS.filter(c => u.chapters.includes(c.number)).flatMap(c => coreCards(c));
               const d = cs.filter(k => p.cards[k.id]?.completedAt).length;
-              return <div key={u.id}><dt>{u.id}. {u.title}<small>Chapters {u.chapters[0]} to {u.chapters[u.chapters.length - 1]}</small></dt><dd className="num">{cs.length ? `${d} / ${cs.length}` : 'Coming soon'}</dd></div>;
+              return cs.length > 0 && <div key={u.id}><dt>{u.id}. {u.title}<small>Chapters {u.chapters[0]} to {u.chapters[u.chapters.length - 1]}</small></dt><dd className="num">{d} / {cs.length}</dd></div>;
             })}
           </div>
+          <Instructor />
         </section>
 
         <article className="sheet letter s8" aria-labelledby="h-letter">

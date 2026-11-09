@@ -6,7 +6,6 @@ import { useAccount } from '../store/account';
 import { cloudEnabled } from '../lib/supabase';
 import logoUrl from '../assets/bric-thsti-logo.png';
 import markUrl from '../assets/epicompass-mark.svg';
-import { openTutor } from './TutorPanel';
 import { useEditState, setEditMode } from '../store/overrides';
 import { useTheme } from '../store/theme';
 
@@ -41,7 +40,6 @@ export function Sidebar({ units, chapters, active, route, open }: { units: Unit[
         <button className={`chap plain ${route === 'home' ? 'active' : ''}`} onClick={() => go('#/')} aria-current={route === 'home' ? 'page' : undefined}><span className="t">Home and welcome letter</span></button>
         <button className={`chap plain ${route === 'progress' ? 'active' : ''}`} onClick={() => go('#/progress')} aria-current={route === 'progress' ? 'page' : undefined}><span className="t">My progress</span></button>
         <button className={`chap plain ${route === 'settings' ? 'active' : ''}`} onClick={() => go('#/settings')} aria-current={route === 'settings' ? 'page' : undefined}><span className="t">Settings</span></button>
-        <button className="chap plain" onClick={openTutor}><span className="t">Ask your instructor</span></button>
         {cloudEnabled && <button className={`chap plain ${route === 'account' ? 'active' : ''}`} onClick={() => go('#/account')} aria-current={route === 'account' ? 'page' : undefined}>
           <span className="t">{acc.session ? (acc.profile?.full_name ?? 'My account') : 'Sign in or join'}</span>
           {acc.session && <span className={`sync ${acc.sync}`} title={acc.sync === 'error' ? 'Last save failed' : acc.sync === 'saving' ? 'Saving…' : 'Saved to your account'} />}
